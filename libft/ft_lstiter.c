@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdio.h>
+
 int	ft_lstiter(t_list *lst, int n, int (*f)(int, int))
 {
 	t_list	*tmp;

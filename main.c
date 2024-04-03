@@ -56,11 +56,13 @@ void	print_list(t_list *lst)
 	t_list	*tmp;
 
 	tmp = lst;
+	printf("\n\n---------list----------\n\n");
 	while (tmp)
 	{
-		printf("value: %d\n", tmp->n);
+		printf("%d ", tmp->n);
 		tmp = tmp->next;
 	}
+	printf("\n\n----------------------\n\n");
 }
 
 void	parse_single_arg(t_list **lst, char *argv)
@@ -98,6 +100,70 @@ void	parse_data(t_list **lst, int argc, char **argv)
 	// }
 }
 
+void	push(t_list **lst1, t_list **lst2)
+{
+	t_list	*tmp;
+
+	tmp = *lst1;
+	if (!tmp)
+		return ;
+	if (tmp->next)
+		tmp->next->prev = NULL;
+	*lst1 = tmp->next;
+	tmp->next = NULL;
+	ft_lstadd_front(lst2, tmp);
+}
+
+void	swap(t_list **lst)
+{
+	t_list	*tmp;
+
+	if (!(*lst) || !(*lst)->next)
+		return ;
+	tmp = (*lst)->next;
+	(*lst)->next = tmp->next;
+	if (tmp->next)
+		tmp->next->prev = *lst;
+	tmp->prev = NULL;
+	tmp->next = NULL;
+	ft_lstadd_front(lst, tmp);
+}
+
+void	rotate(t_list **lst)
+{
+	t_list	*tmp;
+
+	tmp = *lst;
+	if (!tmp)
+		return ;
+	if (tmp->next)
+		tmp->next->prev = NULL;
+	*lst = tmp->next;
+	tmp->next = NULL;
+	ft_lstadd_back(lst, tmp);
+}
+
+void	reverse_rotate(t_list **lst)
+{
+	t_list	*tmp;
+
+	tmp = ft_lstlast(*lst);
+	if (!tmp)
+		return ;
+	if (tmp->prev)
+		tmp->prev->next = NULL;
+	tmp->prev = NULL;
+	ft_lstadd_front(lst, tmp);
+}
+
+void	push_swap(t_list **lst1)
+{
+	t_list	*lst2;
+
+	lst2 = NULL;
+	
+}
+
 
 int	main(int argc, char **argv)
 {
@@ -105,8 +171,8 @@ int	main(int argc, char **argv)
 
 	lst = NULL;
 	parse_data(&lst, argc, argv);
-	print_list(lst);
-	// push_swap(&lst);
+	// print_list(lst);
+	push_swap(&lst);
 	ft_lstclear(&lst);
 	return (0);
 }
