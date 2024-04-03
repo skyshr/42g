@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlcat.c                                       :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksuh <ksuh@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/26 17:10:29 by ksuh              #+#    #+#             */
-/*   Updated: 2024/03/01 21:15:56 by ksuh             ###   ########.fr       */
+/*   Created: 2024/03/16 18:45:47 by ksuh              #+#    #+#             */
+/*   Updated: 2024/03/23 13:05:12 by ksuh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "get_next_line_bonus.h"
 
-size_t	ft_strlcat(char *dest, const char *src, size_t size)
+char	*get_next_line(int fd)
 {
-	size_t	m;
-	size_t	n;
+	static char	backup[MAX_SIZE][BUFFER_SIZE];
+	char		*buffer;
+	int			is_end;
 
-	m = ft_strlen(dest);
-	if (m >= size)
-		return (size + ft_strlen(src));
-	n = 0;
-	while (*src && m + n + 1 < size)
-		dest[m + n++] = *src++;
-	if (n)
-		dest[m + n] = '\0';
-	n += ft_strlen(src);
-	return (m + n);
+	is_end = 0;
+	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0)
+		return (NULL);
+	if (backup[fd][0] == '\0' && read(fd, backup[fd], BUFFER_SIZE) <= 0)
+		return (NULL);
+	buffer = NULL;
+	while (!is_end)
+		buffer = read_buffer(fd, backup[fd], buffer, &is_end);
+	return (buffer);
 }

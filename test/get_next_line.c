@@ -1,26 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_calloc.c                                        :+:      :+:    :+:   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksuh <ksuh@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/26 21:09:52 by ksuh              #+#    #+#             */
-/*   Updated: 2024/03/01 20:25:36 by ksuh             ###   ########.fr       */
+/*   Created: 2024/03/14 20:06:47 by ksuh              #+#    #+#             */
+/*   Updated: 2024/03/23 12:58:05 by ksuh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "get_next_line.h"
 
-void	*ft_calloc(size_t n, size_t size)
+char	*get_next_line(int fd)
 {
-	void	*dest;
+	static char	backup[BUFFER_SIZE];
+	char		*buffer;
+	int			is_end;
 
-	if (!n || !size)
-		return (ft_strdup(""));
-	dest = malloc(n * size);
-	if (!dest)
-		return (0);
-	ft_bzero(dest, n * size);
-	return (dest);
+	is_end = 0;
+	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0)
+		return (NULL);
+	if (backup[0] == '\0' && read(fd, backup, BUFFER_SIZE) <= 0)
+		return (NULL);
+	buffer = NULL;
+	while (!is_end)
+		buffer = read_buffer(fd, backup, buffer, &is_end);
+	return (buffer);
 }

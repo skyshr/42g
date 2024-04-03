@@ -1,25 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew.c                                        :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksuh <ksuh@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/27 16:01:45 by ksuh              #+#    #+#             */
-/*   Updated: 2024/02/27 17:46:07 by ksuh             ###   ########.fr       */
+/*   Created: 2024/03/16 18:45:47 by ksuh              #+#    #+#             */
+/*   Updated: 2024/03/23 13:05:12 by ksuh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "get_next_line_bonus.h"
 
-t_list	*ft_lstnew(void *content)
+char	*get_next_line(int fd)
 {
-	t_list	*lst;
+	static char	backup[MAX_SIZE][BUFFER_SIZE];
+	char		*buffer;
+	int			is_end;
 
-	lst = (t_list *)malloc(sizeof(t_list));
-	if (!lst)
-		return (0);
-	lst->content = content;
-	lst->next = 0;
-	return (lst);
+	is_end = 0;
+	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0)
+		return (NULL);
+	if (backup[fd][0] == '\0' && read(fd, backup[fd], BUFFER_SIZE) <= 0)
+		return (NULL);
+	buffer = NULL;
+	while (!is_end)
+		buffer = read_buffer(fd, backup[fd], buffer, &is_end);
+	return (buffer);
 }
