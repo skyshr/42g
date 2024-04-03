@@ -1,30 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksuh <ksuh@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/14 20:06:47 by ksuh              #+#    #+#             */
-/*   Updated: 2024/03/23 12:58:05 by ksuh             ###   ########.fr       */
+/*   Created: 2024/02/27 16:01:45 by ksuh              #+#    #+#             */
+/*   Updated: 2024/02/27 17:46:07 by ksuh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "libft.h"
 
-char	*get_next_line(int fd)
+t_list	*ft_lstnew(void *content)
 {
-	static char	backup[BUFFER_SIZE];
-	char		*buffer;
-	int			is_end;
+	t_list	*lst;
 
-	is_end = 0;
-	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0)
-		return (NULL);
-	if (backup[0] == '\0' && read(fd, backup, BUFFER_SIZE) <= 0)
-		return (NULL);
-	buffer = NULL;
-	while (!is_end)
-		buffer = read_buffer(fd, backup, buffer, &is_end);
-	return (buffer);
+	lst = (t_list *)malloc(sizeof(t_list));
+	if (!lst)
+		return (0);
+	lst->content = content;
+	lst->next = 0;
+	return (lst);
 }
