@@ -236,34 +236,53 @@ void	init(t_list **lst1, t_list **lst2, int n)
 		else
 			rotate(lst1, &cnt);
 	}
-	// pivot += pivot / 2;
-	// size = pivot;
-	// flag = 0;
-	// while (size --)
-	// {
-	// 	cur = *lst1;
-	// 	if (cur->order > pivot)
-	// 	{
-	// 		if (!flag)
-	// 			push(lst1, lst2, &cnt);
-	// 		else
-	// 			rotate(lst1, &cnt);
-	// 	}
-	// 	else if (cur->order == pivot)
-	// 	{
-	// 		rotate(lst1, &cnt);
-	// 		flag = 1;
-	// 	}
-	// 	else{
-	// 		if (!flag)
-	// 			rotate(lst1, &cnt);
-	// 		else
-	// 		{
-	// 			push(lst1, lst2, &cnt);
-	// 			rotate(lst2, &cnt);
-	// 		}
-	// 	}
-	// }
+	size = n - pivot;
+	pivot += pivot / 2;
+	flag = 0;
+	print_list(*lst1);
+	print_list(*lst2);
+	while (size--)
+	{
+		cur = *lst1;
+		if (cur->order > pivot)
+		{
+			if (!flag)
+				push(lst1, lst2, &cnt);
+			else
+				rotate(lst1, &cnt);
+		}
+		else if (cur->order == pivot)
+		{
+			rotate(lst1, &cnt);	
+			flag = 1;
+		}
+		else
+		{
+			if (!flag)
+				rotate(lst1, &cnt);
+			else
+			{
+				push(lst1, lst2, &cnt);
+				rotate(lst2, &cnt);
+			}
+		}
+	}
+	while ((*lst2)->order > pivot)
+	{
+		push(lst2, lst1, &cnt);
+		rotate(lst1, &cnt);
+	}
+	cur = ft_lstlast(*lst2);
+	while (cur->order < pivot && cur->order > n / 2)
+	{
+		cur = cur->prev;
+		reverse_rotate(lst2, &cnt);
+		push(lst2, lst1, &cnt);
+	}
+	printf("pivot: %d\n", pivot);
+	print_list(*lst1);
+	print_list(*lst2);
+	// printf("")
 	printf("count: %d\n", cnt);
 }
 
