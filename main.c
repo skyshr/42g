@@ -65,7 +65,7 @@ void	print_list(t_list *lst)
 		tmp = tmp->next;
 	}
 	tmp = lst;
-	printf("------------ORDER------------\n");
+	printf("\n\n------------ORDER------------\n");
 	while (tmp)
 	{
 		printf("%d ", tmp->order);
@@ -164,9 +164,54 @@ void	reverse_rotate(t_list **lst, int *cnt)
 	(*cnt)++;
 }
 
-int	pivot_push()
+int	pivot_push(t_list **lst1, t_list **lst2, int n, int pivot)
 {
+	t_list	*cur;
+	int		cnt;
+	int		dist;
+	int		size;
+	int		loop;
 	
+	cnt = 0;
+	if (n < pivot)
+	{
+		push(lst1, lst2, &cnt);
+		rotate(lst2, &cnt);
+	}
+	else if (n > pivot)
+		push(lst1, lst2, &cnt);
+	else
+	{
+		printf("pivot: %d\n", pivot);
+		size = ft_lstsize(*lst2);
+		dist = 0;
+		cur = *lst2;
+		while (cur && cur->order>pivot)
+		{
+			dist++;
+			cur = cur->next;
+		}
+		loop = size - dist + 1;
+		if (dist <= loop)
+		{
+			loop = dist;
+			while (loop--)
+				rotate(lst2, &cnt);
+			push(lst1, lst2, &cnt);
+			while (dist--)
+				reverse_rotate(lst2, &cnt);
+		}
+		else 
+		{
+			dist = loop;
+			while (loop--)
+				reverse_rotate(lst2, &cnt);
+			push(lst1, lst2, &cnt);
+			while (dist--)
+				rotate(lst2, &cnt);
+		}
+	}
+	return (cnt);
 }
 
 void	init(t_list **lst1, t_list **lst2, int n)
@@ -178,7 +223,7 @@ void	init(t_list **lst1, t_list **lst2, int n)
 	int		flag;
 
 	pivot = n / 2;
-	size = n - pivot;
+	size = pivot;
 	cnt = 0;
 	while (size)
 	{
@@ -191,34 +236,34 @@ void	init(t_list **lst1, t_list **lst2, int n)
 		else
 			rotate(lst1, &cnt);
 	}
-	pivot += pivot / 2;
-	size = pivot;
-	flag = 0;
-	while (size --)
-	{
-		cur = *lst1;
-		if (cur->order > pivot)
-		{
-			if (!flag)
-				push(lst1, lst2, &cnt);
-			else
-				rotate(lst1, &cnt);
-		}
-		else if (cur->order == pivot)
-		{
-			rotate(lst1, &cnt);
-			flag = 1;
-		}
-		else{
-			if (!flag)
-				rotate(lst1, &cnt);
-			else
-			{
-				push(lst1, lst2, &cnt);
-				rotate(lst2, &cnt);
-			}
-		}
-	}
+	// pivot += pivot / 2;
+	// size = pivot;
+	// flag = 0;
+	// while (size --)
+	// {
+	// 	cur = *lst1;
+	// 	if (cur->order > pivot)
+	// 	{
+	// 		if (!flag)
+	// 			push(lst1, lst2, &cnt);
+	// 		else
+	// 			rotate(lst1, &cnt);
+	// 	}
+	// 	else if (cur->order == pivot)
+	// 	{
+	// 		rotate(lst1, &cnt);
+	// 		flag = 1;
+	// 	}
+	// 	else{
+	// 		if (!flag)
+	// 			rotate(lst1, &cnt);
+	// 		else
+	// 		{
+	// 			push(lst1, lst2, &cnt);
+	// 			rotate(lst2, &cnt);
+	// 		}
+	// 	}
+	// }
 	printf("count: %d\n", cnt);
 }
 
@@ -292,8 +337,8 @@ int	main(int argc, char **argv)
 
 	lst = NULL;
 	parse_data(&lst, argc, argv);
-	// print_list(lst);
 	order_data(&lst);
+	print_list(lst);
 	push_swap(&lst);
 	// ft_lstclear(&lst);
 	return (0);
