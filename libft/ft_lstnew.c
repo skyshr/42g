@@ -22,5 +22,6 @@ t_list	*ft_lstnew(int n)
 	lst->prev = NULL;
 	lst->next = NULL;
 	lst->n = n;
+	lst->order = 0;
 	return (lst);
 }

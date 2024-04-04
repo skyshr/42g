@@ -21,12 +21,13 @@ int	get_num(char **argv, int *num)
 
 	n = 0;
 	sign = 1;
-	if (**argv == '-')
+	if (**argv == '-' || **argv == '+')
 	{
-		sign = -1;
+		if (**argv == '-')
+			sign = -1;
 		(*argv)++;
 	}
-	if (!ft_isdigit(**argv) || **argv == '0')
+	if (!ft_isdigit(**argv))
 	{
 		printf("Only digits are allowed!, %d\n", **argv);
 		return (0);
@@ -57,9 +58,17 @@ void	print_list(t_list *lst)
 
 	tmp = lst;
 	printf("\n\n---------list----------\n\n");
+	printf("------------VALUE------------\n");
 	while (tmp)
 	{
 		printf("%d ", tmp->n);
+		tmp = tmp->next;
+	}
+	tmp = lst;
+	printf("------------ORDER------------\n");
+	while (tmp)
+	{
+		printf("%d ", tmp->order);
 		tmp = tmp->next;
 	}
 	printf("\n\n----------------------\n\n");
@@ -71,13 +80,8 @@ void	parse_single_arg(t_list **lst, char *argv)
 
 	while (*argv)
 	{
-		if (get_num(&argv, &num) && ft_lstiter(*lst, num, isduplicate) \
-			&& ft_lstadd_back(lst, ft_lstnew(num)))
-		{
-			printf("%d added to list succesfully!\n", num);
-			// print_list(*lst);
-		}
-		else 
+		if (!get_num(&argv, &num) || ft_lstiter(*lst, num, isduplicate) \
+			|| !ft_lstadd_back(lst, ft_lstnew(num)))
 		{
 			printf("Error detected!\n");
 			ft_lstclear(lst);
@@ -100,7 +104,7 @@ void	parse_data(t_list **lst, int argc, char **argv)
 	// }
 }
 
-void	push(t_list **lst1, t_list **lst2)
+void	push(t_list **lst1, t_list **lst2, int *cnt)
 {
 	t_list	*tmp;
 
@@ -112,9 +116,10 @@ void	push(t_list **lst1, t_list **lst2)
 	*lst1 = tmp->next;
 	tmp->next = NULL;
 	ft_lstadd_front(lst2, tmp);
+	(*cnt)++;
 }
 
-void	swap(t_list **lst)
+void	swap(t_list **lst, int *cnt)
 {
 	t_list	*tmp;
 
@@ -127,9 +132,10 @@ void	swap(t_list **lst)
 	tmp->prev = NULL;
 	tmp->next = NULL;
 	ft_lstadd_front(lst, tmp);
+	(*cnt)++;
 }
 
-void	rotate(t_list **lst)
+void	rotate(t_list **lst, int *cnt)
 {
 	t_list	*tmp;
 
@@ -141,9 +147,10 @@ void	rotate(t_list **lst)
 	*lst = tmp->next;
 	tmp->next = NULL;
 	ft_lstadd_back(lst, tmp);
+	(*cnt)++;
 }
 
-void	reverse_rotate(t_list **lst)
+void	reverse_rotate(t_list **lst, int *cnt)
 {
 	t_list	*tmp;
 
@@ -154,16 +161,130 @@ void	reverse_rotate(t_list **lst)
 		tmp->prev->next = NULL;
 	tmp->prev = NULL;
 	ft_lstadd_front(lst, tmp);
+	(*cnt)++;
+}
+
+int	pivot_push()
+{
+	
+}
+
+void	init(t_list **lst1, t_list **lst2, int n)
+{
+	t_list	*cur;
+	int		pivot;
+	int		size;
+	int		cnt;
+	int		flag;
+
+	pivot = n / 2;
+	size = n - pivot;
+	cnt = 0;
+	while (size)
+	{
+		cur = *lst1;
+		if (cur->order <= pivot)
+		{
+			cnt += pivot_push(lst1, lst2, cur->order, pivot / 2);
+			size--;
+		}
+		else
+			rotate(lst1, &cnt);
+	}
+	pivot += pivot / 2;
+	size = pivot;
+	flag = 0;
+	while (size --)
+	{
+		cur = *lst1;
+		if (cur->order > pivot)
+		{
+			if (!flag)
+				push(lst1, lst2, &cnt);
+			else
+				rotate(lst1, &cnt);
+		}
+		else if (cur->order == pivot)
+		{
+			rotate(lst1, &cnt);
+			flag = 1;
+		}
+		else{
+			if (!flag)
+				rotate(lst1, &cnt);
+			else
+			{
+				push(lst1, lst2, &cnt);
+				rotate(lst2, &cnt);
+			}
+		}
+	}
+	printf("count: %d\n", cnt);
 }
 
 void	push_swap(t_list **lst1)
 {
 	t_list	*lst2;
+	int		n;
+	int		cnt;
 
 	lst2 = NULL;
-	
+	if (!(*lst1))
+		return ;
+	n = ft_lstsize(*lst1);
+	init(lst1, &lst2, n);
+	printf("\nLST1\n");
+	print_list(*lst1);
+	printf("\nLST2\n");
+	print_list(lst2);
+	ft_lstclear(lst1);
+	ft_lstclear(&lst2);
 }
 
+int	is_ordered(t_list *lst)
+{
+	t_list	*cur;
+	int		i;
+
+	cur = lst;
+	i = -2147483648;
+	while (cur)
+	{
+		if (cur->n < i)
+		{
+			printf("List is not ordered!\n");
+			return (0);
+		}
+		i = cur->n;
+		cur = cur->next;
+	}
+	printf("List is ordered!\n");
+	return (1);
+}
+
+int	is_high(int m, int n)
+{
+	return (m > n);
+}
+
+void order_data(t_list **lst)
+{
+	t_list	*cur;
+
+	if (!(*lst))
+		return ;
+	if (is_ordered(*lst))
+	{
+		ft_lstclear(lst);
+		return ;
+	}
+	cur = *lst;
+	while (cur)
+	{
+		cur->order = ft_lstiter(*lst, cur->n, is_high) + 1;
+		cur = cur->next;
+	}
+}
 
 int	main(int argc, char **argv)
 {
@@ -172,7 +293,8 @@ int	main(int argc, char **argv)
 	lst = NULL;
 	parse_data(&lst, argc, argv);
 	// print_list(lst);
+	order_data(&lst);
 	push_swap(&lst);
-	ft_lstclear(&lst);
+	// ft_lstclear(&lst);
 	return (0);
 }

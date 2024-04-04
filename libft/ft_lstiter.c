@@ -15,15 +15,16 @@
 int	ft_lstiter(t_list *lst, int n, int (*f)(int, int))
 {
 	t_list	*tmp;
+	int		res;
 
 	tmp = lst;
+	res = 0;
 	if (!f || !tmp)
-		return (1);
+		return (res);
 	while (tmp)
 	{
-		if (f(tmp->n, n))
-			return (0);
+		res += f(tmp->n, n);
 		tmp = tmp->next;
 	}
-	return (1);
+	return (res);
 }

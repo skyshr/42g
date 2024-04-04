@@ -20,6 +20,7 @@ typedef struct s_list
 	struct s_list	*prev;
 	struct s_list	*next;
 	int				n;
+	int				order;
 }	t_list;
 
 int		ft_isalpha(int c);
