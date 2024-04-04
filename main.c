@@ -43,7 +43,7 @@ int	get_num(char **argv, int *num)
 		(*argv)++;
 	}
 	*num = (int)(sign * n);
-	printf("get_num success!\n");
+	// printf("get_num success!\n");
 	return ((**argv == ' ' && *(*argv + 1)) || !**argv);
 }
 
@@ -218,6 +218,13 @@ int	divide_conquer(t_list **lst1, t_list **lst2, int left, int right)
 	{
 		if ((*lst1)->order > pivot && (*lst1)->order <= right)
 			push(lst1, lst2, &cnt);
+		else if ((*lst1)->next && (*lst1)->next->order < (*lst1)->order && \
+			(*lst1)->next->order <= pivot && (*lst1)->next->order >= left && \
+			(*lst1)->order <= pivot && (*lst1)->order >= left)
+		{
+			swap(lst1, &cnt);
+			rotate(lst1, &cnt);
+		}
 		else
 			rotate(lst1, &cnt);
 		s--;
@@ -231,6 +238,13 @@ int	divide_conquer(t_list **lst1, t_list **lst2, int left, int right)
 		{
 			push(lst1, lst2, &cnt);
 			rotate(lst2, &cnt);
+		}
+		else if ((*lst1)->next && (*lst1)->next->order < (*lst1)->order && \
+			(*lst1)->next->order <= pivot && (*lst1)->next->order >= left && \
+			(*lst1)->order <= pivot && (*lst1)->order >= left)
+		{
+			swap(lst1, &cnt);
+			rotate(lst1, &cnt);
 		}
 		else
 			rotate(lst1, &cnt);
@@ -311,6 +325,13 @@ int	divide_conquer1(t_list **lst1, t_list **lst2, int left, int right)
 			push(lst1, lst2, &cnt);
 			rotate(lst2, &cnt);
 		}
+		else if ((*lst1)->next && (*lst1)->next->order > (*lst1)->order && \
+			(*lst1)->next->order >= pivot && (*lst1)->next->order <= right && \
+			(*lst1)->order >= pivot && (*lst1)->order <= right)
+		{
+			swap(lst1, &cnt);
+			rotate(lst1, &cnt);
+		}
 		else
 			rotate(lst1, &cnt);
 		s--;
@@ -320,6 +341,13 @@ int	divide_conquer1(t_list **lst1, t_list **lst2, int left, int right)
 	{
 		if ((*lst1)->order > pivot && (*lst1)->order <= right)
 			push(lst1, lst2, &cnt);
+		else if ((*lst1)->next && (*lst1)->next->order > (*lst1)->order && \
+				(*lst1)->next->order >= pivot && (*lst1)->next->order <= right && \
+				(*lst1)->order >= pivot && (*lst1)->order <= right)
+		{
+			swap(lst1, &cnt);
+			rotate(lst1, &cnt);
+		}
 		else
 			rotate(lst1, &cnt);
 	}
@@ -327,8 +355,8 @@ int	divide_conquer1(t_list **lst1, t_list **lst2, int left, int right)
 	while ((*lst1)->order != pivot)
 		reverse_rotate(lst1, &cnt);
 	// printf("13\n");
-	print_list(*lst1);
-	print_list(*lst2);
+	// print_list(*lst1);
+	// print_list(*lst2);
 	rotate(lst1, &cnt);
 	cur = ft_lstlast(*lst2);
 	s = right - pivot - 1;
@@ -390,34 +418,6 @@ int	adjust_merge(t_list **lst1, t_list **lst2, int n)
 	return (cnt);
 }
 
-void	push_swap(t_list **lst1)
-{
-	t_list	*lst2;
-	int		n;
-	int		cnt;
-	int		size;
-
-	lst2 = NULL;
-	if (!(*lst1))
-		return ;
-	n = ft_lstsize(*lst1);
-	cnt = init(lst1, &lst2, n);
-	size = n / 4;
-	// if (!is_ordered(lst2, 1))
-	// {
-	cnt += divide_conquer(lst1, &lst2, n / 2 + 1, n);
-	cnt += divide_conquer1(&lst2, lst1, 1, n / 2);
-	printf("after conquer: \n");
-	print_list(*lst1);
-	print_list(lst2);
-	cnt += adjust_merge(lst1, &lst2, n / 2);
-	print_list(*lst1);
-	print_list(lst2);
-	printf("count: %d\n", cnt);
-	ft_lstclear(lst1);
-	ft_lstclear(&lst2);
-}
-
 int	is_ordered(t_list *lst,	int	flag)
 {
 	t_list	*cur;
@@ -431,15 +431,48 @@ int	is_ordered(t_list *lst,	int	flag)
 	{
 		if ((!flag && cur->n < i) || (flag && cur->n > i))
 		{
-			printf("List is not ordered!\n");
+			// printf("List is not ordered!\n");
 			return (0);
 		}
 		i = cur->n;
 		cur = cur->next;
 	}
-	printf("List is ordered!\n");
+	// printf("List is ordered!\n");
 	return (1);
 }
+
+void	push_swap(t_list **lst1)
+{
+	t_list	*lst2;
+	int		n;
+	int		cnt;
+	int		size;
+
+	lst2 = NULL;
+	if (!(*lst1))
+		return ;
+	n = ft_lstsize(*lst1);
+	cnt = init(lst1, &lst2, n);
+	size = n / 4;
+	printf("init count: %d\n", cnt);
+	if (!is_ordered(*lst1, 1))
+	{
+		cnt += divide_conquer(lst1, &lst2, n / 2 + 1, n);
+		printf("after conquer(lst1) count: %d\n", cnt);
+	}
+	if (!is_ordered(lst2, 0))
+		cnt += divide_conquer1(&lst2, lst1, 1, n / 2);
+	printf("after conquer(lst2) count: %d\n", cnt);
+	// print_list(*lst1);
+	// print_list(lst2);
+	cnt += adjust_merge(lst1, &lst2, n / 2);
+	// print_list(*lst1);
+	// print_list(lst2);
+	printf("count: %d\n", cnt);
+	ft_lstclear(lst1);
+	ft_lstclear(&lst2);
+}
+
 
 int	is_high(int m, int n)
 {
