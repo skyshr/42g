@@ -140,7 +140,7 @@ void	rotate(t_list **lst, int *cnt)
 	t_list	*tmp;
 
 	tmp = *lst;
-	if (!tmp)
+	if (!tmp || !(*lst)->next)
 		return ;
 	if (tmp->next)
 		tmp->next->prev = NULL;
@@ -155,63 +155,13 @@ void	reverse_rotate(t_list **lst, int *cnt)
 	t_list	*tmp;
 
 	tmp = ft_lstlast(*lst);
-	if (!tmp)
+	if (!tmp || !(*lst)->next)
 		return ;
 	if (tmp->prev)
 		tmp->prev->next = NULL;
 	tmp->prev = NULL;
 	ft_lstadd_front(lst, tmp);
 	(*cnt)++;
-}
-
-int	pivot_push(t_list **lst1, t_list **lst2, int n, int pivot)
-{
-	t_list	*cur;
-	int		cnt;
-	int		dist;
-	int		size;
-	int		loop;
-	
-	cnt = 0;
-	if (n < pivot)
-	{
-		push(lst1, lst2, &cnt);
-		rotate(lst2, &cnt);
-	}
-	else if (n > pivot)
-		push(lst1, lst2, &cnt);
-	else
-	{
-		printf("pivot: %d\n", pivot);
-		size = ft_lstsize(*lst2);
-		dist = 0;
-		cur = *lst2;
-		while (cur && cur->order>pivot)
-		{
-			dist++;
-			cur = cur->next;
-		}
-		loop = size - dist;
-		if (dist <= loop)
-		{
-			loop = dist;
-			while (loop--)
-				rotate(lst2, &cnt);
-			push(lst1, lst2, &cnt);
-			while (dist--)
-				reverse_rotate(lst2, &cnt);
-		}
-		else 
-		{
-			dist = loop + 1;
-			while (loop--)
-				reverse_rotate(lst2, &cnt);
-			push(lst1, lst2, &cnt);
-			while (dist--)
-				rotate(lst2, &cnt);
-		}
-	}
-	return (cnt);
 }
 
 int	init(t_list **lst1, t_list **lst2, int n)
@@ -231,60 +181,11 @@ int	init(t_list **lst1, t_list **lst2, int n)
 		if (cur->order <= pivot)
 		{
 			push(lst1, lst2, &cnt);
-			// cnt += pivot_push(lst1, lst2, cur->order, pivot / 2);
 			size--;
 		}
 		else
 			rotate(lst1, &cnt);
 	}
-	// size = n - pivot;
-	// pivot += pivot / 2;
-	// flag = 0;
-	// print_list(*lst1);
-	// print_list(*lst2);
-	// while (size--)
-	// {
-	// 	cur = *lst1;
-	// 	if (cur->order > pivot)
-	// 	{
-	// 		if (!flag)
-	// 			push(lst1, lst2, &cnt);
-	// 		else
-	// 			rotate(lst1, &cnt);
-	// 	}
-	// 	else if (cur->order == pivot)
-	// 	{
-	// 		rotate(lst1, &cnt);	
-	// 		flag = 1;
-	// 	}
-	// 	else
-	// 	{
-	// 		if (!flag)
-	// 			rotate(lst1, &cnt);
-	// 		else
-	// 		{
-	// 			push(lst1, lst2, &cnt);
-	// 			rotate(lst2, &cnt);
-	// 		}
-	// 	}
-	// }
-	// while ((*lst2)->order > pivot)
-	// {
-	// 	push(lst2, lst1, &cnt);
-	// 	rotate(lst1, &cnt);
-	// }
-	// cur = ft_lstlast(*lst2);
-	// while (cur->order < pivot && cur->order > n / 2)
-	// {
-	// 	cur = cur->prev;
-	// 	reverse_rotate(lst2, &cnt);
-	// 	push(lst2, lst1, &cnt);
-	// }
-	// printf("pivot: %d\n", pivot);
-	// print_list(*lst1);
-	// print_list(*lst2);
-	// // printf("")
-	// printf("count: %d\n", cnt);
 	return (cnt);
 }
 
@@ -304,15 +205,13 @@ int	divide_conquer(t_list **lst1, t_list **lst2, int left, int right)
 {
 	t_list	*cur;
 	int		pivot;
-	int		flag;
 	int		cnt;
 	int		s;
 
 	pivot = (left + right) / 2;
 	if (left >= right)
 		return (0);
-	printf("left, right, pivot: %d, %d, %d\n", left, right, pivot);
-	flag = 0;
+	// printf("left, right, pivot: %d, %d, %d\n", left, right, pivot);
 	cnt = 0;
 	s = right - left + 1;
 	while ((*lst1)->order != pivot)
@@ -323,7 +222,7 @@ int	divide_conquer(t_list **lst1, t_list **lst2, int left, int right)
 			rotate(lst1, &cnt);
 		s--;
 	}
-	printf("1\n");
+	// printf("1\n");
 	// print_list(*lst1);
 	// print_list(*lst2);
 	while (s--)
@@ -336,54 +235,59 @@ int	divide_conquer(t_list **lst1, t_list **lst2, int left, int right)
 		else
 			rotate(lst1, &cnt);
 	}
-	printf("2\n");
+	// printf("2\n");
 	// print_list(*lst1);
 	// return (0);
 	while ((*lst1)->order != pivot)
 		reverse_rotate(lst1, &cnt);
-	printf("3\n");
+	// printf("3\n");
 	// print_list(*lst1);
 	rotate(lst1, &cnt);	
 	while ((*lst2)->order <= right && (*lst2)->order > pivot)
 		push(lst2, lst1, &cnt);
-	printf("4\n");
+	// printf("4\n");
 	// print_list(*lst1);
 	// print_list(*lst2);
 	// return (0);
 	while ((*lst1)->order != pivot)
 		rotate(lst1, &cnt);
-	printf("5\n");
+	// printf("5\n");
 	// print_list(*lst1);
 	// print_list(*lst2);
 	// return (0);
 	cur = ft_lstlast(*lst2);
 	s = pivot - left - 1;
-	while (cur->order >= left)
+	while (cur->order >= left && cur->order <= pivot)
 	{
 		cur = cur->prev;
 		reverse_rotate(lst2, &cnt);
 		push(lst2, lst1, &cnt);
 		s--;
 	}
-	printf("6\n");
-	print_list(*lst1);
-	print_list(*lst2);
+	// printf("6\n");
+	// print_list(*lst1);
+	// print_list(*lst2);
 	// return (0);
-	printf("s: %d\n", s);
+	// printf("s: %d\n", s);
 	cur = ft_lstlast(*lst1);
 	while (s-- >= 0)
 	{
 		cur = cur->prev;
 		reverse_rotate(lst1, &cnt);
 	}
-	printf("7\n");
-	print_list(*lst1);
-	print_list(*lst2);
+	// printf("7\n");
+	// print_list(*lst1);
+	// print_list(*lst2);
 	cnt += divide_conquer(lst1, lst2, left, pivot - 1);
+	// printf("8\n");
 	while ((*lst1)->order != pivot)
 		rotate(lst1, &cnt);
+	// printf("9\n");
 	rotate(lst1, &cnt);
+	// print_list(*lst1);
+	// print_list(*lst2);
 	cnt += divide_conquer(lst1, lst2, pivot + 1, right);
+	// printf("10\n");
 	return (cnt);
 }
 
@@ -391,15 +295,13 @@ int	divide_conquer1(t_list **lst1, t_list **lst2, int left, int right)
 {
 	t_list	*cur;
 	int		pivot;
-	int		flag;
 	int		cnt;
 	int		s;
 
 	pivot = (left + right) / 2;
 	if (left >= right)
 		return (0);
-	printf("left, right, pivot: %d, %d, %d\n", left, right, pivot);
-	flag = 0;
+	// printf("div 1, left, right, pivot: %d, %d, %d\n", left, right, pivot);
 	cnt = 0;
 	s = right - left + 1;
 	while ((*lst1)->order != pivot)
@@ -413,9 +315,7 @@ int	divide_conquer1(t_list **lst1, t_list **lst2, int left, int right)
 			rotate(lst1, &cnt);
 		s--;
 	}
-	printf("1\n");
-	// print_list(*lst1);
-	// print_list(*lst2);
+	// printf("11\n");
 	while (s--)
 	{
 		if ((*lst1)->order > pivot && (*lst1)->order <= right)
@@ -423,65 +323,70 @@ int	divide_conquer1(t_list **lst1, t_list **lst2, int left, int right)
 		else
 			rotate(lst1, &cnt);
 	}
-	printf("2\n");
-	// print_list(*lst1);
-	// return (0);
+	// printf("12\n");
 	while ((*lst1)->order != pivot)
 		reverse_rotate(lst1, &cnt);
-	printf("3\n");
+	// printf("13\n");
+	print_list(*lst1);
+	print_list(*lst2);
 	rotate(lst1, &cnt);
-	while (cur->order >= left)
-	{
-		cur = cur->prev;
-		reverse_rotate(lst2, &cnt);
-		push(lst2, lst1, &cnt);
-	}
-	reverse_rotate(lst1, &cnt);
-	s = right - pivot - 1;
-	// print_list(*lst1);
-	while ((*lst2)->order <= right && (*lst2)->order > pivot)
-	{
-		push(lst2, lst1, &cnt);
-		s--;
-	}
-	printf("4\n");
-	// print_list(*lst1);
-	// print_list(*lst2);
-	// return (0);
-	while ((*lst1)->order != pivot)
-		rotate(lst1, &cnt);
-	printf("5\n");
-	// print_list(*lst1);
-	// print_list(*lst2);
-	// return (0);
 	cur = ft_lstlast(*lst2);
-	rotate(lst1, &cnt);
-	while (cur->order >= left)
+	s = right - pivot - 1;
+	while (cur->order >= left && cur->order <= right)
 	{
 		cur = cur->prev;
 		reverse_rotate(lst2, &cnt);
 		push(lst2, lst1, &cnt);
+	}
+	// printf("14\n");
+	// print_list(*lst1);
+	// print_list(*lst2);
+	reverse_rotate(lst1, &cnt);
+	while ((*lst2)->order <= right && (*lst2)->order >= pivot)
+	{
+		push(lst2, lst1, &cnt);
 		s--;
 	}
-	printf("6\n");
-	print_list(*lst1);
-	print_list(*lst2);
-	// return (0);
-	printf("s: %d\n", s);
-	cur = ft_lstlast(*lst1);
+	// printf("15\n");
+	// print_list(*lst1);
+	// print_list(*lst2);
 	while (s-- >= 0)
-	{
-		cur = cur->prev;
 		reverse_rotate(lst1, &cnt);
-	}
-	printf("7\n");
-	print_list(*lst1);
-	print_list(*lst2);
-	cnt += divide_conquer(lst1, lst2, left, pivot - 1);
+	// print_list(*lst1);
+	// print_list(*lst2);
+	// return (0);
+	// while ((*lst1)->order != pivot)
+	// 	rotate(lst1, &cnt);
+	// cur = ft_lstlast(*lst2);
+	// rotate(lst1, &cnt);
+	// cur = ft_lstlast(*lst1);
+	// printf("16\n");
+	// print_list(*lst1);
+	// print_list(*lst2);
+	cnt += divide_conquer1(lst1, lst2, pivot + 1, right);
+	// printf("17\n");
+	// print_list(*lst1);
+	// print_list(*lst2);
 	while ((*lst1)->order != pivot)
 		rotate(lst1, &cnt);
 	rotate(lst1, &cnt);
-	cnt += divide_conquer(lst1, lst2, pivot + 1, right);
+	// printf("18\n");
+	cnt += divide_conquer1(lst1, lst2, left, pivot - 1);
+	// printf("19\n");
+	return (cnt);
+}
+
+int	adjust_merge(t_list **lst1, t_list **lst2, int n)
+{
+	int	cnt;
+
+	cnt = 0;
+	while ((*lst1)->order != n + 1)
+		rotate(lst1, &cnt);
+	while ((*lst2)->order != n)
+		rotate(lst2, &cnt);
+	while (*lst2)
+		push(lst2, lst1, &cnt);
 	return (cnt);
 }
 
@@ -498,37 +403,17 @@ void	push_swap(t_list **lst1)
 	n = ft_lstsize(*lst1);
 	cnt = init(lst1, &lst2, n);
 	size = n / 4;
-	// printf("before dc lst2: \n");
-	// print_list(lst2);
 	// if (!is_ordered(lst2, 1))
 	// {
-	printf("before divide conquer lst1: \n");
-	print_list(*lst1);
 	cnt += divide_conquer(lst1, &lst2, n / 2 + 1, n);
-	cnt += divide_conquer(&lst2, lst1, 1, n / 2);
-	printf("after divide conquer lst1: \n");
+	cnt += divide_conquer1(&lst2, lst1, 1, n / 2);
+	printf("after conquer: \n");
 	print_list(*lst1);
+	print_list(lst2);
+	cnt += adjust_merge(lst1, &lst2, n / 2);
+	print_list(*lst1);
+	print_list(lst2);
 	printf("count: %d\n", cnt);
-	// 	divide_conquer(lst2, lst1, n / 4 + size / 2, size);
-	// }
-	// printf("after dc lst2: \n");
-	// print_list(lst2);
-	// if (!is_ordered(lst1, 0))
-	// {
-	// 	divide_conquer(lst1, lst2, 3 * n / 4 - size / 2, size);
-	// 	divide_conquer(lst1, lst2, 3 * n / 4 + size / 2, size);
-	// }
-
-
-	// while (n / sector)
-	// {
-	// 	divide_conquer(lst1, lst2, n, sector);
-	// 	sector *= 2;
-	// }
-	// printf("\nLST1\n");
-	// print_list(*lst1);
-	// printf("\nLST2\n");
-	// print_list(lst2);
 	ft_lstclear(lst1);
 	ft_lstclear(&lst2);
 }
