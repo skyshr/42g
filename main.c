@@ -57,13 +57,13 @@ void	print_list(t_list *lst)
 	t_list	*tmp;
 
 	tmp = lst;
-	printf("\n\n---------list----------\n\n");
-	printf("------------VALUE------------\n");
-	while (tmp)
-	{
-		printf("%d ", tmp->n);
-		tmp = tmp->next;
-	}
+	// printf("\n\n---------list----------\n\n");
+	// printf("------------VALUE------------\n");
+	// while (tmp)
+	// {
+	// 	printf("%d ", tmp->n);
+	// 	tmp = tmp->next;
+	// }
 	tmp = lst;
 	printf("\n\n------------ORDER------------\n");
 	while (tmp)
@@ -191,7 +191,7 @@ int	pivot_push(t_list **lst1, t_list **lst2, int n, int pivot)
 			dist++;
 			cur = cur->next;
 		}
-		loop = size - dist + 1;
+		loop = size - dist;
 		if (dist <= loop)
 		{
 			loop = dist;
@@ -203,7 +203,7 @@ int	pivot_push(t_list **lst1, t_list **lst2, int n, int pivot)
 		}
 		else 
 		{
-			dist = loop;
+			dist = loop + 1;
 			while (loop--)
 				reverse_rotate(lst2, &cnt);
 			push(lst1, lst2, &cnt);
@@ -214,7 +214,7 @@ int	pivot_push(t_list **lst1, t_list **lst2, int n, int pivot)
 	return (cnt);
 }
 
-void	init(t_list **lst1, t_list **lst2, int n)
+int	init(t_list **lst1, t_list **lst2, int n)
 {
 	t_list	*cur;
 	int		pivot;
@@ -239,8 +239,8 @@ void	init(t_list **lst1, t_list **lst2, int n)
 	size = n - pivot;
 	pivot += pivot / 2;
 	flag = 0;
-	// print_list(*lst1);
-	// print_list(*lst2);
+	print_list(*lst1);
+	print_list(*lst2);
 	while (size--)
 	{
 		cur = *lst1;
@@ -284,6 +284,7 @@ void	init(t_list **lst1, t_list **lst2, int n)
 	print_list(*lst2);
 	// printf("")
 	printf("count: %d\n", cnt);
+	return (cnt);
 }
 
 // 5 15
@@ -298,15 +299,17 @@ void	init(t_list **lst1, t_list **lst2, int n)
 // 2(3 - 1), 4(3 + 1), 6(7 - 1), 8(7 + 1), 12(13 - 1), 14(15 + 1), 16(17 - 1), 18(17 + 1)
 
 
-void	divide_conquer(t_list **lst1, t_list **lst2, int pivot, int size)
+int	divide_conquer(t_list **lst1, t_list **lst2, int pivot, int size)
 {
 	t_list	*cur;
 	int		flag;
 	int		cnt;
 	int		sz;
+	int		len;
 
 	if (size == 0)
-		return ;
+		return (0);
+	len = ft_lstsize(*lst2);
 	flag = 0;
 	cnt = 0;
 	sz = size;
@@ -335,41 +338,67 @@ void	divide_conquer(t_list **lst1, t_list **lst2, int pivot, int size)
 			}
 		}
 	}
-	while ((*lst2)->order > pivot)
+	print_list(*lst1);
+	print_list(*lst2);
+	cur = ft_lstlast(*lst1);
+	while (cur->order != pivot)
 	{
-		push(lst2, lst1, &cnt);
-		rotate(lst1, &cnt);
+		cur = cur->prev;
+		reverse_rotate(lst1, &cnt);
 	}
+	while ((*lst2)->order > pivot)
+		push(lst2, lst1, &cnt);
+	while ((*lst1)->order != pivot)
+		reverse_rotate(lst1, &cnt);
 	cur = ft_lstlast(*lst2);
-	while (cur->order < pivot && cur->order > n / 2)
+	while (cur->order < pivot && cur->order > len)
 	{
 		cur = cur->prev;
 		reverse_rotate(lst2, &cnt);
 		push(lst2, lst1, &cnt);
 	}
+	cur = ft_lstlast(*lst1);
+	while (cur->order < pivot)
+	{
+		cur = cur->prev;
+		reverse_rotate(lst1, &cnt);
+	}
+	printf("pivot: %d\n", pivot);
+	printf("divide conquer lst1: \n");
+	print_list(*lst1);
+	return	(cnt);
+	// divide_conquer(lst1, lst2, pivot - size / 2, size / 2);
+	// while ((*lst1)->order < pivot)
+	// 	rotate(lst1, &cnt);
+	// divide_conquer(lst1, lst2, pivot + size / 2, size / 2);
+	// while 
 }
 
 void	push_swap(t_list **lst1)
 {
 	t_list	*lst2;
 	int		n;
+	int		cnt;
 	int		size;
 
 	lst2 = NULL;
 	if (!(*lst1))
 		return ;
 	n = ft_lstsize(*lst1);
-	init(lst1, &lst2, n);
+	cnt = init(lst1, &lst2, n);
 	size = n / 4;
-	printf("before dc lst2: \n");
-	print_list(lst2);
-	if (!is_ordered(lst2, 1))
-	{
-		divide_conquer(lst2, lst1, n / 4 - size / 2, size);
-		divide_conquer(lst2, lst1, n / 4 + size / 2, size);
-	}
-	printf("after dc lst2: \n");
-	print_list(lst2);
+	// printf("before dc lst2: \n");
+	// print_list(lst2);
+	// if (!is_ordered(lst2, 1))
+	// {
+	printf("before divide conquer lst1: \n");
+	print_list(*lst1);
+	cnt += divide_conquer(lst1, &lst2, 3 * n / 4 - size / 2, size);
+	printf("count: %d\n", cnt);
+	// 	divide_conquer(lst2, lst1, n / 4 + size / 2, size);
+	// }
+	// printf("after dc lst2: \n");
+	// print_list(lst2);
 	// if (!is_ordered(lst1, 0))
 	// {
 	// 	divide_conquer(lst1, lst2, 3 * n / 4 - size / 2, size);
