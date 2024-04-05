@@ -227,6 +227,58 @@ void    b_to_a(t_list **lst1, t_list **lst2, int left, int right)
         return ;
     }
     if (size == 3)
+    {
+        if ((*lst1)->order > (*lst1)->next->order)
+        {
+            // 2 1 3
+            if ((*lst1)->next->next->order > (*lst1)->order)
+            {
+                push(lst1, lst2);
+                swap(lst1);
+                push(lst1, lst2);
+                swap(lst2);
+                push(lst1, lst2);
+            }
+            // 3 1 2
+            else if ((*lst1)->order > (*lst1)->next->next->order)
+            {
+                push(lst1, lst2);
+                swap(lst1);
+                push(lst1, lst2);
+                push(lst1, lst2);
+            }
+        }
+        else
+        {
+            // 2 3 1
+            if ((*lst1)->order > (*lst1)->next->next->order)
+            {
+                push(lst1, lst2);
+                swap(lst1);
+                push(lst2, lst1);
+                swap(lst1);
+            }
+            // 1 3 2
+            else if ((*lst1)->next->order > (*lst1)->next->next->order)
+            {
+                swap(lst1);
+                rotate(lst1);
+                swap(lst1);
+                reverse_rotate(lst1);
+            }
+            // 1 2 3
+            else
+            {
+                swap(lst1);
+                push(lst1, lst2);
+                swap(lst1);
+                push(lst1, lst2);
+                swap(lst2);
+                push(lst1, lst2);
+            }
+        }
+        return ;
+    }
     pivot = size / 3;
     if (size % 3 == 2)
         pivot++;
@@ -289,20 +341,19 @@ void    a_to_b(t_list **lst1, t_list **lst2, int left, int right)
             // 3 2 1
             if ((*lst1)->next->order > (*lst1)->next->next->order)
             {
+                swap(lst1);
                 rotate(lst1);
                 swap(lst1);
-                push(lst1, lst2);
-                push(lst1, lst2);
                 reverse_rotate(lst1);
-                push(lst2, lst1);
-                push(lst2, lst1);
+                swap(lst1);
             }
             // 2 1 3
             else if ((*lst1)->next->next->order > (*lst1)->order)
                 swap(lst1);
-            // 1 3 2
+            // 3 1 2
             else
             {
+                swap(lst1);
                 rotate(lst1);
                 swap(lst1);
                 reverse_rotate(lst1);
@@ -318,15 +369,15 @@ void    a_to_b(t_list **lst1, t_list **lst2, int left, int right)
                 push(lst2, lst1);
                 swap(lst1);
             }
-            // 3 1 2
-            else if ()
+            // 1 3 2
+            else if ((*lst1)->next->order > (*lst1)->next->next->order)
             {
-                swap(lst1);
                 rotate(lst1);
                 swap(lst1);
                 reverse_rotate(lst1);
             }
         }
+        return ;
     }
     pivot = size / 3;
     spivot = left + size / 3;
