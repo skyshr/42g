@@ -209,16 +209,16 @@ void    b_to_a(t_list **lst1, t_list **lst2, int left, int right)
     int size;
 
     size = right - left;
-    // printf("b left, right: %d, %d\n", left, right);
-    if (size == 1)
+    if (is_ordered(*lst1, 1, size))
     {
-        push(lst1, lst2);
+        while (size--)
+            push(lst1, lst2);
         return ;
     }
+    // printf("b left, right: %d, %d\n", left, right);
     if (size == 2)
     {
-        if (!is_ordered(*lst1, 1, 2))
-            swap(lst1);
+        swap(lst1);
         push(lst1, lst2);
         push(lst1, lst2);
         // printf("B---------------------\n");
@@ -226,6 +226,7 @@ void    b_to_a(t_list **lst1, t_list **lst2, int left, int right)
         // print_list(*lst2);
         return ;
     }
+    if (size == 3)
     pivot = size / 3;
     if (size % 3 == 2)
         pivot++;
@@ -280,6 +281,52 @@ void    a_to_b(t_list **lst1, t_list **lst2, int left, int right)
     {
         swap(lst1);
         return ;
+    }
+    if (size == 3)
+    {
+        if ((*lst1)->order > (*lst1)->next->order)
+        {
+            // 3 2 1
+            if ((*lst1)->next->order > (*lst1)->next->next->order)
+            {
+                rotate(lst1);
+                swap(lst1);
+                push(lst1, lst2);
+                push(lst1, lst2);
+                reverse_rotate(lst1);
+                push(lst2, lst1);
+                push(lst2, lst1);
+            }
+            // 2 1 3
+            else if ((*lst1)->next->next->order > (*lst1)->order)
+                swap(lst1);
+            // 1 3 2
+            else
+            {
+                rotate(lst1);
+                swap(lst1);
+                reverse_rotate(lst1);
+            }
+        }
+        else
+        {
+            // 2 3 1
+            if ((*lst1)->order > (*lst1)->next->next->order)
+            {
+                push(lst1, lst2);
+                swap(lst1);
+                push(lst2, lst1);
+                swap(lst1);
+            }
+            // 3 1 2
+            else if ()
+            {
+                swap(lst1);
+                rotate(lst1);
+                swap(lst1);
+                reverse_rotate(lst1);
+            }
+        }
     }
     pivot = size / 3;
     spivot = left + size / 3;
