@@ -470,6 +470,243 @@ void    a_four(t_list **lst1, t_list **lst2)
 	printf("\n----------------------------------------\n");
 }
 
+void	b_four_1234(t_list **lst1, t_list **lst2)
+{
+	//pa pa ss ra ra pa pa rra rra - 9
+	push(lst1, lst2);
+	rotate(lst2);
+	b_three_123(lst1, lst2);
+	reverse_rotate(lst2);
+}
+
+void	b_four_1243(t_list **lst1, t_list **lst2)
+{
+	// sb pa sb pa ss pa sa pa - 8
+	push(lst1, lst2);
+	rotate(lst2);
+	b_three_132(lst1, lst2);
+	reverse_rotate(lst2);
+}
+
+void	b_four_1324(t_list **lst1, t_list **lst2)
+{
+	// 8
+	push(lst1, lst2);
+	rotate(lst2);
+	b_three_213(lst1, lst2);
+	reverse_rotate(lst2);
+}
+
+void	b_four_1342(t_list **lst1, t_list **lst2)
+{
+	// 7
+	push(lst1, lst2);
+	rotate(lst2);
+	b_three_231(lst1, lst2);
+	reverse_rotate(lst2);
+}
+
+void	b_four_1423(t_list **lst1, t_list **lst2)
+{
+	// 7
+	push(lst1, lst2);
+	rotate(lst2);
+	b_three_312(lst1, lst2);
+	reverse_rotate(lst2);
+}
+
+void	b_four_1432(t_list **lst1, t_list **lst2)
+{
+	// 6
+	push(lst1, lst2);
+	rotate(lst2);
+	push(lst1, lst2);
+	push(lst1, lst2);
+	push(lst1, lst2);
+	reverse_rotate(lst2);
+}
+
+void	b_four_2134(t_list **lst1, t_list **lst2)
+{
+	// pa sb ra pa sb pa sa rra pa
+	// 9
+	rotate(lst1);
+	rotate(lst1);
+	push(lst1, lst2);
+	push(lst1, lst2);
+	swap(lst2);
+	reverse_rotate(lst1);
+	reverse_rotate(lst1);
+	push(lst1, lst2);
+	push(lst1, lst2);
+}
+
+void	b_four_2143(t_list **lst1, t_list **lst2)
+{
+	// 8
+	rotate(lst1);
+	rotate(lst1);
+	push(lst1, lst2);
+	push(lst1, lst2);
+	reverse_rotate(lst1);
+	reverse_rotate(lst1);
+	push(lst1, lst2);
+	push(lst1, lst2);
+}
+
+void	b_four_2314(t_list **lst1, t_list **lst2)
+{
+	// pa pa ss ra pa sa rra pa
+	// 8
+	push(lst1, lst2);
+	push(lst1, lst2);
+	swap_both(lst1, lst2);
+	rotate(lst1);
+	push(lst1, lst2);
+	swap(lst2);
+	reverse_rotate(lst1);
+	push(lst1, lst2);
+}
+
+void	b_four_2341(t_list **lst1, t_list **lst2)
+{
+	// sb pa sb pa sa pa pa - 7
+	swap(lst1);
+	push(lst1, lst2);
+	swap(lst1);
+	push(lst1, lst2);
+	swap(lst2);
+	push(lst1, lst2);
+	push(lst1, lst2);
+}
+
+void	b_four_2413(t_list **lst1, t_list **lst2)
+{
+	// pa pa ss pa sa pa - 6
+	push(lst1, lst2);
+	push(lst1, lst2);
+	swap_both(lst1, lst2);
+	push(lst1, lst2);
+	swap(lst2);
+	push(lst1, lst2);
+}
+
+void	b_four_2431(t_list **lst1, t_list **lst2)
+{
+	// 6
+	swap(lst1);
+	push(lst1, lst2);
+	swap(lst1);
+	push(lst1, lst2);
+	push(lst1, lst2);
+	push(lst1, lst2);
+}
+
+void	b_four_3124(t_list **lst1, t_list **lst2)
+{
+	// pa pa sb pa sa ra sa pa rra
+	// pa rb rb pa rrb rrb ss pa pa
+	// pa rb sb pa rrb ss pa pa - 8
+	push(lst1, lst2);
+	rotate(lst1);
+	swap(lst1);
+	push(lst1, lst2);
+	reverse_rotate(lst1);
+	swap_both(lst1, lst2);
+	push(lst1, lst2);
+	push(lst1, lst2);
+}
+
+void	b_four_3142(t_list **lst1, t_list **lst2)
+{
+	// 6
+	push(lst1, lst2);
+	swap(lst1);
+	push(lst1, lst2);
+	swap_both(lst1, lst2);
+	push(lst1, lst2);
+	push(lst1, lst2);
+}
+
+void	b_four_3214(t_list **lst1, t_list **lst2)
+{
+	// pa pa sb ra pa sa rra pa - 8
+	push(lst1, lst2);
+	push(lst1, lst2);
+	swap(lst1);
+	rotate(lst1);
+	push(lst1, lst2);
+	swap(lst2);
+	reverse_rotate(lst2);
+	push(lst1, lst2);
+}
+
+void	b_four_3241(t_list **lst1, t_list **lst2)
+{
+	// pa sb pa sa pa pa - 6
+	push(lst1, lst2);
+	swap(lst1);
+	push(lst1, lst2);
+	swap(lst2);
+	push(lst1, lst2);
+	push(lst1, lst2);
+}
+
+void	b_four_3412(t_list **lst1, t_list **lst2)
+{
+	// 5
+	push(lst1, lst2);
+	push(lst1, lst2);
+	swap_both(lst1, lst2);
+	push(lst1, lst2);
+	push(lst1, lst2);
+}
+
+void	b_four_3421(t_list **lst1, t_list **lst2)
+{
+	// 5
+	push(lst1, lst2);
+	push(lst1, lst2);
+	swap(lst1);
+	push(lst1, lst2);
+	push(lst1, lst2);
+}
+
+void	b_four_4123(t_list **lst1, t_list **lst2)
+{
+	// 7
+	push(lst1, lst2);
+	b_three_123(lst1, lst2);
+}
+
+void	b_four_4132(t_list **lst1, t_list **lst2)
+{
+	// 6
+	push(lst1, lst2);
+	b_three_132(lst1, lst2);
+}
+
+void	b_four_4213(t_list **lst1, t_list **lst2)
+{
+	// 6
+	push(lst1, lst2);
+	b_three_213(lst1, lst2);
+}
+
+void	b_four_4231(t_list **lst1, t_list **lst2)
+{
+	// 5
+	push(lst1, lst2);
+	b_three_231(lst1, lst2);
+}
+
+void	b_four_4312(t_list **lst1, t_list **lst2)
+{
+	// 5
+	push(lst1, lst2);
+	b_three_312(lst1, lst2);
+}
+
 // 3
 void    a_three_132(t_list **lst1, t_list **lst2)
 {
