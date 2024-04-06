@@ -10,11 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
-#include <stdio.h>
+#include "push_swap.h"
 
-static void    a_to_b(t_list **lst1, t_list **lst2, int left, int right);
-static void    b_to_a(t_list **lst1, t_list **lst2, int left, int right);
+// static void    a_to_b(t_list **lst1, t_list **lst2, int left, int right);
+// static void    b_to_a(t_list **lst1, t_list **lst2, int left, int right);
 
 int ps = 0;
 int rt = 0;
@@ -182,7 +181,7 @@ void	rotate(t_list **lst)
 	*lst = tmp->next;
 	tmp->next = NULL;
 	ft_lstadd_back(lst, tmp);
-	printf("rt\n");
+	// printf("rt\n");
 	rt++;
 }
 
@@ -201,6 +200,26 @@ void	reverse_rotate(t_list **lst)
 	rrt++;
 }
 
+void	swap_both(t_list **lst1, t_list **lst2)
+{
+	swap(lst1);
+	swap(lst2);
+	sp--;
+}
+
+void	reverse_rotate_both(t_list **lst1, t_list **lst2)
+{
+	reverse_rotate(lst1);
+	reverse_rotate(lst2);
+	rrt--;
+}
+
+void	push_rotate(t_list **lst1, t_list **lst2)
+{
+	push(lst1, lst2);
+	rotate(lst2);
+}
+
 void    a_four(t_list **lst1, t_list **lst2)
 {
     if ((*lst1)->order < (*lst1)->next->order)
@@ -208,45 +227,229 @@ void    a_four(t_list **lst1, t_list **lst2)
         if ((*lst1)->next->order < (*lst1)->next->next->order)
         {
             // 2 3 4 1
-            if ((*lst1)->next->next->order < (*lst1)->order)
+            if ((*lst1)->next->next->next->order < (*lst1)->order)
             {
-
+				push(lst1, lst2);
+				a_three_231(lst1, lst2);
+				push(lst2, lst1);
+				swap(lst1);
             }
+			// 1 2 4 3
+			else if ((*lst1)->next->next->next->order > (*lst1)->next->order)
+			{
+				push(lst1, lst2);
+				a_three_132(lst1, lst2);
+				push(lst2, lst1);
+			}
+			// 1 3 4 2
+			else
+			{
+				push(lst1, lst2);
+				a_three_231(lst1, lst2);
+				push(lst2, lst1);
+			}
         }
+		else if ((*lst1)->order < (*lst1)->next->next->order)
+		{
+			// 1 3 2 4
+			if ((*lst1)->next->next->next->order > (*lst1)->next->order)
+			{
+				push(lst1, lst2);
+				a_three_213(lst1);
+				push(lst2, lst1);
+			}
+			// 1 4 2 3
+			else if ((*lst1)->next->next->next->order > (*lst1)->next->next->order)
+			{
+				push(lst1, lst2);
+				a_three_312(lst1, lst2);
+				push(lst2, lst1);
+			}
+			// 1 4 3 2
+			else if ((*lst1)->next->next->next->order > (*lst1)->order)
+			{
+				push(lst1, lst2);
+				a_three_321(lst1, lst2);
+				push(lst2, lst1);
+			}
+			// 2 4 3 1
+			else
+			{
+				push(lst1, lst2);
+				a_three_321(lst1, lst2);
+				push(lst2, lst1);
+				swap(lst1);
+			}
+		}
+		else 
+		{
+			// 2 3 1 4
+			if ((*lst1)->next->next->next->order > (*lst1)->next->order)
+			{
+				push(lst1, lst2);
+				a_three_213(lst1);
+				push(lst2, lst1);
+				swap(lst1);
+			}
+			// 2 4 1 3
+			else if ((*lst1)->next->next->next->order > (*lst1)->order)
+			{
+				push(lst1, lst2);
+				a_three_312(lst1, lst2);
+				push(lst2, lst1);
+				swap(lst1);
+			}
+			// 3 4 1 2
+			else if ((*lst1)->next->next->next->order > (*lst1)->next->next->order)
+			{
+				push(lst1, lst2);
+				swap(lst1);
+				push(lst1, lst2);
+				swap_both(lst1, lst2);
+				push(lst2, lst1);
+				swap(lst1);
+				push(lst2, lst1);
+			}
+			// 3 4 2 1
+			else
+			{
+				push(lst1, lst2);
+				swap(lst1);
+				push(lst1, lst2);
+				swap_both(lst1, lst2);
+				push(lst2, lst1);
+				swap(lst2);
+				push(lst2, lst1);
+				swap(lst2);
+			}
+		}
     }
-
-    // 1 2 4 3
-    // 1 3 4 2
-    // 2 3 4 1
-
-    // 1 3 2 4
-    // 1 4 2 3
-    // 1 4 3 2
-    // 2 1 3 4 
-    // 2 1 4 3
-    // 2 3 1 4
-    // 2 4 1 3
-    // 2 4 3 1
-    // 3 1 2 4
-    // 3 1 4 2
-    // 3 2 1 4
-    // 3 2 4 1
-    // 3 4 1 2
-    // 3 4 2 1
-    // 4 1 2 3
-    // 4 1 3 2
-    // 4 2 1 3
-    // 4 2 3 1
-    // 4 3 1 2 
-    // 4 3 2 1 
+	else
+	{
+		if ((*lst1)->next->order > (*lst1)->next->next->order)
+		{
+			// 3 2 1 4
+			if ((*lst1)->next->next->next->order > (*lst1)->order)
+			{
+				swap(lst1);
+				push(lst1, lst2);
+				a_three_213(lst1);
+				push(lst2, lst1);
+				swap(lst1);
+			}
+			// 4 3 2 1
+			else if ((*lst1)->next->next->next->order < (*lst1)->next->next->order)
+			{
+				swap(lst1);
+				push(lst1, lst2);
+				swap(lst1);
+				push(lst1, lst2);
+				swap_both(lst1, lst2);
+				push(lst2, lst1);
+				swap(lst1);
+				push(lst2, lst1);
+				swap(lst1);
+			}
+			// 4 3 1 2
+			else if ((*lst1)->next->next->next->order < (*lst1)->next->order)
+			{
+				swap(lst1);
+				push(lst1, lst2);
+				swap(lst1);
+				push(lst1, lst2);
+				swap_both(lst1, lst2);
+				push(lst2, lst1);
+				swap(lst1);
+				push(lst2, lst1);
+			}
+			// 4 2 1 3
+			else
+			{
+				swap(lst1);
+				push(lst1, lst2);
+				swap(lst1);
+				push(lst1, lst2);
+				swap_both(lst1, lst2);
+				push(lst2, lst1);
+				push(lst2, lst1);
+			}
+		}
+		else if ((*lst1)->order < (*lst1)->next->next->order)
+		{
+			// 2 1 3 4
+			if ((*lst1)->next->next->order < (*lst1)->next->next->next->order)
+				swap(lst1);
+			// 2 1 4 3
+			else if ((*lst1)->next->next->next->order > (*lst1)->order)
+			{
+				swap(lst1);
+				push(lst1, lst2);
+				a_three_132(lst1, lst2);
+				push(lst2, lst1);
+			}
+			// 3 1 4 2
+			else if ((*lst1)->next->next->next->order > (*lst1)->next->order)
+			{
+				swap(lst1);
+				push(lst1, lst2);
+				a_three_231(lst1, lst2);
+				push(lst2, lst1);
+			}
+			// 3 2 4 1
+			else
+			{
+				swap(lst1);
+				push(lst1, lst2);
+				a_three_231(lst1, lst2);
+				push(lst1, lst2);
+				swap(lst1);
+			}
+		}
+		else
+		{
+			// 3 1 2 4
+			if ((*lst1)->order < (*lst1)->next->next->next->order)
+			{
+				swap(lst1);
+				push(lst1, lst2);
+				a_three_213(lst1);
+				push(lst2, lst1);
+			}
+			// 4 1 2 3
+			else if ((*lst1)->next->next->next->order > (*lst1)->next->next->order)
+			{
+				swap(lst1);
+				push(lst1, lst2);
+				a_three_312(lst1, lst2);
+				push(lst2, lst1);
+			}
+			// 4 1 3 2
+			else if ((*lst1)->next->next->next->order > (*lst1)->next->order)
+			{
+				swap(lst1);
+				push(lst1, lst2);
+				a_three_321(lst1, lst2);
+				push(lst2, lst1);
+			}
+			// 4 2 3 1
+			else
+			{
+				swap(lst1);
+				push(lst1, lst2);
+				a_three_321(lst1, lst2);
+				push(lst2, lst1);
+				swap(lst1);
+			}
+		}
+	}
 }
 
-void    a_three_132(t_list **lst)
+void    a_three_132(t_list **lst1, t_list **lst2)
 {
 	// 1 3 2
-	rotate(lst);
-	swap(lst);
-	reverse_rotate(lst);
+	push(lst1, lst2);
+	swap(lst1);
+	push(lst2, lst1);
 }
 
 void    a_three_213(t_list **lst)
@@ -255,160 +458,168 @@ void    a_three_213(t_list **lst)
 	swap(lst);
 }
 
-
-void    a_three_231(t_list **lst)
+void    a_three_231(t_list **lst1, t_list **lst2)
 {
 	// 2 3 1
-	rotate(lst);
-	swap(lst);
-	reverse_rotate(lst);
-	swap(lst);
+	a_three_132(lst1, lst2);
+	swap(lst1);
 }
 
-void    a_three_312(t_list **lst)
+void    a_three_312(t_list **lst1, t_list **lst2)
 {
 	// 3 1 2
-	swap(lst);
-	rotate(lst);
-	swap(lst);
-	reverse_rotate(lst);
+	swap(lst1);
+	a_three_132(lst1, lst2);
 }
 
-void    a_three_321(t_list **lst)
+void    a_three_321(t_list **lst1, t_list **lst2)
 {
 	// 3 2 1
-	swap(lst);
-	rotate(lst);
-	swap(lst);
-	reverse_rotate(lst);
-	swap(lst);
+	swap(lst1);
+	a_three_231(lst1, lst2);
 }
 
+void    b_two(t_list **lst1, t_list **lst2)
+{
+    swap(lst1);
+    push(lst1, lst2);
+    push(lst1, lst2);
+}
+
+void    b_three_123(t_list **lst1, t_list **lst2)
+{
+	// 1 2 3
+	swap(lst1);
+	b_three_213(lst1, lst2);
+}
+
+void    b_three_132(t_list **lst1, t_list **lst2)
+{
+	// 1 3 2
+	swap(lst1);
+	b_three_312(lst1, lst2);
+}
+
+void    b_three_213(t_list **lst1, t_list **lst2)
+{
+    // 2 1 3
+    push(lst1, lst2);
+    swap(lst1);
+    push(lst1, lst2);
+    swap(lst2);
+    push(lst1, lst2);
+}
+
+void    b_three_231(t_list **lst1, t_list **lst2)
+{
+	// 2 3 1
+	swap(lst1);
+	push(lst1, lst2);
+	push(lst1, lst2);
+	push(lst1, lst2);
+}
+
+void    b_three_312(t_list **lst1, t_list **lst2)
+{
+	// 3 1 2
+	push(lst1, lst2);
+	swap(lst1);
+	push(lst1, lst2);
+	push(lst1, lst2);
+}
+
+void	b_handle_unsorted_three(t_list **lst1, t_list **lst2, int size)
+{
+	if (size == 2)
+	{
+		swap(lst1);
+		push(lst1, lst2);
+		push(lst1, lst2);
+		return ;
+	}
+	if ((*lst1)->order > (*lst1)->next->order)
+	{
+	    // 2 1 3
+	    if ((*lst1)->next->next->order > (*lst1)->order)
+			b_three_213(lst1, lst2);
+	    // 3 1 2
+	    else if ((*lst1)->order > (*lst1)->next->next->order)
+			b_three_312(lst1, lst2);
+	}
+	else
+	{
+	    // 2 3 1
+	    if ((*lst1)->order > (*lst1)->next->next->order)
+			b_three_231(lst1, lst2);
+	    // 1 3 2
+	    else if ((*lst1)->next->order > (*lst1)->next->next->order)
+			b_three_132(lst1, lst2);
+	    // 1 2 3
+	    else
+			b_three_123(lst1, lst2);
+	}
+	// printf("BBBBBBBBBBBBBBBBBBBBBBBBBBBB\n");
+	// print_list(*lst1);
+	// printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+	// print_list(*lst2);
+}
+
+void	b_divide_top_mid_bot(t_list **lst1, t_list **lst2, int left, int right)
+{
+	int	size;
+	int	pivot;
+    int	spivot;
+
+	size = right - left;
+	pivot = left + size / 3 + (size % 3 == 2);
+    spivot = pivot + size / 3 + (size % 3 == 2);
+	// printf("a left, right: %d, %d\n", left, right);
+    // printf("pivot, spivot: %d, %d\n", pivot, spivot);
+	while (size--)
+    {
+	    if ((*lst1)->order <= pivot)
+	        rotate(lst1);
+	    else if ((*lst1)->order <= spivot)
+	    	push_rotate(lst1, lst2);
+	    else
+	        push(lst1, lst2);
+    }
+}
 
 void    b_to_a(t_list **lst1, t_list **lst2, int left, int right)
 {
-    int pivot;
-    int spivot;
-    int cnt;
-    int size;
+	int	pivot;
+	int	spivot;
+	int	size;
 
-    size = right - left;
-    if (is_ordered(*lst1, 1, size))
-    {
-        while (size--)
-            push(lst1, lst2);
-        return ;
-    }
-    // printf("b left, right: %d, %d\n", left, right);
-    if (size == 2)
-    {
-        swap(lst1);
-        push(lst1, lst2);
-        push(lst1, lst2);
-        // printf("B---------------------\n");
-        // print_list(*lst1);
-        // print_list(*lst2);
-        return ;
-    }
-    if (size == 3)
-    {
-        if ((*lst1)->order > (*lst1)->next->order)
-        {
-            // 2 1 3
-            if ((*lst1)->next->next->order > (*lst1)->order)
-            {
-                push(lst1, lst2);
-                swap(lst1);
-                push(lst1, lst2);
-                swap(lst2);
-                push(lst1, lst2);
-            }
-            // 3 1 2
-            else if ((*lst1)->order > (*lst1)->next->next->order)
-            {
-                push(lst1, lst2);
-                swap(lst1);
-                push(lst1, lst2);
-                push(lst1, lst2);
-            }
-        }
-        else
-        {
-            // 2 3 1
-            if ((*lst1)->order > (*lst1)->next->next->order)
-            {
-                push(lst1, lst2);
-                push(lst1, lst2);
-                swap(lst2);
-                push(lst1, lst2);
-            }
-            // 1 3 2
-            else if ((*lst1)->next->order > (*lst1)->next->next->order)
-            {
-                rotate(lst1);
-                push(lst1, lst2);
-                push(lst1, lst2);
-                reverse_rotate(lst1);
-                push(lst1, lst2);
-            }
-            // 1 2 3
-            else
-            {
-                swap(lst1);
-                push(lst1, lst2);
-                swap(lst1);
-                push(lst1, lst2);
-                swap(lst2);
-                push(lst1, lst2);
-            }
-        }
-        // printf("BBBBBBBBBBBBBBBBBBBBBBBBBBBB\n");
-        // print_list(*lst1);
-        // printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
-        // print_list(*lst2);
-        return ;
-    }
-    pivot = size / 3;
-    if (size % 3 == 2)
-        pivot++;
-    spivot = left + 2 * pivot;
-    pivot += left;
-    cnt = size;
-    // printf("b pivot, spivot: %d, %d\n", pivot, spivot);
-    while (cnt--)
-    {
-        if ((*lst1)->order <= pivot)
-            rotate(lst1);
-        else if ((*lst1)->order <= spivot)
-        {
-            push(lst1, lst2);
-            rotate(lst2);
-        }
-        else
-            push(lst1, lst2);
-    }
-    // print_list(*lst1);
-    // print_list(*lst2);
-    if (!is_ordered(*lst2, 0, right - spivot))
-        a_to_b(lst2, lst1, spivot, right);
-    cnt = pivot - left;
-    // printf("cnt: %d\n", cnt);
-    while (cnt--)
-    {
-        reverse_rotate(lst1);
-        reverse_rotate(lst2);
-        rrt--;
-    }
-    // printf("B---------------------\n");
-    // print_list(*lst1);
-    // print_list(*lst2);
-    if (!is_ordered(*lst2, 0, spivot - pivot))
-        a_to_b(lst2, lst1, pivot, spivot);
-    b_to_a(lst1, lst2, left, pivot);
-    // printf("pivot, spivot: %d, %d\n", pivot, spivot);
+	size = right - left;
+	if (is_ordered(*lst1, 1, size))
+	{
+		while (size--)
+			push(lst1, lst2);
+		return ;
+	}
+	if (size <= 3)
+	{
+		b_handle_unsorted_three(lst1, lst2, size);
+	    return ;
+	}
+	b_divide_top_mid_bot(lst1, lst2, left ,right);
+	pivot = left + size / 3 + (size % 3 == 2);
+    spivot = pivot + size / 3 + (size % 3 == 2);
+	// printf("B---------------------\n");
+	// print_list(*lst1);
+	// print_list(*lst2);
+	a_to_b(lst2, lst1, spivot, right);
+	size = pivot - left;
+    while (size--)
+		reverse_rotate_both(lst1, lst2);
+	a_to_b(lst2, lst1, pivot, spivot);
+	b_to_a(lst1, lst2, left, pivot);
+	// printf("pivot, spivot: %d, %d\n", pivot, spivot);
 }
 
-void	a_handle_unsorted_three(t_list **lst1, int size)
+void	a_handle_unsorted_three(t_list **lst1, t_list **lst2, int size)
 {
 	if (size == 2)
 	{
@@ -419,85 +630,80 @@ void	a_handle_unsorted_three(t_list **lst1, int size)
     {
         // 3 2 1
         if ((*lst1)->next->order > (*lst1)->next->next->order)
-            a_three_321(lst1);
+            a_three_321(lst1, lst2);
         // 2 1 3
         else if ((*lst1)->next->next->order > (*lst1)->order)
             a_three_213(lst1);
         // 3 1 2
         else
-			a_three_312(lst1);
+			a_three_312(lst1, lst2);
     }
     else
     {
         // 2 3 1
         if ((*lst1)->order > (*lst1)->next->next->order)
-			a_three_231(lst1);
+			a_three_231(lst1, lst2);
         // 1 3 2
         else if ((*lst1)->next->order > (*lst1)->next->next->order)
-			a_three_132(lst1);
+			a_three_132(lst1, lst2);
     }
 	// printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 	// print_list(*lst1);
-	// printf("BBBBBBBBBBBBBBBBBBBBBBBBBBBB\n");
-	// print_list(*lst2);
 }
 
-void    a_to_b(t_list **lst1, t_list **lst2, int left, int right)
+void	a_divide_top_mid_bot(t_list **lst1, t_list **lst2, int left, int right)
 {
-    int pivot;
-    int spivot;
-    int cnt;
-    int size;
+	int	size;
+	int	pivot;
+    int	spivot;
 
-    size = right - left;
-    if (is_ordered(*lst1, 0, size))
-        return ;
-	if (size <= 3)
-	{
-		a_handle_unsorted_three(lst1, size);
-        return ;
-	}
-    pivot = size / 3;
-    spivot = left + size / 3;
-    if (size % 3 == 1)
-        pivot++;
-    else if (size % 3 == 2)
-        spivot++;
-    spivot += pivot;
-    pivot += left;
-    cnt = size;
-    // printf("a left, right: %d, %d\n", left, right);
+	size = right - left;
+	pivot = left + size / 3 + (size % 3 == 1);
+    spivot = pivot + size / 3 + (size % 3 == 2);
+	// printf("a left, right: %d, %d\n", left, right);
     // printf("pivot, spivot: %d, %d\n", pivot, spivot);
-    while (cnt--)
+	while (size--)
     {
         if ((*lst1)->order <= pivot)
             push(lst1, lst2);
         else if ((*lst1)->order <= spivot)
-        {
-            push(lst1, lst2);
-            rotate(lst2);
-        }
+			push_rotate(lst1, lst2);
         else
             rotate(lst1);
     }
-    cnt = right - spivot;
+	size = right - spivot;
     // printf("cnt: %d\n", cnt);
     // print_list(*lst1);
     // print_list(*lst2);
-    while (cnt--)
-    {
-        reverse_rotate(lst1);
-        reverse_rotate(lst2);
-        rrt--;
-    }
-    // print_list(*lst1);
-    // print_list(*lst2);
-    if (!is_ordered(*lst1, 0, right - spivot))
-        a_to_b(lst1, lst2, spivot, right);
-    // printf("pivot, spivot: %d, %d\n", pivot, spivot);
-    b_to_a(lst2, lst1, pivot, spivot);
-    b_to_a(lst2, lst1, left, pivot);
-    // printf("pivot, spivot: %d, %d\n", pivot, spivot);
+    while (size--)
+		reverse_rotate_both(lst1, lst2);
+}
+
+
+void    a_to_b(t_list **lst1, t_list **lst2, int left, int right)
+{
+	int size;
+	int pivot;
+	int spivot;
+
+	size = right - left;
+	pivot = left + size / 3 + (size % 3 == 1);
+	spivot = pivot + size / 3 + (size % 3 == 2); 
+	if (is_ordered(*lst1, 0, size))
+	    return ;
+	if (size <= 3)
+	{
+		a_handle_unsorted_three(lst1, lst2, size);
+	    return ;
+	}
+	a_divide_top_mid_bot(lst1, lst2, left, right);
+	// print_list(*lst1);
+	// print_list(*lst2);
+	a_to_b(lst1, lst2, spivot, right);
+	// printf("pivot, spivot: %d, %d\n", pivot, spivot);
+	b_to_a(lst2, lst1, pivot, spivot);
+	b_to_a(lst2, lst1, left, pivot);
+	// printf("pivot, spivot: %d, %d\n", pivot, spivot);
 }
 
 void    handle_three(t_list **lst)
@@ -554,6 +760,8 @@ void	push_swap(t_list **lst1)
     printf("total: %d\n", ps + sp + rt + rrt);
 	ft_lstclear(lst1);
 	ft_lstclear(&lst2);
+	lst1 = NULL;
+	lst2 = NULL;
 }
 
 
@@ -562,7 +770,7 @@ int	is_high(int m, int n)
 	return (n > m);
 }
 
-void order_data(t_list **lst)
+void	order_data(t_list **lst)
 {
 	t_list	*cur;
 
@@ -588,8 +796,7 @@ int	main(int argc, char **argv)
 	lst = NULL;
 	parse_data(&lst, argc, argv);
 	order_data(&lst);
-	print_list(lst);
+	// print_list(lst);
 	push_swap(&lst);
-	// ft_lstclear(&lst);
 	return (0);
 }
