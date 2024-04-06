@@ -26,9 +26,10 @@
 void	print_operations();
 int		is_ordered(t_list *lst,	int	flag, size_t size);
 int		get_num(char **argv, int *num);
-int		isduplicate(int n, int m);
+int		is_duplicate(int n, int m);
 void	print_list(t_list *lst);
-int		parse_single_arg(t_list **lst, char *argv);
+int		parse_singlearg(t_list **lst, char *argv);
+int		parse_multiarg(t_list **lst, char *argv);
 void	parse_data(t_list **lst, int argc, char **argv);
 void	push(t_list **lst1, t_list **lst2);
 void	swap(t_list **lst);

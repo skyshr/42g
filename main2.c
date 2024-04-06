@@ -17,12 +17,12 @@ int rt = 0;
 int rrt = 0;
 int sp = 0;
 
-void	print_operations()
+void	print_operations(void)
 {
 	printf("ps, rt, rrt, sp: %d, %d, %d, %d\n", ps, rt, rrt, sp);
 }
 
-int	is_ordered(t_list *lst,	int	flag, size_t size)
+int	is_ordered(t_list *lst, int flag, size_t size)
 {
 	t_list	*cur;
 	int		i;
@@ -78,7 +78,7 @@ int	get_num(char **argv, int *num)
 	return ((**argv == ' ' && *(*argv + 1)) || !**argv);
 }
 
-int	isduplicate(int n, int m)
+int	is_duplicate(int n, int m)
 {
 	return (n == m);
 }
@@ -105,13 +105,13 @@ void	print_list(t_list *lst)
 	printf("\n\n----------------------\n\n");
 }
 
-int	parse_single_arg(t_list **lst, char *argv)
+int	parse_singlearg(t_list **lst, char *argv)
 {
 	int	num;
 
 	while (*argv)
 	{ 
-		if (!get_num(&argv, &num) || ft_lstiter(*lst, num, isduplicate) \
+		if (!get_num(&argv, &num) || ft_lstiter(*lst, num, is_duplicate) \
 			|| !ft_lstadd_back(lst, ft_lstnew(num)))
 		{
 			printf("Error detected!\n");
@@ -124,7 +124,7 @@ int	parse_single_arg(t_list **lst, char *argv)
 	return (1);
 }
 
-void	parse_multi_arg(t_list **lst, int argc, char **argv)
+void	parse_multiarg(t_list **lst, int argc, char **argv)
 {
 	int	num;
 	int	idx;
