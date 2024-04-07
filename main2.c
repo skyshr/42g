@@ -126,13 +126,12 @@ int	parse_singlearg(t_list **lst, char *argv)
 
 void	parse_multiarg(t_list **lst, int argc, char **argv)
 {
-	int	num;
 	int	idx;
 
 	idx = 1;
 	while (idx < argc)
 	{
-		if (parse_single_arg(lst, argv[idx]) == -1)
+		if (parse_singlearg(lst, argv[idx]) == -1)
 			return ;
 		idx++;
 	}
@@ -141,9 +140,9 @@ void	parse_multiarg(t_list **lst, int argc, char **argv)
 void	parse_data(t_list **lst, int argc, char **argv)
 {
 	if (argc == 2)
-		parse_single_arg(lst, argv[1]);
+		parse_singlearg(lst, argv[1]);
 	else
-		parse_multi_arg(lst, argc,argv);
+		parse_multiarg(lst, argc, argv);
 }
 
 void	push(t_list **lst1, t_list **lst2)
@@ -1313,13 +1312,11 @@ void    handle_three(t_list **lst)
     }
 }
 
-void	push_swap(t_list **lst1)
+void	push_swap(t_list **lst1, int size)
 {
 	t_list	*lst2;
-    int     size;
 
 	lst2 = NULL;
-    size = ft_lstsize(*lst1);
 	if (!size)
 		return ;
     if (size == 3)
@@ -1346,13 +1343,13 @@ int	is_high(int m, int n)
 	return (n > m);
 }
 
-void	order_data(t_list **lst)
+void	order_data(t_list **lst, int size)
 {
 	t_list	*cur;
 
-	if (!(*lst))
+	if (!size)
 		return ;
-	if (is_ordered(*lst, 0, ft_lstsize(*lst)))
+	if (is_ordered(*lst, 0, size))
 	{
 		ft_lstclear(lst);
 		return ;
@@ -1365,14 +1362,731 @@ void	order_data(t_list **lst)
 	}
 }
 
+int	get_target(t_list **lst)
+{
+	t_list	*cur;
+	int		target;
+
+	cur = *lst;
+	target = 0;
+	while (cur)
+	{
+		target = target * 10 + cur->order;
+		cur = cur->next;
+	}
+	return (target);
+}
+
+int	find_tens(int num)
+{
+	int	res;
+	int	i;
+
+	res = 1;
+	while (num/10)
+	{
+		num /= 10;
+		res *= 10;
+	}
+	return (res);
+}
+
+int	get_start(int size)
+{
+	int	res;
+	int	i;
+
+	res = 1;
+	i = 2;
+	while (i <= size)
+		res = res * 10 + i++;
+	return (res);
+}
+
+int	is_visited(int visited[240][2], int find, int to_find1, int to_find2)
+{
+	int	i;
+
+	i = 0;
+	while (i < find)
+	{
+		if (visited[i][0] == to_find1 && visited[i][1] == to_find2)
+			return (1);
+	}
+	return (0);
+}
+
+// pa : 0, pb : 1, sa : 2, sb : 3, ss : 4, ra : 5, rb : 6, rr : 7, rra : 8, rrb : 9, rrr : a
+
+void	bfs(t_list	**lst, int size)
+{
+	long long	memo[10][50][4];
+	char		res[10][4];
+	int			idx[10];
+	int			visited[240][2];
+	int			target;
+	int			find;
+	int			dist;
+
+	if (!size || size >= 6)
+		return ;
+	target = get_target(lst);
+	find = 0;
+	ft_bzero(visited, sizeof(int) * 120);
+	ft_bzero(idx, sizeof(int) * 10);
+	idx[0]++;
+	memo[0][0][0] = get_start(size);
+	memo[0][0][2] = -1;
+	visited[find][0] = 12345;
+	visited[find][1] = 0;
+	if (target)
+	{
+		printf("target: %lld,\n", memo[0][0][0]);
+		print_list(*lst);
+	}
+	dist = 0;
+	while (dist < 3)
+	{
+		int previdx = 0;
+		while (previdx < idx[dist])
+		{
+			// stack A, stack B, prev oper, operations
+			if (memo[dist][previdx][0] == target)
+			{
+				printf("dist: %d\n", dist);
+				printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist][previdx][0], \
+					memo[dist][previdx][1], memo[dist][previdx][2], memo[dist][previdx][3]);
+				return ;
+			}
+			if (memo[dist][previdx][2] == -1)
+			{
+				// pb
+				long long c = memo[dist][previdx][0];
+				long long d = find_tens(c);
+				long long e = find_tens(memo[dist][previdx][1]);
+				long long f = c / d;
+				long long g = c % d;
+				printf("c, d, e, f, g: %lld, %lld, %lld, %lld, %lld\n", c, d, e, f, g);
+				memo[dist + 1][idx[dist + 1]][0] = g;
+				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1] + f * e;
+				memo[dist + 1][idx[dist + 1]][2] = 1;
+				memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 1;
+				printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
+				memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
+				idx[dist + 1]++;
+				// sa
+				long long sa = (g / (d / 10)) * d + f * (d / 10) + g % (d / 10);
+				// 방문 x
+				memo[dist + 1][idx[dist + 1]][0] = sa;
+				if (memo[dist + 1][idx[dist + 1]][0] == target)
+				{
+					printf("dist: %d\n", dist + 1);
+					return ;
+				}
+				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1];
+				memo[dist + 1][idx[dist + 1]][2] = 2;
+				memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 2;
+				printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
+				memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
+				idx[dist + 1]++;
+				// ra
+				memo[dist + 1][idx[dist + 1]][0] = g * 10 + f;
+				if (memo[dist + 1][idx[dist + 1]][0] == target)
+				{
+					printf("dist: %d\n", dist + 1);
+					return ;
+				}
+				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1];
+				memo[dist + 1][idx[dist + 1]][2] = 5;
+				memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 5;
+				printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
+				memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
+				idx[dist + 1]++;
+				// rra
+				memo[dist + 1][idx[dist + 1]][0] = (c % 10) * d + (c / 10);
+				if (memo[dist + 1][idx[dist + 1]][0] == target)
+				{
+					printf("dist: %d\n", dist + 1);
+					return ;
+				}
+				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1];
+				memo[dist + 1][idx[dist + 1]][2] = 8;
+				memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 8;
+				printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
+				memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
+				idx[dist + 1]++;
+			}
+			else
+			{
+				long long c = memo[dist][previdx][0];
+				long long h = memo[dist][previdx][1];
+				long long d = find_tens(c);
+				long long e = find_tens(h);
+				long long f = c / d;
+				long long g = c % d;
+				long long i = h / e;
+				long long j = h % e;
+				long long pa = 10 * d * i + c;
+				long long pb = 10 * e * f + h;
+				long long sa = (g / (d / 10)) * d + f * (d / 10) + g % (d / 10);
+				long long sb = (j / (e / 10)) * e + i * (e / 10) + j % (e / 10);
+				long long ra = 10 * g + f;
+				long long rb = 10 * j + i;
+				long long rra = (c % 10) * d + (c / 10);
+				long long rrb = (h % 10) * e + (h / 10);
+				// pa pb sa sb ss ra rb rr rra rrb rrr
+				// pa
+				if (!is_visited(visited, find, pa, i))
+				{
+					if (h)
+					{
+						visited[find][0] = pa;
+						visited[find++][1] = i;
+						memo[dist + 1][idx[dist + 1]][0] = pa;
+						memo[dist + 1][idx[dist + 1]][1] = i;
+						memo[dist + 1][idx[dist + 1]][2] = 0;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 0;
+					}
+				}
+				// pb
+				else if (!is_visited(visited, find, g, pb))
+				{
+					if (c)
+					{
+						visited[find][0] = g;
+						visited[find++][1] = pb;
+						memo[dist + 1][idx[dist + 1]][0] = g;
+						memo[dist + 1][idx[dist + 1]][1] = pb;
+						memo[dist + 1][idx[dist + 1]][2] = 1;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 1;
+					}
+				}
+				// sa
+				else if (!is_visited(visited, find, sa, h))
+				{
+					if (c > 10)
+					{
+						visited[find][0] = sa;
+						visited[find++][1] = h;
+						memo[dist + 1][idx[dist + 1]][0] = sa;
+						memo[dist + 1][idx[dist + 1]][1] = h;
+						memo[dist + 1][idx[dist + 1]][2] = 2;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 2;
+					}
+				}
+				// sb
+				else if (!is_visited(visited, find, c, sb))
+				{
+					if (h > 10)
+					{
+						visited[find][0] = c;
+						visited[find++][1] = sb;
+						memo[dist + 1][idx[dist + 1]][0] = c;
+						memo[dist + 1][idx[dist + 1]][1] = sb;
+						memo[dist + 1][idx[dist + 1]][2] = 3;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 3;
+					}
+				}
+				// ss
+				else if (!is_visited(visited, find, sa, sb))
+				{
+					if (c > 10 && h > 10)
+					{
+						visited[find][0] = sa;
+						visited[find++][1] = sb;
+						memo[dist + 1][idx[dist + 1]][0] = sa;
+						memo[dist + 1][idx[dist + 1]][1] = sb;
+						memo[dist + 1][idx[dist + 1]][2] = 4;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 4;
+					}
+				}
+				// ra
+				else if (!is_visited(visited, find, ra, h))
+				{
+					if (c > 10)
+					{
+						visited[find][0] = ra;
+						visited[find++][1] = h;
+						memo[dist + 1][idx[dist + 1]][0] = ra;
+						memo[dist + 1][idx[dist + 1]][1] = h;
+						memo[dist + 1][idx[dist + 1]][2] = 5;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 5;
+					}
+				}
+				// rb
+				else if (!is_visited(visited, find, c, rb))
+				{
+					if (h > 10)
+					{
+						visited[find][0] = c;
+						visited[find++][1] = rb;
+						memo[dist + 1][idx[dist + 1]][0] = c;
+						memo[dist + 1][idx[dist + 1]][1] = rb;
+						memo[dist + 1][idx[dist + 1]][2] = 6;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 6;
+					}
+				}
+				// rr
+				else if (!is_visited(visited, find, ra, rb))
+				{
+					if (c > 10 && h > 10)
+					{
+						visited[find][0] = ra;
+						visited[find++][1] = rb;
+						memo[dist + 1][idx[dist + 1]][0] = ra;
+						memo[dist + 1][idx[dist + 1]][1] = rb;
+						memo[dist + 1][idx[dist + 1]][2] = 7;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 7;
+					}
+				}
+				// rra
+				else if (!is_visited(visited, find, rra, h))
+				{
+					if (c > 10)
+					{
+						visited[find][0] = rra;
+						visited[find++][1] = h;
+						memo[dist + 1][idx[dist + 1]][0] = rra;
+						memo[dist + 1][idx[dist + 1]][1] = h;
+						memo[dist + 1][idx[dist + 1]][2] = 8;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 8;
+					}
+				}
+				// rrb
+				else if (!is_visited(visited, find, c, rrb))
+				{
+					if (h > 10)
+					{
+						visited[find][0] = c;
+						visited[find++][1] = rrb;
+						memo[dist + 1][idx[dist + 1]][0] = c;
+						memo[dist + 1][idx[dist + 1]][1] = rrb;
+						memo[dist + 1][idx[dist + 1]][2] = 9;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 9;
+					}
+				}
+				// rrr
+				else if (!is_visited(visited, find, rra, rrb))
+				{
+					if (c > 10 && h > 10)
+					{
+						visited[find][0] = rra;
+						visited[find++][1] = rrb;
+						memo[dist + 1][idx[dist + 1]][0] = rra;
+						memo[dist + 1][idx[dist + 1]][1] = rrb;
+						memo[dist + 1][idx[dist + 1]][2] = 10;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 10;
+					}
+				}
+			}
+			// printf("")
+			// printf("memo[%d][%d]: %d, %d, %d, %d\n", dist, previdx, memo[dist][previdx][0], \
+			// memo[dist][previdx][1], memo[dist][previdx][2], memo[dist][previdx][3]);
+			previdx++;
+		}
+		dist++;
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	t_list	*lst;
+	int		size;
 
 	lst = NULL;
 	parse_data(&lst, argc, argv);
-	order_data(&lst);
+	size = ft_lstsize(lst);
+	order_data(&lst, size);
+	bfs(&lst, size);
 	// print_list(lst);
-	push_swap(&lst);
+	// push_swap(&lst);
 	return (0);
 }
+
+
+// 123: 2
+// [['sa', 'rra']]
+// 132: 1
+// [['rra']]
+// 213: 1
+// [['ra']]
+// 231: 2
+// [['sa', 'ra']]
+// 312: 1
+// [['sa']]
+// 321: 0
+// [[]]
+
+// 1243: 4 -----예외
+// [['pb', 'sa', 'ra', 'pa']]
+
+// 2143: 5 ----- 예외
+// [['pb', 'pb', 'ss', 'pa', 'pa']]
+
+// 1432: 4 ----- 예외
+// [['pb', 'ra', 'sa', 'pa']]
+
+// ------
+// 4321: 4
+// [['sa', 'ra', 'ra', 'sa']]
+
+// 3214: 5 
+// rra sa ra ra sa
+// [['sa', 'pb', 'sa', 'pa', 'sa']]
+
+// 2143: 5 ----- 예외
+// [['pb', 'pb', 'ss', 'pa', 'pa']]
+//
+
+// 1432: 4 ----- 예외
+// [['pb', 'ra', 'sa', 'pa']]
+// 1
+
+// ------
+// 3421: 3
+// [['ra', 'ra', 'sa']]
+
+// 4213: 2
+// [['ra', 'sa']]
+
+// 2134: 1
+// [['sa']]
+
+// 1342: 2
+// [['rra', 'sa']]
+
+// ------
+
+// 4231: 3
+// [['rra', 'sa', 'ra']]
+
+// 2314: 4
+// ra sa rra sa
+// [['pb', 'sa', 'pa', 'sa']]
+// 2
+
+
+// 3142: 3
+// [['sa', 'rra', 'sa']]
+
+// 1423: 2
+// [['sa', 'ra']]
+
+// ------
+
+// 2431: 4
+// ra sa rra rra
+// [['pb', 'sa', 'pa', 'rra']]
+// 2
+
+// 4312: 3
+// [['sa', 'ra', 'ra']]
+
+// 3124: 4
+// rra sa ra ra
+// [['sa', 'pb', 'sa', 'pa']]
+// 1
+// 1243: 4 -----예외
+// [['pb', 'sa', 'ra', 'pa']]
+// 1
+// ------
+
+// 3241: 2
+// [['sa', 'rra']]
+
+// 2413: 3
+// [['sa', 'ra', 'sa']]
+
+// 4132: 4
+// ra ra sa rra
+// [['ra', 'pb', 'sa', 'pa']]
+// 1
+// 1324: 3
+// ra sa rra
+// [['pb', 'sa', 'pa']]
+// 1
+// ------
+
+// 1234 : 0
+
+// 2341: 1
+// [['rra']]
+
+// 3412: 2
+// [['ra', 'ra']]
+
+// 4123: 1
+// [['ra']]
+
+// ------
+
+
+// 123
+// 213 == 1
+// 321 == 2
+// 132 == 2
+// 312 == 1
+// 231 == 1
+
+//3432
+//3212
+// 1234 1243 1324 1342 1423 1432
+// 0    4    3    2    2    4
+// 2134 2143 2314 2341 2413 2431
+// 1    5    4    1    3    4
+// 3124 3142 3214 3241 3412 3421
+// 4    3    5    2    2    3
+// 4123 4132 4213 4231 4312 4321
+// 1    4    2    3    3    4
+
+
+// 12345
+// 23451 51234 21345 (2345 / 1)
+// (34512 x 32451) (x 45123 51234) (13452 52134 x) (3452 / 1, 5234 / 1, 3245 / 1)
+// (3451 / 2) (1234 / 5) (2134 / 5) (345 / 12)
+
+
+
+
+
+
+// 54321: 7 = dp(4321) + 3
+// [['pb', 'sa', 'ra', 'ra', 'pa', 'ra', 'sa']]
+// 45321: 6 = dp(3421) + 3
+// [['rra', 'pb', 'ra', 'ra', 'sa', 'pa']]
+// 53421: 6 = dp(4231) + 3
+// [['pb', 'ra', 'ra', 'pa', 'ra', 'sa']]
+// 35421: 5 = dp(54213) + 1 = dp(45213) + 2 = dp(52134) + 3 = dp(21345) + 4
+// [['ra', 'sa', 'ra', 'ra', 'sa']]
+// 43521: 4 = dp(34521) + 1 = dp(13452) + 2 = dp(21345) + 3 = dp(12345) + 4
+// [['sa', 'rra', 'rra', 'sa']]
+// 34521: 3 = dp(13452) + 1 = dp(21345) + 2 = dp(12345) + 3
+// [['rra', 'rra', 'sa']]
+// 54231: 6 = dp(4312) + 3 = dp(45231) + 1 = dp(14523) + 2 = dp(3412) + 4
+// [['sa', 'rra', 'pb', 'ra', 'ra', 'pa']]
+// 45231: 5
+// [['rra', 'pb', 'ra', 'ra', 'pa']]
+// 13425: 7
+// [['pb', 'ra', 'sa', 'ra', 'ra', 'pa', 'ra']]
+// 13452: 7
+// [['pb', 'sa', 'ra', 'ra', 'sa', 'pa', 'sa']]
+// 13524: 6
+// [['ra', 'pb', 'ra', 'sa', 'pa', 'sa']]
+// 13542: 6
+// [['pb', 'ra', 'ra', 'sa', 'pa', 'sa']]
+// 14235: 5
+// [['rra', 'pb', 'ra', 'sa', 'pa']]
+// 14253: 6
+// [['sa', 'rra', 'pb', 'ra', 'sa', 'pa']]
+// 14325: 3
+// [['rra', 'sa', 'ra']]
+// 14352: 4
+// [['sa', 'rra', 'sa', 'ra']]
+// 14523: 6
+// [['pb', 'pb', 'ss', 'pa', 'pa', 'rra']]
+// 14532: 5
+// [['ra', 'ra', 'sa', 'ra', 'ra']]
+// 15234: 6
+// [['sa', 'pb', 'sa', 'pa', 'sa', 'rra']]
+// 15243: 5
+// [['pb', 'sa', 'pa', 'sa', 'rra']]
+// 15324: 5
+// [['sa', 'pb', 'sa', 'pa', 'rra']]
+// 15342: 4
+// [['pb', 'sa', 'pa', 'rra']]
+// 15423: 2
+// [['sa', 'rra']]
+// 15432: 1
+// [['rra']]
+// 21345: 6
+// [['pb', 'sa', 'ra', 'ra', 'pa', 'ra']]
+// 21354: 6
+// [['pb', 'sa', 'pa', 'sa', 'rra', 'rra']]
+// 21435: 5
+// [['pb', 'ra', 'ra', 'pa', 'ra']]
+// 21453: 4
+// [['ra', 'sa', 'ra', 'ra']]
+// 21534: 3
+// [['sa', 'rra', 'rra']]
+// 21543: 2
+// [['rra', 'rra']]
+// 23145: 5
+// [['sa', 'rra', 'rra', 'sa', 'rra']]
+// 23154: 4
+// [['rra', 'rra', 'sa', 'rra']]
+// 23415: 7
+// [['pb', 'pb', 'sa', 'rra', 'pa', 'pa', 'ra']]
+// 23451: 6
+// [['pb', 'sa', 'ra', 'ra', 'sa', 'pa']]
+// 23514: 5
+// [['ra', 'pb', 'ra', 'sa', 'pa']]
+// 23541: 5
+// [['pb', 'ra', 'ra', 'sa', 'pa']]
+// 24135: 6
+// [['pb', 'ra', 'sa', 'ra', 'pa', 'ra']]
+// 24153: 6
+// [['ra', 'pb', 'sa', 'ra', 'pa', 'ra']]
+// 24315: 4
+// [['rra', 'sa', 'ra', 'sa']]
+// 24351: 5
+// [['sa', 'rra', 'sa', 'ra', 'sa']]
+// 24513: 6
+// [['ra', 'pb', 'sa', 'ra', 'ra', 'pa']]
+// 24531: 6
+// [['pb', 'ra', 'sa', 'ra', 'ra', 'pa']]
+// 25134: 5
+// [['sa', 'ra', 'ra', 'sa', 'ra']]
+// 25143: 4
+// [['ra', 'ra', 'sa', 'ra']]
+// 25314: 6
+// [['sa', 'pb', 'sa', 'pa', 'rra', 'sa']]
+// 25341: 5
+// [['pb', 'sa', 'pa', 'rra', 'sa']]
+// 25413: 3
+// [['sa', 'rra', 'sa']]
+// 25431: 2
+// [['rra', 'sa']]
+// 31245: 4
+// [['sa', 'ra', 'ra', 'sa']]
+// 31254: 3
+// [['ra', 'ra', 'sa']]
+// 31425: 6
+// [['pb', 'sa', 'ra', 'pa', 'ra', 'sa']]
+// 31452: 6
+// [['pb', 'sa', 'pa', 'rra', 'sa', 'rra']]
+// 31524: 4
+// [['sa', 'rra', 'sa', 'rra']]
+// 31542: 3
+// [['rra', 'sa', 'rra']]
+// 32145: 3
+// [['sa', 'ra', 'ra']]
+// 32154: 2
+// [['ra', 'ra']]
+// 32415: 5
+// [['pb', 'sa', 'ra', 'pa', 'ra']]
+// 32451: 5
+// [['pb', 'sa', 'ra', 'ra', 'pa']]
+// 32514: 3
+// [['ra', 'sa', 'ra']]
+// 32541: 4
+// [['pb', 'ra', 'ra', 'pa']]
+// 34125: 6
+// [['ra', 'pb', 'pb', 'ss', 'pa', 'pa']]
+// 34152: 6
+// [['pb', 'ra', 'pb', 'ss', 'pa', 'pa']]
+// 34215: 5
+// [['rra', 'rra', 'sa', 'rra', 'rra']]
+// 34251: 6
+// [['pb', 'ra', 'pb', 'sa', 'pa', 'pa']]
+// 34512: 6
+// [['pb', 'pb', 'sa', 'rrr', 'pa', 'pa']]
+// 34521: 6
+// [['pb', 'pb', 'sa', 'rra', 'pa', 'pa']]
+// 35124: 6
+// [['ra', 'pb', 'pb', 'rr', 'pa', 'pa']]
+// 35142: 6
+// [['pb', 'sa', 'pb', 'rrr', 'pa', 'pa']]
+// 35214: 5
+// [['ra', 'pb', 'sa', 'ra', 'pa']]
+// 35241: 5
+// [['pb', 'ra', 'sa', 'ra', 'pa']]
+// 35412: 5
+// [['pb', 'pb', 'rrr', 'pa', 'pa']]
+// 35421: 5
+// [['pb', 'pb', 'rra', 'pa', 'pa']]
+// 41235: 6
+// [['sa', 'rra', 'sa', 'rra', 'rra', 'sa']]
+// 41253: 5
+// [['rra', 'sa', 'rra', 'rra', 'sa']]
+// 41325: 5
+// [['ra', 'pb', 'sa', 'pa', 'sa']]
+// 41352: 5
+// [['pb', 'ra', 'sa', 'pa', 'sa']]
+// 41523: 6
+// [['pb', 'pb', 'rrr', 'pa', 'pa', 'rra']]
+// 41532: 6
+// [['pb', 'pb', 'rra', 'pa', 'pa', 'rra']]
+// 42135: 5
+// [['sa', 'rra', 'sa', 'rra', 'rra']]
+// 42153: 4
+// [['rra', 'sa', 'rra', 'rra']]
+// 42315: 4
+// [['ra', 'pb', 'sa', 'pa']]
+// 42351: 4
+// [['pb', 'ra', 'sa', 'pa']]
+// 42513: 6
+// [['pb', 'pb', 'rr', 'pa', 'sa', 'pa']]
+// 42531: 5
+// [['pb', 'sa', 'ra', 'sa', 'pa']]
+// 43125: 2
+// [['ra', 'sa']]
+// 43152: 3
+// [['sa', 'ra', 'sa']]
+// 43215: 1
+// [['ra']]
+// 43251: 2
+// [['sa', 'ra']]
+// 43512: 5
+// [['pb', 'pb', 'rr', 'pa', 'pa']]
+// 43521: 4
+// [['pb', 'sa', 'ra', 'pa']]
+// 45123: 7
+// [['pb', 'pb', 'sa', 'rrr', 'pa', 'pa', 'rra']]
+// 45132: 7
+// [['pb', 'pb', 'pb', 'rr', 'pa', 'pa', 'pa']]
+// 45213: 7
+// [['pb', 'pb', 'pb', 'rrr', 'pa', 'pa', 'pa']]
+// 45231: 7
+// [['pb', 'pb', 'pb', 'ss', 'pa', 'pa', 'pa']]
+// 45312: 6
+// [['pb', 'pb', 'sa', 'rr', 'pa', 'pa']]
+// 45321: 5
+// [['rra', 'rra', 'sa', 'ra', 'ra']]
+// 51234: 8
+// [['pb', 'pb', 'sa', 'rrr', 'pa', 'pa', 'rra', 'rra']]
+// 51243: 7
+// [['ra', 'ra', 'pb', 'pb', 'rr', 'pa', 'pa']]
+// 51324: 7
+// [['pb', 'ra', 'ra', 'pa', 'ra', 'sa', 'ra']]
+// 51342: 6
+// [['ra', 'sa', 'ra', 'ra', 'sa', 'ra']]
+// 51423: 5
+// [['sa', 'rra', 'rra', 'sa', 'ra']]
+// 51432: 4
+// [['rra', 'rra', 'sa', 'ra']]
+// 52134: 7
+// [['pb', 'pb', 'rrr', 'pa', 'pa', 'rra', 'rra']]
+// 52143: 6
+// [['ra', 'ra', 'pb', 'sa', 'ra', 'pa']]
+// 52314: 6
+// [['rra', 'sa', 'rra', 'rra', 'sa', 'rra']]
+// 52341: 7
+// [['pb', 'sa', 'pb', 'sa', 'pa', 'sa', 'pa']]
+// 52413: 6
+// [['pb', 'pb', 'ss', 'pa', 'sa', 'pa']]
+// 52431: 5
+// [['rra', 'rra', 'sa', 'ra', 'sa']]
+// 53124: 5
+// [['rra', 'sa', 'ra', 'ra', 'sa']]
+// 53142: 6
+// [['pb', 'sa', 'pb', 'ss', 'pa', 'pa']]
+// 53214: 4
+// [['rra', 'sa', 'ra', 'ra']]
+// 53241: 5
+// [['sa', 'rra', 'sa', 'ra', 'ra']]
+// 53412: 5
+// [['pb', 'pb', 'ss', 'pa', 'pa']]
+// 53421: 5
+// [['pb', 'pb', 'sa', 'pa', 'pa']]
+// 54123: 5
+// [['sa', 'pb', 'sa', 'pa', 'sa']]
+// 54132: 4
+// [['pb', 'sa', 'pa', 'sa']]
+// 54213: 4
+// [['sa', 'pb', 'sa', 'pa']]
+// 54231: 3
+// [['pb', 'sa', 'pa']]
+// 54312: 1
+// [['sa']]
+// 54321: 0
+// [[]]

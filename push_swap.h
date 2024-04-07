@@ -29,7 +29,7 @@ int		get_num(char **argv, int *num);
 int		is_duplicate(int n, int m);
 void	print_list(t_list *lst);
 int		parse_singlearg(t_list **lst, char *argv);
-int		parse_multiarg(t_list **lst, char *argv);
+void	parse_multiarg(t_list **lst, int argc, char **argv);
 void	parse_data(t_list **lst, int argc, char **argv);
 void	push(t_list **lst1, t_list **lst2);
 void	swap(t_list **lst);
@@ -119,8 +119,8 @@ void	a_divide_top_mid_bot(t_list **lst1, t_list **lst2, int left, int right);
 void    a_to_b(t_list **lst1, t_list **lst2, int left, int right);
 void	a_three(t_list **lst1, t_list **lst2);
 void    handle_three(t_list **lst);
-void	push_swap(t_list **lst1);
+void	push_swap(t_list **lst1, int size);
 int		is_high(int m, int n);
-void	order_data(t_list **lst);
+void	order_data(t_list **lst, int size);
 
 #endif
