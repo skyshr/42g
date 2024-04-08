@@ -16,14 +16,6 @@
 # include <stdlib.h>
 # include "libft/libft.h"
 
-// typedef struct s_list
-// {
-// 	struct s_list	*prev;
-// 	struct s_list	*next;
-// 	int				n;
-// }	t_list;
-
-void	print_operations();
 int		is_ordered(t_list *lst,	int	flag, size_t size);
 int		get_num(char **argv, int *num);
 int		is_duplicate(int n, int m);
@@ -118,7 +110,6 @@ void	a_handle_unsorted_four(t_list **lst1, t_list **lst2, int size);
 void	a_divide_top_mid_bot(t_list **lst1, t_list **lst2, int left, int right);
 void    a_to_b(t_list **lst1, t_list **lst2, int left, int right);
 void	a_three(t_list **lst1, t_list **lst2);
-void    handle_three(t_list **lst);
 void	push_swap(t_list **lst1, int size);
 int		is_high(int m, int n);
 void	order_data(t_list **lst, int size);

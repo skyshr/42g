@@ -1,671 +1,402 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksuh <ksuh@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/03 11:24:12 by ksuh              #+#    #+#             */
-/*   Updated: 2024/04/03 11:24:18 by ksuh             ###   ########.fr       */
+/*   Created: 2024/04/05 18:45:54 by ksuh              #+#    #+#             */
+/*   Updated: 2024/04/05 18:45:58 by ksuh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "push_swap.h"
-#include "libft/libft.h"
-#include <stdio.h>
+#include "push_swap.h"
 
-int ps = 0;
-int rt = 0;
-int rrt = 0;
-int sp = 0;
-
-void	print_operations()
-{
-	printf("ps, rt, rrt, sp: %d, %d, %d, %d\n", ps, rt, rrt, sp);
-}
-
-int	is_ordered(t_list *lst,	int	flag, size_t size)
-{
-	t_list	*cur;
-	int		i;
-
-	cur = lst;
-	i = -2147483648;
-	if (flag)
-		i = 2147483647;
-	while (size--)
-	{
-		if ((!flag && cur->n < i) || (flag && cur->n > i))
-		{
-			// printf("List is not ordered!\n");
-			return (0);
-		}
-		i = cur->n;
-		cur = cur->next;
-	}
-	// printf("List is ordered!\n");
-	return (1);
-}
-
-int	get_num(char **argv, int *num)
-{
-	unsigned int	n;
-	int				sign;
-
-	n = 0;
-	sign = 1;
-	if (**argv == '-' || **argv == '+')
-	{
-		if (**argv == '-')
-			sign = -1;
-		(*argv)++;
-	}
-	if (!ft_isdigit(**argv))
-	{
-		printf("Only digits are allowed!, %d\n", **argv);
-		return (0);
-	}
-	while (ft_isdigit(**argv))
-	{
-		n = n * 10 + **argv - '0';
-		if (n > (unsigned int)(2147483647 + (sign == -1)))
-		{
-			printf("Overflow detected!\n");
-			return (0);
-		}
-		(*argv)++;
-	}
-	*num = (int)(sign * n);
-	// printf("get_num success!\n");
-	return ((**argv == ' ' && *(*argv + 1)) || !**argv);
-}
-
-int	isduplicate(int n, int m)
-{
-	return (n == m);
-}
-
-void	print_list(t_list *lst)
-{
-	t_list	*tmp;
-
-	// tmp = lst;
-	// printf("\n\n---------list----------\n\n");
-	// printf("------------VALUE------------\n");
-	// while (tmp)
-	// {
-	// 	printf("%d ", tmp->n);
-	// 	tmp = tmp->next;
-	// }
-	tmp = lst;
-	printf("\n\n------------ORDER------------\n");
-	while (tmp)
-	{
-		printf("%d ", tmp->order);
-		tmp = tmp->next;
-	}
-	printf("\n\n----------------------\n\n");
-}
-
-void	parse_single_arg(t_list **lst, char *argv)
-{
-	int	num;
-
-	while (*argv)
-	{ 
-		if (!get_num(&argv, &num) || ft_lstiter(*lst, num, isduplicate) \
-			|| !ft_lstadd_back(lst, ft_lstnew(num)))
-		{
-			printf("Error detected!\n");
-			ft_lstclear(lst);
-			return ;
-		}
-		if (*argv == ' ')
-			argv++;
-	}
-}
-
-void	parse_data(t_list **lst, int argc, char **argv)
-{
-	if (argc == 2)
-		parse_single_arg(lst, argv[1]);
-	// else
-	// {
-
-	// }
-}
-
-void	push(t_list **lst1, t_list **lst2, int *cnt)
-{
-	t_list	*tmp;
-
-	tmp = *lst1;
-	if (!tmp)
-		return ;
-	if (tmp->next)
-		tmp->next->prev = NULL;
-	*lst1 = tmp->next;
-	tmp->next = NULL;
-	ft_lstadd_front(lst2, tmp);
-	(*cnt)++;
-	// printf("p\n");
-	ps++;
-}
-
-void	swap(t_list **lst, int *cnt)
-{
-	t_list	*tmp;
-
-	if (!(*lst) || !(*lst)->next)
-		return ;
-	tmp = (*lst)->next;
-	(*lst)->next = tmp->next;
-	if (tmp->next)
-		tmp->next->prev = *lst;
-	tmp->prev = NULL;
-	tmp->next = NULL;
-	ft_lstadd_front(lst, tmp);
-	(*cnt)++;
-	// printf("s\n");
-	sp++;
-}
-
-void	rotate(t_list **lst, int *cnt)
-{
-	t_list	*tmp;
-
-	tmp = *lst;
-	if (!tmp || !(*lst)->next)
-		return ;
-	if (tmp->next)
-		tmp->next->prev = NULL;
-	*lst = tmp->next;
-	tmp->next = NULL;
-	ft_lstadd_back(lst, tmp);
-	(*cnt)++;
-	// printf("r\n");
-	rt++;
-}
-
-void	reverse_rotate(t_list **lst, int *cnt)
-{
-	t_list	*tmp;
-
-	tmp = ft_lstlast(*lst);
-	if (!tmp || !(*lst)->next)
-		return ;
-	if (tmp->prev)
-		tmp->prev->next = NULL;
-	tmp->prev = NULL;
-	ft_lstadd_front(lst, tmp);
-	(*cnt)++;
-	// printf("rr\n");
-	rrt++;
-}
-
-int	init(t_list **lst1, t_list **lst2, int n)
-{
-	int		pivot;
-	int		size;
-	int		cnt;
-
-	pivot = n / 2;
-	size = pivot;
-	cnt = 0;
-	while (size)
-	{
-		if ((*lst1)->order <= pivot)
-		{
-			// if ((*lst1)->order <= pivot / 2)
-			// {
-			// 	push(lst1, lst2, &cnt);
-			// 	rotate(lst2, &cnt);
-			// }
-			// else 
-				push(lst1, lst2, &cnt);
-			size--;
-		}
-		else
-			rotate(lst1, &cnt);
-	}
-	return (cnt);
-}
-
-// 5 15
-
-
-// 1. n = 20, sector = 8
-// pivot = 20 / 8 = 2
-// 3(5 - 2),  7(5 + 2), 13(15 - 2), 17(15 + 2)
-
-// 2. n = 20, sector = 16
-// pivot = 20 / 16 = 1
-// 2(3 - 1), 4(3 + 1), 6(7 - 1), 8(7 + 1), 12(13 - 1), 14(15 + 1), 16(17 - 1), 18(17 + 1)
-
-int	dc = 0;
-int dc1 = 0;
-
-int	isvalid(t_list *lst, t_list *last, int s, int pivot)
-{
-	t_list	*tmp;
-	int		i;
-
-	tmp = last;
-	i = -2147483648;
-	s--;
-	// printf("pivot, s: %d, %d\n", pivot, s);
-	// print_list(lst);
-	// print_list(tmp);
-	while (s-- > 0)
-		tmp = tmp->prev;
-	while (tmp)
-	{
-		if (tmp->order < i)
-		{
-			// printf("LEFT NOT ORDERED!!!\n");
-			// printf("tmp, i: %d, %d\n", tmp->order, i);
-			return (1);
-		}
-		i = tmp->order;
-		tmp = tmp->next;
-	}
-	tmp = lst;
-	while (tmp->order != pivot)
-	{
-		if (tmp->order < i)
-		{
-			// printf("RIGHT NOT ORDERED!!!\n");
-			// printf("tmp, i: %d, %d\n", tmp->order, i);
-			return (1);
-		}
-		i = tmp->order;
-		tmp = tmp->next;
-	}
-	// printf("VALID ORDERED!!!\n");
-	return (0);
-}
-
-
-int	divide_conquer(t_list **lst1, t_list **lst2, int left, int right)
-{
-	t_list	*cur;
-	int		pivot;
-	int		cnt;
-	int		s;
-
-	pivot = (left + right) / 2;
-	if (left >= right)
-		return (0);
-	// printf("left, right, pivot: %d, %d, %d\n", left, right, pivot);
-	cnt = 0;
-	s = right - left + 1;
-	// if (is_ordered(*lst1, 0, s))
-	// {
-	// 	return (0);
-	// }
-	if (is_ordered(*lst1, 0, s))
-		return (0);
-	if (s == 2)
-	{
-		swap(lst1, &cnt);
-		dc++;
-		return (1);
-	}
-	s = pivot - left;
-	while ((*lst1)->order != pivot)
-	{
-		if ((*lst1)->order > pivot && (*lst1)->order <= right)
-			push(lst1, lst2, &cnt);
-		// else if ((*lst1)->next && (*lst1)->next->order < (*lst1)->order && \
-		// 	(*lst1)->next->order <= pivot && (*lst1)->next->order >= left && \
-		// 	(*lst1)->order <= pivot && (*lst1)->order >= left)
-		// {
-		// 	swap(lst1, &cnt);
-		// 	dc++;
-		// 	rotate(lst1, &cnt);
-		// }
-		else
-		{
-			rotate(lst1, &cnt);
-			s--;
-		}
-		// s--;
-	}
-	// printf("1\n");
-	// print_list(*lst1);
-	// print_list(*lst2);
-	while (s)
-	{
-		if ((*lst1)->order < pivot && (*lst1)->order >= left)
-		{
-			push(lst1, lst2, &cnt);
-			rotate(lst2, &cnt);
-			s--;
-		}
-		else if ((*lst1)->next && (*lst1)->next->order < (*lst1)->order && \
-			(*lst1)->next->order >= pivot && (*lst1)->next->order <= right && \
-			(*lst1)->order >= pivot && (*lst1)->order <= right)
-		{
-			swap(lst1, &cnt);
-			dc++;
-			rotate(lst1, &cnt);
-		}
-		else
-			rotate(lst1, &cnt);
-	}
-	// printf("2\n");
-	// print_list(*lst1);
-	// return (0);
-	while ((*lst1)->order != pivot)
-	{
-		// while ((*lst2)->order > (*lst1)->order)
-		// 	push(lst2, lst1, &cnt);
-		reverse_rotate(lst1, &cnt);
-	}
-	// printf("3\n");
-	// print_list(*lst1);
-	rotate(lst1, &cnt);	
-	while ((*lst2)->order <= right && (*lst2)->order > pivot)
-		push(lst2, lst1, &cnt);
-	// printf("4\n");
-	// print_list(*lst1);
-	// print_list(*lst2);
-	// return (0);
-	reverse_rotate(lst1, &cnt);
-	// while ((*lst1)->order != pivot)
-		// rotate(lst1, &cnt);
-	// printf("5\n");
-	// print_list(*lst1);
-	// print_list(*lst2);
-	// return (0);
-	cur = ft_lstlast(*lst2);
-	s = pivot - left;
-	while (cur->order >= left && cur->order <= pivot)
-	{
-		cur = cur->prev;
-		reverse_rotate(lst2, &cnt);
-		push(lst2, lst1, &cnt);
-		s--;
-	}
-	// printf("6\n");
-	// print_list(*lst1);
-	// print_list(*lst2);
-	// return (0);
-	// printf("s: %d\n", s);
-	cur = ft_lstlast(*lst1);
-	if (isvalid(*lst1, cur, s, pivot))
-	{
-		while (s--)
-		{
-			cur = cur->prev;
-			reverse_rotate(lst1, &cnt);
-		}
-		printf("7\n");
-		print_list(*lst1);
-		// print_list(*lst2);
-		cnt += divide_conquer(lst1, lst2, left, pivot - 1);
-	}
-	// printf("8\n");
-	while ((*lst1)->order != pivot)
-		rotate(lst1, &cnt);
-	// printf("9\n");
-	rotate(lst1, &cnt);
-	// print_list(*lst1);
-	// print_list(*lst2);
-	cnt += divide_conquer(lst1, lst2, pivot + 1, right);
-	// printf("10\n");
-	return (cnt);
-}
-
-int	divide_conquer1(t_list **lst1, t_list **lst2, int left, int right)
-{
-	t_list	*cur;
-	int		pivot;
-	int		cnt;
-	int		s;
-
-	pivot = (left + right) / 2;
-	if (left >= right)
-		return (0);
-	// printf("div 1, left, right, pivot: %d, %d, %d\n", left, right, pivot);
-	cnt = 0;
-	s = right - left + 1;
-	if (is_ordered(*lst1, 1, s))
-		return (0);
-	if (s == 2)
-	{
-		swap(lst1, &cnt);
-		dc1++;
-		return (1);
-	}
-	// if (is_ordered(*lst1, 1, s))
-	// {
-	// 	return (0);
-	// }
-	s = right - pivot;
-	while ((*lst1)->order != pivot)
-	{
-		if ((*lst1)->order < pivot && (*lst1)->order >= left)
-		{
-			push(lst1, lst2, &cnt);
-			rotate(lst2, &cnt);
-		}
-		// else if ((*lst1)->next && (*lst1)->next->order > (*lst1)->order && \
-		// 	(*lst1)->next->order >= pivot && (*lst1)->next->order <= right && \
-		// 	(*lst1)->order >= pivot && (*lst1)->order <= right)
-		// {
-		// 	swap(lst1, &cnt);
-		// 	rotate(lst1, &cnt);
-		// }
-		else
-		{
-			rotate(lst1, &cnt);
-			s--;
-		}
-		// s--;
-	}
-	// printf("11\n");
-	while (s)
-	{
-		if ((*lst1)->order > pivot && (*lst1)->order <= right)
-		{
-			push(lst1, lst2, &cnt);
-			s--;
-		}
-		else if ((*lst1)->next && (*lst1)->next->order > (*lst1)->order && \
-				(*lst1)->next->order <= pivot && (*lst1)->next->order >= left && \
-				(*lst1)->order <= pivot && (*lst1)->order >= left)
-		{
-			swap(lst1, &cnt);
-			rotate(lst1, &cnt);
-		}
-		else
-			rotate(lst1, &cnt);
-	}
-	// printf("12\n");
-	while ((*lst1)->order != pivot)
-		reverse_rotate(lst1, &cnt);
-	// printf("13\n");
-	// print_list(*lst1);
-	// print_list(*lst2);
-	rotate(lst1, &cnt);
-	cur = ft_lstlast(*lst2);
-	s = right - pivot;
-	while (cur->order >= left && cur->order <= right)
-	{
-		cur = cur->prev;
-		reverse_rotate(lst2, &cnt);
-		push(lst2, lst1, &cnt);
-	}
-	// printf("14\n");
-	// print_list(*lst1);
-	// print_list(*lst2);
-	reverse_rotate(lst1, &cnt);
-	while ((*lst2)->order <= right && (*lst2)->order >= pivot)
-	{
-		push(lst2, lst1, &cnt);
-		s--;
-	}
-	// printf("15\n");
-	// print_list(*lst1);
-	// print_list(*lst2);
-	while (s--)
-		reverse_rotate(lst1, &cnt);
-	// print_list(*lst1);
-	// print_list(*lst2);
-	// return (0);
-	// while ((*lst1)->order != pivot)
-	// 	rotate(lst1, &cnt);
-	// cur = ft_lstlast(*lst2);
-	// rotate(lst1, &cnt);
-	// cur = ft_lstlast(*lst1);
-	// printf("16\n");
-	// print_list(*lst1);
-	// print_list(*lst2);
-	cnt += divide_conquer1(lst1, lst2, pivot + 1, right);
-	// printf("17\n");
-	// print_list(*lst1);
-	// print_list(*lst2);
-	while ((*lst1)->order != pivot)
-		rotate(lst1, &cnt);
-	rotate(lst1, &cnt);
-	// printf("18\n");
-	cnt += divide_conquer1(lst1, lst2, left, pivot - 1);
-	// printf("19\n");
-	return (cnt);
-}
-
-int	adjust_merge(t_list **lst1, t_list **lst2, int n)
-{
-	int	cnt;
-
-	cnt = 0;
-	while ((*lst1)->order != n + 1)
-		rotate(lst1, &cnt);
-	while ((*lst2)->order != n)
-		rotate(lst2, &cnt);
-	while (*lst2)
-		push(lst2, lst1, &cnt);
-	return (cnt);
-}
-
-// 6 7 8 10 9 2 1 5 3 4
-
-void	push_swap(t_list **lst1)
+void	push_swap(t_list **lst1, int size)
 {
 	t_list	*lst2;
-	int		n;
-	int		cnt;
-	int		size;
 
 	lst2 = NULL;
 	if (!(*lst1))
 		return ;
-	n = ft_lstsize(*lst1);
-	cnt = init(lst1, &lst2, n);
-	size = n / 4;
-	printf("init count: %d\n", cnt);
-	print_operations();
-	print_list(*lst1);
-	print_list(lst2);
-	if (!is_ordered(*lst1, 0, n - n / 2))
-	{
-		cnt += divide_conquer(lst1, &lst2, n / 2 + 1, n);
-		printf("after conquer(lst1) count: %d\n", cnt);
-		print_operations();
-		// print_list(*lst1);
-		// print_list(lst2);
-	}
-	if (!is_ordered(lst2, 1, n / 2))
-		cnt += divide_conquer1(&lst2, lst1, 1, n / 2);
-	printf("after conquer(lst2) count: %d\n", cnt);
-	printf("dc, dc1: %d %d\n", dc, dc1);
-	print_operations();
-	// print_list(*lst1);
-	// print_list(lst2);
-	cnt += adjust_merge(lst1, &lst2, n / 2);
-	print_list(*lst1);
-	// print_list(lst2);
-	printf("count: %d\n", cnt);
-	if (!is_ordered(*lst1, 0, n))
+    a_to_b(lst1, &lst2, 0, size);
+    if (!is_ordered(*lst1, 0, size))
 		printf("List is not ordered!!!!\n");
 	ft_lstclear(lst1);
 	ft_lstclear(&lst2);
+	lst1 = NULL;
+	lst2 = NULL;
 }
 
-
-int	is_high(int m, int n)
-{
-	return (n > m);
-}
-
-void order_data(t_list **lst)
+int	get_target(t_list **lst)
 {
 	t_list	*cur;
+	int		target;
 
-	if (!(*lst))
-		return ;
-	if (is_ordered(*lst, 0, ft_lstsize(*lst)))
-	{
-		ft_lstclear(lst);
-		return ;
-	}
 	cur = *lst;
+	target = 0;
 	while (cur)
 	{
-		cur->order = ft_lstiter(*lst, cur->n, is_high) + 1;
+		target = target * 10 + cur->order;
 		cur = cur->next;
+	}
+	return (target);
+}
+
+unsigned long long	find_tens(unsigned long long num)
+{
+	unsigned long long	res;
+
+	res = 1;
+	while (num / 10)
+	{
+		num /= 10;
+		res *= 10;
+	}
+	return (res);
+}
+
+int	get_start(int size)
+{
+	int	res;
+	int	i;
+
+	res = 1;
+	i = 2;
+	while (i <= size)
+		res = res * 10 + i++;
+	return (res);
+}
+
+int	is_visited(int visited[1800][2], int find, int to_find1, int to_find2)
+{
+	int	i;
+
+	i = 0;
+	if (to_find2 >= 100)
+		return (1);
+	while (i < find)
+	{
+		if (visited[i][0] == to_find1 && visited[i][1] == to_find2)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	print_answer(t_list **lst1, int dist, unsigned long long n)
+{
+	t_list	*lst2;
+	int		m;
+	int		tmp;
+
+	lst2 = NULL;
+	tmp = dist;
+	while (dist--)
+	{
+		m = n % 11;
+		if (m == 0)
+			push(lst1, &lst2, 0);
+		else if (m == 1)
+			push(&lst2, lst1, 1);
+		else if (m == 2)
+			swap(lst1, 0);
+		else if (m == 3)
+			swap(&lst2, 1);
+		else if (m == 4)
+			swap_both(lst1, &lst2);
+		else if (m == 5)
+			reverse_rotate(lst1, 0);
+		else if (m == 6)
+			reverse_rotate(&lst2, 1);
+		else if (m == 7)
+			reverse_rotate_both(lst1, &lst2);
+		else if (m == 8)
+			rotate(lst1, 0);
+		else if (m == 9)
+			rotate(&lst2, 1);
+		else
+			rotate_both(lst1, &lst2);
+		n /= 11;
+	}
+	ft_lstclear(lst1);
+	*lst1 = NULL;
+	lst2 = NULL;
+}
+
+void	bfs(t_list	**lst, int size)
+{
+	unsigned long long	memo[10][480][3];
+	char				res[10][4];
+	int					idx[10];
+	int					visited[1800][2];
+	int					target;
+	int					find;
+	int					dist;
+
+	if (!(*lst) || size >= 6)
+		return ;
+	target = get_target(lst);
+	find = 0;
+	ft_bzero(idx, sizeof(int) * 10);
+	idx[0]++;
+	memo[0][0][0] = get_start(size);
+	memo[0][0][2] = 0;
+	visited[find][0] = memo[0][0][0];
+	visited[find][1] = 0;
+	dist = 0;
+	while (1)
+	{
+		int previdx = 0;
+		while (previdx < idx[dist])
+		{
+			if (memo[dist][previdx][0] == target)
+			{
+				print_answer(lst, dist, memo[dist][previdx][2]);
+				return ;
+			}
+			if (dist == 0)
+			{
+				long long c = memo[dist][previdx][0];
+				long long d = find_tens(c);
+				long long e = find_tens(memo[dist][previdx][1]);
+				long long f = c / d;
+				long long g = c % d;
+				long long h = memo[dist][previdx][1];
+				long long pb = h + f * e;
+				long long sa = (g / (d / 10)) * d + f * (d / 10) + g % (d / 10);
+				long long ra = 10 * g + f;
+				long long rra = (c % 10) * d + (c / 10);
+				// pb
+				visited[find][0] = g;
+				visited[find++][1] = pb;
+				memo[dist + 1][idx[dist + 1]][0] = g;
+				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1] + f * e;
+				memo[dist + 1][idx[dist + 1]][2] = memo[dist][idx[dist]][2] * 11 + 1;
+				idx[dist + 1]++;
+				// sa
+				visited[find][0] = sa;
+				visited[find++][1] = h;
+				memo[dist + 1][idx[dist + 1]][0] = sa;
+				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1];
+				memo[dist + 1][idx[dist + 1]][2] = memo[dist][idx[dist]][2] * 11 + 2;
+				idx[dist + 1]++;
+				// ra
+				visited[find][0] = ra;
+				visited[find++][1] = h;
+				memo[dist + 1][idx[dist + 1]][0] = g * 10 + f;
+				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1];
+				memo[dist + 1][idx[dist + 1]][2] = memo[dist][idx[dist]][2] * 11 + 5;
+				idx[dist + 1]++;
+				// rra
+				visited[find][0] = rra;
+				visited[find++][1] = h;
+				memo[dist + 1][idx[dist + 1]][0] = rra;
+				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1];
+				memo[dist + 1][idx[dist + 1]][2] = memo[dist][idx[dist]][2] * 11 + 8;
+				idx[dist + 1]++;
+			}
+			else
+			{
+				unsigned long long c = memo[dist][previdx][0];
+				unsigned long long h = memo[dist][previdx][1];
+				unsigned long long d = find_tens(c);
+				unsigned long long e = find_tens(h);
+				unsigned long long f = c / d;
+				unsigned long long g = c % d;
+				unsigned long long i = h / e;
+				unsigned long long j = h % e;
+				unsigned long long pa; 
+				unsigned long long pb;
+				unsigned long long sa;
+				unsigned long long sb;
+				unsigned long long ra = 10 * g + f;
+				unsigned long long rb = 10 * j + i;
+				unsigned long long rra;
+				unsigned long long rrb;
+				if (h)
+					pa = 10 * d * i + c;
+				else
+					pa = c;
+				if (h)
+					pb = 10 * e * f + h;
+				else
+					pb = f;
+				if (c > 10)
+					sa = (g / (d / 10)) * d + f * (d / 10) + g % (d / 10);
+				else 
+					sa = c;
+				if (h > 10)
+					sb = (j / (e / 10)) * e + i * (e / 10) + j % (e / 10);
+				else
+					sb = h;
+				if (c)
+					rra = (c % 10) * d + (c / 10);
+				else
+					rra = c;
+				if (h)
+					rrb = (h % 10) * e + (h / 10);
+				else
+					rrb = h;
+				if (!is_visited(visited, find, pa, j))
+				{
+					if (h)
+					{
+						visited[find][0] = pa;
+						visited[find++][1] = j;
+						memo[dist + 1][idx[dist + 1]][0] = pa;
+						memo[dist + 1][idx[dist + 1]][1] = j;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 0;
+						idx[dist + 1]++;
+					}
+				}
+				// pb
+				if (!is_visited(visited, find, g, pb))
+				{
+					if (c)
+					{
+						visited[find][0] = g;
+						visited[find++][1] = pb;
+						memo[dist + 1][idx[dist + 1]][0] = g;
+						memo[dist + 1][idx[dist + 1]][1] = pb;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 1;
+						idx[dist + 1]++;
+					}
+				}
+				// sa
+				if (!is_visited(visited, find, sa, h))
+				{
+					if (c > 10)
+					{
+						visited[find][0] = sa;
+						visited[find++][1] = h;
+						memo[dist + 1][idx[dist + 1]][0] = sa;
+						memo[dist + 1][idx[dist + 1]][1] = h;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 2;
+						idx[dist + 1]++;
+					}
+				}
+				// sb
+				if (!is_visited(visited, find, c, sb))
+				{
+					if (h > 10)
+					{
+						visited[find][0] = c;
+						visited[find++][1] = sb;
+						memo[dist + 1][idx[dist + 1]][0] = c;
+						memo[dist + 1][idx[dist + 1]][1] = sb;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 3;
+						idx[dist + 1]++;
+					}
+				}
+				// ss
+				if (!is_visited(visited, find, sa, sb))
+				{
+					if (c > 10 && h > 10)
+					{
+						visited[find][0] = sa;
+						visited[find++][1] = sb;
+						memo[dist + 1][idx[dist + 1]][0] = sa;
+						memo[dist + 1][idx[dist + 1]][1] = sb;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 4;
+						idx[dist + 1]++;
+					}
+				}
+				// ra
+				if (!is_visited(visited, find, ra, h))
+				{
+					if (c > 10)
+					{
+						visited[find][0] = ra;
+						visited[find++][1] = h;
+						memo[dist + 1][idx[dist + 1]][0] = ra;
+						memo[dist + 1][idx[dist + 1]][1] = h;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 5;
+						idx[dist + 1]++;
+					}
+				}
+				// rb
+				if (!is_visited(visited, find, c, rb))
+				{
+					if (h > 10)
+					{
+						visited[find][0] = c;
+						visited[find++][1] = rb;
+						memo[dist + 1][idx[dist + 1]][0] = c;
+						memo[dist + 1][idx[dist + 1]][1] = rb;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 6;
+						idx[dist + 1]++;
+					}
+				}
+				// rr
+				if (!is_visited(visited, find, ra, rb))
+				{
+					if (c > 10 && h > 10)
+					{
+						visited[find][0] = ra;
+						visited[find++][1] = rb;
+						memo[dist + 1][idx[dist + 1]][0] = ra;
+						memo[dist + 1][idx[dist + 1]][1] = rb;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 7;
+						idx[dist + 1]++;
+					}
+				}
+				// rra
+				if (!is_visited(visited, find, rra, h))
+				{
+					if (c > 10)
+					{
+						visited[find][0] = rra;
+						visited[find++][1] = h;
+						memo[dist + 1][idx[dist + 1]][0] = rra;
+						memo[dist + 1][idx[dist + 1]][1] = h;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 8;
+						idx[dist + 1]++;
+					}
+				}
+				// rrb
+				if (!is_visited(visited, find, c, rrb))
+				{
+					if (h > 10)
+					{
+						visited[find][0] = c;
+						visited[find++][1] = rrb;
+						memo[dist + 1][idx[dist + 1]][0] = c;
+						memo[dist + 1][idx[dist + 1]][1] = rrb;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 9;
+						idx[dist + 1]++;
+					}
+				}
+				// rrr
+				if (!is_visited(visited, find, rra, rrb))
+				{
+					if (c > 10 && h > 10)
+					{
+						visited[find][0] = rra;
+						visited[find++][1] = rrb;
+						memo[dist + 1][idx[dist + 1]][0] = rra;
+						memo[dist + 1][idx[dist + 1]][1] = rrb;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 10;
+						idx[dist + 1]++;
+					}
+				}
+			}
+			previdx++;
+		}
+		dist++;
 	}
 }
 
 int	main(int argc, char **argv)
 {
 	t_list	*lst;
+	int		size;
 
 	lst = NULL;
 	parse_data(&lst, argc, argv);
-	order_data(&lst);
-	// print_list(lst);
-	push_swap(&lst);
-	// ft_lstclear(&lst);
+	size = ft_lstsize(lst);
+	order_data(&lst, size);
+	bfs(&lst, size);
+	push_swap(&lst, size);
 	return (0);
 }
-
-
-// init
-//A: 19 20 17 12 14 13 11 18 15 16 
-//A: 12 14 13 11 15 16 18 17 20 19
-//B: 9 7 10 6 8 5 3 1 2 4
-
-// 1st d/c A:
-// pivot: 13 => left: 4, right: 5, PREV_PIVOT = 15
-// A: 15 16 18 17 20 19 12 13
-// B: 14 9 7 10 6 8 5 3 1 2 4 11
-// 14 15 16 18 17 20 19 12 13
-// 12 11 13 14 15 16 18 17 20 19
-
-// 2nd d/c A:
-// pivot: 13 - 
-
-// <25> 28 27 26 23 21 24 29 22 (30) 39 32 38 37 36 34 31 33 40 <35> 
-// <23> 21 24 22 (25) 28 <27> 26 29 <<30>> 39 32 38 37 36 34 31 33 40 35
-// 22 21 23 24 25 28 27 26 29 30 39 32 38 37 36 34 31 33 40 35
-// 21 22 23 24 25 26 27 29 28 30 
-
-
-// 1 2 3
-// 1 3 2 sa ra
-// 2 1 3 sa
-// 2 3 1 rra
-// 3 1 2 ra
-// 3 2 1 sa rra
-
-// 1 2 3 4
-// 1 2 4 3 pb (sa ra) pa
-// 1 3 2 4 ra sa rra
-// 1 3 4 2 sa ra sa ra
-// 1 4 2 3 pb (ra) pa
-// 1 4 3 2 pb (sa rra) pa
-// 2 1 3 4 sa
-// 2 1 4 3 pb (sa ra) pa sa
-// 2 3 1 4 rra rra sa ra ra
