@@ -1377,16 +1377,15 @@ int	get_target(t_list **lst)
 	return (target);
 }
 
-int	find_tens(int num)
+unsigned long long	find_tens(unsigned long long num, int m)
 {
-	int	res;
-	int	i;
+	unsigned long long	res;
 
 	res = 1;
-	while (num/10)
+	while (num/m)
 	{
-		num /= 10;
-		res *= 10;
+		num /= m;
+		res *= m;
 	}
 	return (res);
 }
@@ -1403,30 +1402,94 @@ int	get_start(int size)
 	return (res);
 }
 
-int	is_visited(int visited[240][2], int find, int to_find1, int to_find2)
+int	is_visited(int visited[1800][2], int find, int to_find1, int to_find2)
 {
 	int	i;
 
 	i = 0;
+	if (to_find2 >= 100)
+		return (1);
+	// printf("find: %d\n", find);
+	// printf("%d, %d\n", to_find1, to_find2);
 	while (i < find)
 	{
+		// printf("i, visited[%d][0], visited[%d][1]: %d, %d, %d\n", i, i, i, visited[i][0], visited[i][1]);
 		if (visited[i][0] == to_find1 && visited[i][1] == to_find2)
 			return (1);
+		i++;
 	}
 	return (0);
+}
+
+void	print_answer(t_list **lst1, int dist, unsigned long long n)
+{
+	t_list	*lst2;
+	int		m;
+	int		tmp;
+
+	lst2 = NULL;
+	tmp = dist;
+	// 0: pb, 1: pa, 2: sa, 3: sb, 4: ss, 5: rra, 6: rrb, 7: rrr, 8: ra, 9: rb, 10: rr
+	printf("dist: %d\n", dist);
+	printf("\n-------------------before--------------------\n");
+	print_list(*lst1);
+	print_list(lst2);
+	while (dist--)
+	{
+		m = n % 11;
+		if (m == 0)
+			push(lst1, &lst2);
+			// printf("pb\n");
+		else if (m == 1)
+			push(&lst2, lst1);
+			// printf("pa\n");
+		else if (m == 2)
+			swap(lst1);
+			// printf("sa\n");
+		else if (m == 3)
+			swap(&lst2);
+			// printf("sb\n");
+		else if (m == 4)
+			swap_both(lst1, &lst2);
+			// printf("ss\n");
+		else if (m == 5)
+			reverse_rotate(lst1);
+			// printf("rra\n");
+		else if (m == 6)
+			reverse_rotate(&lst2);
+			// printf("rrb\n");
+		else if (m == 7)
+			reverse_rotate_both(lst1, &lst2);
+			// printf("rrr\n");
+		else if (m == 8)
+			rotate(lst1);
+			// printf("ra\n");
+		else if (m == 9)
+			rotate(&lst2);
+			// printf("rb\n");
+		else
+			rotate_both(lst1, &lst2);
+			// printf("rr\n");
+		n /= 11;
+	}
+	printf("\n-------------------after--------------------\n");
+	print_list(*lst1);
+	print_list(lst2);
+	printf("dist: %d\n", tmp);
+	lst2 = NULL;
 }
 
 // pa : 0, pb : 1, sa : 2, sb : 3, ss : 4, ra : 5, rb : 6, rr : 7, rra : 8, rrb : 9, rrr : a
 
 void	bfs(t_list	**lst, int size)
 {
-	long long	memo[10][50][4];
-	char		res[10][4];
-	int			idx[10];
-	int			visited[240][2];
-	int			target;
-	int			find;
-	int			dist;
+	unsigned long long	memo[10][480][4];
+	char				res[10][4];
+	int					idx[10];
+	int					visited[1800][2];
+	int					target;
+	int					find;
+	int					dist;
 
 	if (!size || size >= 6)
 		return ;
@@ -1437,255 +1500,414 @@ void	bfs(t_list	**lst, int size)
 	idx[0]++;
 	memo[0][0][0] = get_start(size);
 	memo[0][0][2] = -1;
+	memo[0][0][3] = 0;
 	visited[find][0] = 12345;
 	visited[find][1] = 0;
-	if (target)
-	{
-		printf("target: %lld,\n", memo[0][0][0]);
-		print_list(*lst);
-	}
+	// if (target)
+	// {
+		printf("target: %d\n", target);
+	// 	print_list(*lst);
+	// }
 	dist = 0;
-	while (dist < 3)
+	// 4 1 3 2 5
+	// ra sa ra ra sa ra
+	// 1 2 3 4 5
+	// 32451
+	// 54132
+	// 41325
+
+	while (dist < 10)
 	{
 		int previdx = 0;
+		// printf("%d: 5 90\n", dist);
+		// printf("memo: %lld %lld\n", memo[5][90][0], memo[5][90][1]);
 		while (previdx < idx[dist])
 		{
+			// printf("previdx, dist, idx[dist]: %d, %d, %d\n", previdx, dist, idx[dist]);
 			// stack A, stack B, prev oper, operations
+			// if (dist == 5 && previdx == 90)
+			// {
+			// 	printf("hellowhellshdfasoheoh\n");
+			// 	printf("memo: %lld %lld\n", memo[dist][previdx][0], memo[dist][previdx][1]);
+			// }
 			if (memo[dist][previdx][0] == target)
 			{
+				printf("find answer!!!\n");
 				printf("dist: %d\n", dist);
-				printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist][previdx][0], \
+				// printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist][previdx][0], \
 					memo[dist][previdx][1], memo[dist][previdx][2], memo[dist][previdx][3]);
+				print_answer(lst, dist, memo[dist][previdx][3]);
 				return ;
 			}
-			if (memo[dist][previdx][2] == -1)
+			// printf("111111111111111111111111111111111\n");
+			if (dist == 0)
 			{
 				// pb
 				long long c = memo[dist][previdx][0];
-				long long d = find_tens(c);
-				long long e = find_tens(memo[dist][previdx][1]);
+				long long d = find_tens(c, 10);
+				long long e = find_tens(memo[dist][previdx][1], 10);
 				long long f = c / d;
 				long long g = c % d;
-				printf("c, d, e, f, g: %lld, %lld, %lld, %lld, %lld\n", c, d, e, f, g);
+				long long h = memo[dist][previdx][1];
+				long long pb = h + f * e;
+				long long ra = 10 * g + f;
+				long long rra = (c % 10) * d + (c / 10);
+				// printf("c, d, e, f, g: %lld, %lld, %lld, %lld, %lld\n", c, d, e, f, g);
+				visited[find][0] = g;
+				visited[find++][1] = pb;
 				memo[dist + 1][idx[dist + 1]][0] = g;
 				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1] + f * e;
 				memo[dist + 1][idx[dist + 1]][2] = 1;
 				memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 1;
-				printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
-				memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
+				// printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
+				// memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
 				idx[dist + 1]++;
 				// sa
 				long long sa = (g / (d / 10)) * d + f * (d / 10) + g % (d / 10);
 				// 방문 x
 				memo[dist + 1][idx[dist + 1]][0] = sa;
-				if (memo[dist + 1][idx[dist + 1]][0] == target)
-				{
-					printf("dist: %d\n", dist + 1);
-					return ;
-				}
+				visited[find][0] = sa;
+				visited[find++][1] = h;
 				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1];
 				memo[dist + 1][idx[dist + 1]][2] = 2;
 				memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 2;
-				printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
+				// printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
 				memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
 				idx[dist + 1]++;
 				// ra
+				visited[find][0] = ra;
+				visited[find++][1] = h;
 				memo[dist + 1][idx[dist + 1]][0] = g * 10 + f;
-				if (memo[dist + 1][idx[dist + 1]][0] == target)
-				{
-					printf("dist: %d\n", dist + 1);
-					return ;
-				}
 				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1];
 				memo[dist + 1][idx[dist + 1]][2] = 5;
 				memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 5;
-				printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
+				// printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
 				memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
 				idx[dist + 1]++;
 				// rra
-				memo[dist + 1][idx[dist + 1]][0] = (c % 10) * d + (c / 10);
-				if (memo[dist + 1][idx[dist + 1]][0] == target)
-				{
-					printf("dist: %d\n", dist + 1);
-					return ;
-				}
+				visited[find][0] = rra;
+				visited[find++][1] = h;
+				memo[dist + 1][idx[dist + 1]][0] = rra;
 				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1];
 				memo[dist + 1][idx[dist + 1]][2] = 8;
 				memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 8;
-				printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
+				// printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
 				memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
 				idx[dist + 1]++;
 			}
 			else
 			{
-				long long c = memo[dist][previdx][0];
-				long long h = memo[dist][previdx][1];
-				long long d = find_tens(c);
-				long long e = find_tens(h);
-				long long f = c / d;
-				long long g = c % d;
-				long long i = h / e;
-				long long j = h % e;
-				long long pa = 10 * d * i + c;
-				long long pb = 10 * e * f + h;
-				long long sa = (g / (d / 10)) * d + f * (d / 10) + g % (d / 10);
-				long long sb = (j / (e / 10)) * e + i * (e / 10) + j % (e / 10);
-				long long ra = 10 * g + f;
-				long long rb = 10 * j + i;
-				long long rra = (c % 10) * d + (c / 10);
-				long long rrb = (h % 10) * e + (h / 10);
+				unsigned long long c = memo[dist][previdx][0];
+				unsigned long long h = memo[dist][previdx][1];
+				// printf("c, h: %lld, %lld\n ", c, h);
+
+				unsigned long long d = find_tens(c, 10);
+				unsigned long long e = find_tens(h, 10);
+				// printf("d, e: %lld, %lld\n", d, e);
+				unsigned long long f = c / d;
+				unsigned long long g = c % d;
+				unsigned long long i = h / e;
+				unsigned long long j = h % e;
+				// printf("f, g, i, j: %lld %lld %lld %lld\n", f, g, i, j);
+				unsigned long long pa; 
+				if (h)
+				{
+					pa = 10 * d * i + c;
+					// else
+					// 	pa = i;
+				}
+				else
+					pa = c;
+				unsigned long long pb;
+				// if (c)
+				// {
+					if (h)
+						pb = 10 * e * f + h;
+					else
+						pb = f;
+				// }
+				// else
+				// 	pb = h;
+				// printf("pa, pb: %lld %lld\n", pa, pb);
+				unsigned long long sa;
+				if (c > 10)
+					sa = (g / (d / 10)) * d + f * (d / 10) + g % (d / 10);
+				else 
+					sa = c;
+				unsigned long long sb;
+				if (h > 10)
+					sb = (j / (e / 10)) * e + i * (e / 10) + j % (e / 10);
+				else
+					sb = h;
+				// printf("sa, sb: %lld %lld\n", sa, sb);
+				unsigned long long ra = 10 * g + f;
+				unsigned long long rb = 10 * j + i;
+				unsigned long long rra;
+				if (c)
+					rra = (c % 10) * d + (c / 10);
+				else
+					rra = c;
+				unsigned long long rrb;
+				if (h)
+					rrb = (h % 10) * e + (h / 10);
+				else
+					rrb = h;
+				// printf("c, h: %lld, %lld\n ", c, h);
+				// printf("d, e, f: %lld %lld %lld\n", d, e, f);
+				// printf("g, i, j: %lld %lld %lld\n", g, i, j);
+				// printf("pa, pb, sa, sb: %lld %lld %lld %lld\n", pa, pb, sa, sb);
+				// printf("ra, rb, rra, rrb: %lld %lld %lld %lld\n", ra, rb, rra, rrb);
 				// pa pb sa sb ss ra rb rr rra rrb rrr
 				// pa
-				if (!is_visited(visited, find, pa, i))
+				// printf("find: %d\n", find);
+				// if (c == 5143 && h == 2)
+				// {
+				// 	printf("\n\n-------------pa---------------\n\n");
+				// 	printf("before: %lld, %lld\n", c, h);
+				// 	printf("after: %lld %lld\n", pa, j);
+				// }
+				if (!is_visited(visited, find, pa, j))
 				{
 					if (h)
 					{
+						// if (c == 5143 && h == 2)
+						// {
+						// 	printf("\n\n-------------pa1---------------\n\n");
+						// 	printf("before: %lld, %lld\n", c, h);
+						// 	printf("after: %lld %lld\n", pa, j);
+						// 	// printf("idx[dist+1]")
+						// }
 						visited[find][0] = pa;
-						visited[find++][1] = i;
+						visited[find++][1] = j;
 						memo[dist + 1][idx[dist + 1]][0] = pa;
-						memo[dist + 1][idx[dist + 1]][1] = i;
+						memo[dist + 1][idx[dist + 1]][1] = j;
 						memo[dist + 1][idx[dist + 1]][2] = 0;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 0;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 0;
+						// if (c == 5143 && h == 2)
+						// {
+						// 	printf("%lld %lld %lld %lld\n", memo[dist + 1][idx[dist + 1]][0], memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
+						// 	printf("%lld %lld %lld %lld\n", memo[5][90][0], memo[5][90][1], memo[5][90][2], memo[5][90][3]);
+						// 	printf("before index: %d, %d \n", idx[dist + 1], dist);
+						// }
+						idx[dist + 1]++;
+						// if (c == 5143 && h == 2)
+						// 	printf("after index: %d, %d \n", idx[dist + 1], dist);
 					}
 				}
 				// pb
-				else if (!is_visited(visited, find, g, pb))
+				if (!is_visited(visited, find, g, pb))
 				{
 					if (c)
 					{
+						// printf("\n\n-------------pb---------------\n\n");
+						// printf("before: %lld, %lld\n", c, h);
+						// printf("after: %lld %lld\n", g, pb);
 						visited[find][0] = g;
 						visited[find++][1] = pb;
 						memo[dist + 1][idx[dist + 1]][0] = g;
 						memo[dist + 1][idx[dist + 1]][1] = pb;
 						memo[dist + 1][idx[dist + 1]][2] = 1;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 1;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 1;
+						idx[dist + 1]++;
 					}
 				}
 				// sa
-				else if (!is_visited(visited, find, sa, h))
+				if (!is_visited(visited, find, sa, h))
 				{
 					if (c > 10)
 					{
+						// printf("\n\n-------------sa---------------\n\n");
+						// printf("before: %lld, %lld\n", c, h);
+						// printf("after: %lld %lld\n", sa, h);
 						visited[find][0] = sa;
 						visited[find++][1] = h;
 						memo[dist + 1][idx[dist + 1]][0] = sa;
 						memo[dist + 1][idx[dist + 1]][1] = h;
 						memo[dist + 1][idx[dist + 1]][2] = 2;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 2;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 2;
+						idx[dist + 1]++;
 					}
 				}
 				// sb
-				else if (!is_visited(visited, find, c, sb))
+				if (!is_visited(visited, find, c, sb))
 				{
 					if (h > 10)
 					{
+						// printf("\n\n-------------sb---------------\n\n");
+						// printf("before: %lld, %lld\n", c, h);
+						// printf("after: %lld %lld\n", c, sb);
 						visited[find][0] = c;
 						visited[find++][1] = sb;
 						memo[dist + 1][idx[dist + 1]][0] = c;
 						memo[dist + 1][idx[dist + 1]][1] = sb;
 						memo[dist + 1][idx[dist + 1]][2] = 3;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 3;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 3;
+						idx[dist + 1]++;
 					}
 				}
 				// ss
-				else if (!is_visited(visited, find, sa, sb))
+				// if (c == 25143)
+				// {
+				// 	printf("asibgalsbgalsjdgblaskdjbflaskdjfalskdjfalksfj\n");
+				// }
+				// if (c == 5143 && h == 2)
+				// {
+				// 	printf("-------------------------------------asadasdafas\n");
+				// 	printf("dist: %d\n", dist);
+				// 	printf("pa: %lld\n", pa);
+				// }
+
+				// 12345
+				// pb pb ss pa rra pa
+				// 435 12
+				// 1435 2
+				// 25143
+
+
+				// pb ra pb
+				// [['ra', 'ra', 'sa', 'ra']]
+				// 12345
+				// 452 31
+				// 542 13
+				// 435 12
+				// 1435
+				// 4351
+				// 24351
+				// [['pb', 'ra', 'pb', 'ss', 'pa', 'pa']]
+				// 25143
+				if (!is_visited(visited, find, sa, sb))
 				{
 					if (c > 10 && h > 10)
 					{
+						// printf("\n\n-------------ss---------------\n\n");
+						// printf("before: %lld, %lld\n", c, h);
+						// printf("after: %lld %lld\n", sa, sb);
 						visited[find][0] = sa;
 						visited[find++][1] = sb;
 						memo[dist + 1][idx[dist + 1]][0] = sa;
 						memo[dist + 1][idx[dist + 1]][1] = sb;
 						memo[dist + 1][idx[dist + 1]][2] = 4;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 4;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 4;
+						idx[dist + 1]++;
 					}
 				}
 				// ra
-				else if (!is_visited(visited, find, ra, h))
+				if (!is_visited(visited, find, ra, h))
 				{
 					if (c > 10)
 					{
+						// printf("\n\n-------------ra---------------\n\n");
+						// printf("before: %lld, %lld\n", c, h);
+						// printf("after: %lld %lld\n", ra, h);
 						visited[find][0] = ra;
 						visited[find++][1] = h;
 						memo[dist + 1][idx[dist + 1]][0] = ra;
 						memo[dist + 1][idx[dist + 1]][1] = h;
 						memo[dist + 1][idx[dist + 1]][2] = 5;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 5;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 5;
+						idx[dist + 1]++;
 					}
 				}
 				// rb
-				else if (!is_visited(visited, find, c, rb))
+				if (!is_visited(visited, find, c, rb))
 				{
 					if (h > 10)
 					{
+						// printf("\n\n-------------rb---------------\n\n");
+						// printf("before: %lld, %lld\n", c, h);
+						// printf("after: %lld %lld\n", c, rb);
 						visited[find][0] = c;
 						visited[find++][1] = rb;
 						memo[dist + 1][idx[dist + 1]][0] = c;
 						memo[dist + 1][idx[dist + 1]][1] = rb;
 						memo[dist + 1][idx[dist + 1]][2] = 6;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 6;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 6;
+						idx[dist + 1]++;
 					}
 				}
 				// rr
-				else if (!is_visited(visited, find, ra, rb))
+				if (!is_visited(visited, find, ra, rb))
 				{
 					if (c > 10 && h > 10)
 					{
+						// printf("\n\n-------------rr---------------\n\n");
+						// printf("before: %lld, %lld\n", c, h);
+						// printf("after: %lld %lld\n", ra, rb);
 						visited[find][0] = ra;
 						visited[find++][1] = rb;
 						memo[dist + 1][idx[dist + 1]][0] = ra;
 						memo[dist + 1][idx[dist + 1]][1] = rb;
 						memo[dist + 1][idx[dist + 1]][2] = 7;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 7;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 7;
+						idx[dist + 1]++;
 					}
 				}
 				// rra
-				else if (!is_visited(visited, find, rra, h))
+				if (!is_visited(visited, find, rra, h))
 				{
 					if (c > 10)
 					{
+						// printf("\n\n-------------rra---------------\n\n");
+						// printf("before: %lld, %lld\n", c, h);
+						// printf("after: %lld %lld\n", rra, h);
 						visited[find][0] = rra;
 						visited[find++][1] = h;
 						memo[dist + 1][idx[dist + 1]][0] = rra;
 						memo[dist + 1][idx[dist + 1]][1] = h;
 						memo[dist + 1][idx[dist + 1]][2] = 8;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 8;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 8;
+						idx[dist + 1]++;
 					}
 				}
 				// rrb
-				else if (!is_visited(visited, find, c, rrb))
+				if (!is_visited(visited, find, c, rrb))
 				{
 					if (h > 10)
 					{
+						// printf("\n\n-------------rrb---------------\n\n");
+						// printf("before: %lld, %lld\n", c, h);
+						// printf("after: %lld %lld\n", c, rrb);
 						visited[find][0] = c;
 						visited[find++][1] = rrb;
 						memo[dist + 1][idx[dist + 1]][0] = c;
 						memo[dist + 1][idx[dist + 1]][1] = rrb;
 						memo[dist + 1][idx[dist + 1]][2] = 9;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 9;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 9;
+						idx[dist + 1]++;
 					}
 				}
 				// rrr
-				else if (!is_visited(visited, find, rra, rrb))
+				if (!is_visited(visited, find, rra, rrb))
 				{
 					if (c > 10 && h > 10)
 					{
+						// printf("\n\n-------------rrr---------------\n\n");
+						// printf("before: %lld, %lld\n", c, h);
+						// printf("after: %lld %lld\n", rra, rrb);
 						visited[find][0] = rra;
 						visited[find++][1] = rrb;
 						memo[dist + 1][idx[dist + 1]][0] = rra;
 						memo[dist + 1][idx[dist + 1]][1] = rrb;
 						memo[dist + 1][idx[dist + 1]][2] = 10;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 10;
+						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 10;
+						idx[dist + 1]++;
 					}
 				}
 			}
+			// printf("\n\nfind: %d\n", find);
 			// printf("")
 			// printf("memo[%d][%d]: %d, %d, %d, %d\n", dist, previdx, memo[dist][previdx][0], \
 			// memo[dist][previdx][1], memo[dist][previdx][2], memo[dist][previdx][3]);
 			previdx++;
 		}
 		dist++;
+		// printf("target: %d\n", target);
+		// printf("dist: %d\n", dist);
 	}
+	// for (int i = 0; i < find; i++)
+	// {
+	// 	printf("find: %d, %d\n", visited[i][0], visited[i][1]);
+	// }
 }
 
 int	main(int argc, char **argv)
@@ -1698,6 +1920,7 @@ int	main(int argc, char **argv)
 	size = ft_lstsize(lst);
 	order_data(&lst, size);
 	bfs(&lst, size);
+	ft_lstclear(&lst);
 	// print_list(lst);
 	// push_swap(&lst);
 	return (0);
