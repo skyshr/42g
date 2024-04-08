@@ -27,9 +27,9 @@ int	get_target(t_list *lst)
 	return (target);
 }
 
-unsigned long long	find_tens(unsigned long long num)
+int	find_tens(int num)
 {
-	unsigned long long	res;
+	int	res;
 
 	res = 1;
 	while (num / 10)
@@ -55,27 +55,27 @@ int	get_start(int size)
 void	do_operation(t_list **lst1, t_list **lst2, int n)
 {
 	if (n == 0)
-		push(lst1, &lst2, 0);
+		push(lst1, lst2, 0);
 	else if (n == 1)
-		push(&lst2, lst1, 1);
+		push(lst2, lst1, 1);
 	else if (n == 2)
 		swap(lst1, lst2, 0);
 	else if (n == 3)
-		swap(&lst2, lst1, 1);
+		swap(lst2, lst1, 1);
 	else if (n == 4)
-		swap_both(lst1, &lst2, 2);
+		swap_both(lst1, lst2, 2);
 	else if (n == 5)
 		reverse_rotate(lst1, lst2, 0);
 	else if (n == 6)
-		reverse_rotate(&lst2, lst1, 1);
+		reverse_rotate(lst2, lst1, 1);
 	else if (n == 7)
-		reverse_rotate_both(lst1, &lst2, 2);
+		reverse_rotate_both(lst1, lst2, 2);
 	else if (n == 8)
 		rotate(lst1, lst2, 0);
 	else if (n == 9)
-		rotate(&lst2, lst1, 1);
+		rotate(lst2, lst1, 1);
 	else
-		rotate_both(lst1, &lst2, 2);
+		rotate_both(lst1, lst2, 2);
 }
 
 void	print_answer(t_list **l1, t_list **l2, int d, unsigned long long n)
@@ -87,10 +87,10 @@ void	print_answer(t_list **l1, t_list **l2, int d, unsigned long long n)
 	while (d--)
 	{
 		m = n % 11;
-		do_operation(&l1, &l2, m);
+		do_operation(l1, l2, m);
 		n /= 11;
 	}
 	ft_lstclear(l1);
-	ft_lstclear(&l2);
+	ft_lstclear(l2);
 	exit(0);
 }

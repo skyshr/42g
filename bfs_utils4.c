@@ -17,11 +17,11 @@ void	ra(t_lookup *dc, int visited[400][2], int memo[10][400][3], int idx[10])
 	int	next;
 
 	next = dc->dist + 1;
-	if (!is_visited(visited, dc->find, ra, dc->second))
+	if (!is_visited(visited, dc->find, dc->ra, dc->second))
 	{
-		visited[dc->find][0] = ra;
+		visited[dc->find][0] = dc->ra;
 		visited[dc->find++][1] = dc->second;
-		memo[next][idx[next]][0] = ra;
+		memo[next][idx[next]][0] = dc->ra;
 		memo[next][idx[next]][1] = dc->second;
 		memo[next][idx[next]][2] = memo[dc->dist][dc->cur][2] * 11 + 5;
 		idx[next]++;

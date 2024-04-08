@@ -19,13 +19,15 @@ SRCS_BASIC = ft_bzero.c ft_isdigit.c ft_lstnew.c ft_lstadd_front.c ft_lstsize.c 
 		a_order_four1.c a_order_four2.c a_order_three.c a_three.c b_four1.c \
 		b_four2.c b_four3.c b_four4.c b_four5.c b_four6.c b_handle_data.c \
 		b_order_four1.c b_order_four2.c b_order_three.c b_three.c \
-		check_validation.c operation1.c operation2.c parse_data.c main.c
+		check_validation.c operation1.c operation2.c parse_data.c error.c \
+		main.c bfs_utils1.c bfs_utils2.c bfs_utils3.c bfs_utils4.c bfs_utils5.c \
+		push_swap.c
 
 SRCS_BONUS = ft_strncmp.c ft_isdigit.c ft_isalpha.c ft_lstnew.c ft_lstadd_front.c ft_lstsize.c \
 		ft_lstlast.c ft_lstadd_back.c ft_lstclear.c ft_lstiter.c \
 		check_validation.c operation1.c operation2.c parse_data.c \
 		get_next_line_bonus.c get_next_line_utils_bonus.c main_bonus.c \
-		error.c
+		error.c is_validstr.c handle_operation.c
 
 OBJS_BASIC = $(SRCS_BASIC:.c=.o)
 OBJS_BONUS = $(SRCS_BONUS:.c=.o)
@@ -55,7 +57,7 @@ clean :
 fclean : clean
 	rm -rf $(NAME_BASIC)
 	rm -rf $(NAME_BONUS)
-	
+
 re : fclean all
 
 bonus :

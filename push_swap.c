@@ -17,11 +17,11 @@ void	push_swap(t_list **lst1, int size)
 	t_list	*lst2;
 
 	lst2 = NULL;
-	if (!(*lst1) || is_ordered(lst1, 0, size))
+	if (!(*lst1) || is_ordered(*lst1, 0, size))
 		return ;
 	if (size <= 5)
 	{
-		bfs(lst1, lst2, size);
+		bfs(lst1, &lst2);
 		return ;
 	}
 	a_to_b(lst1, &lst2, 0, size);

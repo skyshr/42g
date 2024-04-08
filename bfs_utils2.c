@@ -43,7 +43,7 @@ void	setup(t_list *lst, t_lookup *dc, int m[10][400][3], int v[400][2])
 	v[0][1] = 0;
 }
 
-void	reset(t_lookup *dc, int memo[10][400][3])
+void	reset_dc(t_lookup *dc, int memo[10][400][3])
 {
 	dc->first = memo[dc->dist][dc->cur][0];
 	dc->second = memo[dc->dist][dc->cur][1];
@@ -86,7 +86,7 @@ void	find_path(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10])
 	rrr(dc, v, m, idx);
 }
 
-void	bfs(t_list **lst1, t_list **lst2, int size)
+void	bfs(t_list **lst1, t_list **lst2)
 {
 	t_lookup	dc;
 	int			memo[10][400][3];
@@ -103,7 +103,7 @@ void	bfs(t_list **lst1, t_list **lst2, int size)
 		{
 			if (memo[dc.dist][dc.cur][0] == dc.target)
 				print_answer(lst1, lst2, dc.dist, memo[dc.dist][dc.cur][2]);
-			reset(&dc, memo);
+			reset_dc(&dc, memo);
 			find_path(&dc, visited, memo, idx);
 			dc.cur++;
 		}
