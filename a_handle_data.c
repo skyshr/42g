@@ -15,7 +15,7 @@
 void	a_handle_unsorted_four(t_list **lst1, t_list **lst2, int size)
 {
 	if (size == 2)
-		swap(lst1, 0);
+		swap(lst1, lst2, 0);
 	else if (size == 3)
 		a_three(lst1, lst2);
 	else
@@ -38,7 +38,7 @@ void	a_divide_top_mid_bot(t_list **lst1, t_list **lst2, int left, int right)
 		else if ((*lst1)->order <= spivot)
 			push_rotate(lst1, lst2, 0);
 		else
-			rotate(lst1, 0);
+			rotate(lst1, lst2, 0);
 	}
 	size = right - spivot;
 	while (size--)

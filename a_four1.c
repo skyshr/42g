@@ -17,7 +17,7 @@ void	a_four_2341(t_list **lst1, t_list **lst2)
 	push(lst1, lst2, 0);
 	a_three_231(lst1, lst2);
 	push(lst2, lst1, 1);
-	swap(lst1, 0);
+	swap(lst1, lst2, 0);
 }
 
 void	a_four_1243(t_list **lst1, t_list **lst2)

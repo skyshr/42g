@@ -19,7 +19,7 @@ void	a_three(t_list **lst1, t_list **lst2)
 		if ((*lst1)->next->order > (*lst1)->next->next->order)
 			a_three_321(lst1, lst2);
 		else if ((*lst1)->next->next->order > (*lst1)->order)
-			a_three_213(lst1);
+			a_three_213(lst1, lst2);
 		else
 			a_three_312(lst1, lst2);
 	}

@@ -16,7 +16,7 @@ void	b_handle_unsorted_four(t_list **lst1, t_list **lst2, int size)
 {
 	if (size == 2)
 	{
-		swap(lst1, 1);
+		swap(lst1, lst2, 1);
 		push(lst1, lst2, 1);
 		push(lst1, lst2, 1);
 		return ;
@@ -39,7 +39,7 @@ void	b_divide_top_mid_bot(t_list **lst1, t_list **lst2, int left, int right)
 	while (size--)
 	{
 		if ((*lst1)->order <= pivot)
-			rotate(lst1, 1);
+			rotate(lst1, lst2, 1);
 		else if ((*lst1)->order <= spivot)
 			push_rotate(lst1, lst2, 1);
 		else

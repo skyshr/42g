@@ -15,11 +15,11 @@
 void	b_four_3124(t_list **lst1, t_list **lst2)
 {
 	push(lst1, lst2, 1);
-	rotate(lst1, 1);
-	swap(lst1, 1);
+	rotate(lst1, lst2, 1);
+	swap(lst1, lst2, 1);
 	push(lst1, lst2, 1);
-	reverse_rotate(lst1, 1);
-	swap_both(lst1, lst2);
+	reverse_rotate(lst1, lst2, 1);
+	swap_both(lst1, lst2, 2);
 	push(lst1, lst2, 1);
 	push(lst1, lst2, 1);
 }

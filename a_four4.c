@@ -14,45 +14,45 @@
 
 void	a_four_3214(t_list **lst1, t_list **lst2)
 {
-	swap(lst1, 0);
+	swap(lst1, lst2, 0);
 	push(lst1, lst2, 0);
-	a_three_213(lst1);
+	a_three_213(lst1, lst2);
 	push(lst2, lst1, 1);
-	swap(lst1, 0);
+	swap(lst1, lst2, 0);
 }
 
 void	a_four_4321(t_list **lst1, t_list **lst2)
 {
-	swap(lst1, 0);
+	swap(lst1, lst2, 0);
 	push(lst1, lst2, 0);
-	swap(lst1, 0);
+	swap(lst1, lst2, 0);
 	push(lst1, lst2, 0);
-	swap_both(lst1, lst2);
+	swap_both(lst1, lst2, 2);
 	push(lst2, lst1, 1);
-	swap(lst1, 0);
+	swap(lst1, lst2, 0);
 	push(lst2, lst1, 1);
-	swap(lst1, 0);
+	swap(lst1, lst2, 0);
 }
 
 void	a_four_4312(t_list **lst1, t_list **lst2)
 {
-	swap(lst1, 0);
+	swap(lst1, lst2, 0);
 	push(lst1, lst2, 0);
-	swap(lst1, 0);
+	swap(lst1, lst2, 0);
 	push(lst1, lst2, 0);
-	swap_both(lst1, lst2);
+	swap_both(lst1, lst2, 2);
 	push(lst2, lst1, 1);
-	swap(lst1, 0);
+	swap(lst1, lst2, 0);
 	push(lst2, lst1, 1);
 }
 
 void	a_four_4213(t_list **lst1, t_list **lst2)
 {
-	swap(lst1, 0);
+	swap(lst1, lst2, 0);
 	push(lst1, lst2, 0);
-	swap(lst1, 0);
+	swap(lst1, lst2, 0);
 	push(lst1, lst2, 0);
-	swap_both(lst1, lst2);
+	swap_both(lst1, lst2, 2);
 	push(lst2, lst1, 1);
 	push(lst2, lst1, 1);
 }

@@ -23,36 +23,35 @@ void	checker(t_list *lst, int size)
 		write(1, "OK\n", 3);
 }
 
-int	handle_operation(t_list **lst1, t_list **lst2, char *s, int len)
+void	handle_operation(t_list **lst1, t_list **lst2, char *s, int len)
 {
 	if (ft_strncmp(s, "pa", len) == 0)
-		push(lst2, lst1, 1);
+		push(lst2, lst1, 3);
 	else if (ft_strncmp(s, "pb", len) == 0)
-		push(lst1, lst2, 0);
+		push(lst1, lst2, 3);
 	else if (ft_strncmp(s, "sa", len) == 0)
-		swap(lst1, 0);
+		swap(lst1, lst2, 3);
 	else if (ft_strncmp(s, "sb", len) == 0)
-		swap(lst2, 1);
+		swap(lst2, lst1, 3);
 	else if (ft_strncmp(s, "ss", len) == 0)
-		swap_both(lst1, lst2, 2);
+		swap_both(lst1, lst2, 3);
 	else if (ft_strncmp(s, "ra", len) == 0)
-		rotate(lst1, 0);
+		rotate(lst1, lst2, 3);
 	else if (ft_strncmp(s, "rb", len) == 0)
-		rotate(lst2, 1);
+		rotate(lst2, lst1, 3);
 	else if (ft_strncmp(s, "rr", len) == 0)
-		rotate(lst1, 2);
+		rotate_both(lst1, lst2, 3);
 	else if (ft_strncmp(s, "rra", len) == 0)
-		rotate(lst1, 0);
+		reverse_rotate(lst1, lst2, 3);
 	else if (ft_strncmp(s, "rrb", len) == 0)
-		rotate(lst1, 1);
+		reverse_rotate(lst2, lst1, 3);
 	else if (ft_strncmp(s, "rrr", len) == 0)
-		rotate(lst1, 2);
+		reverse_rotate_both(lst1, lst2, 3);
 	else
-		return (0);
-	return (1);
+		lst_error(lst1, lst2);
 }
 
-int	is_validstr(t_list **lst1, t_list **lst2, char *s)
+void	is_validstr(t_list **lst1, t_list **lst2, char *s)
 {
 	int	idx;
 
@@ -60,10 +59,12 @@ int	is_validstr(t_list **lst1, t_list **lst2, char *s)
 	while (s[idx] != '\n')
 	{
 		if (idx > 2 || !ft_isalpha(s[idx]))
-			return (0);
+			lst_error(lst1, lst2);
 		idx++;
 	}
-	return (handle_operation(lst1, lst2, s, idx));
+	if (idx == 1)
+		lst_error(lst1, lst2);
+	handle_operation(lst1, lst2, s, idx);
 }
 
 #include <stdio.h>
@@ -85,13 +86,7 @@ int	main(int argc, char **argv)
 		s = get_next_line(0);
 		if (!s)
 			break ;
-		if (!is_validstr(&lst1, &lst2, s))
-		{
-			ft_lstclear(&lst1);
-			ft_lstclear(&lst2);
-			write(2, "Error\n", 6);
-			exit(1);
-		}
+		is_validstr(&lst1, &lst2, s);
 		free(s);
 	}
 	checker(lst1, size);
