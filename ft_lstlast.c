@@ -1,36 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   b_four4.c                                          :+:      :+:    :+:   */
+/*   ft_lstlast.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksuh <ksuh@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/08 16:23:57 by ksuh              #+#    #+#             */
-/*   Updated: 2024/04/08 16:23:58 by ksuh             ###   ########.fr       */
+/*   Created: 2024/02/27 16:27:22 by ksuh              #+#    #+#             */
+/*   Updated: 2024/02/27 16:28:35 by ksuh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	b_four_3214(t_list **lst1, t_list **lst2)
+t_list	*ft_lstlast(t_list *lst)
 {
-	push(lst1, lst2, 1);
-	push(lst1, lst2, 1);
-	rotate_both(lst1, lst2, 2);
-	push(lst1, lst2, 1);
-	swap(lst2, 0);
-	reverse_rotate_both(lst1, lst2, 2);
-	push(lst1, lst2, 1);
-}
+	t_list	*tmp;
 
-void	b_four_4213(t_list **lst1, t_list **lst2)
-{
-	push(lst1, lst2, 1);
-	b_three_213(lst1, lst2);
-}
-
-void	b_four_4312(t_list **lst1, t_list **lst2)
-{
-	push(lst1, lst2, 1);
-	b_three_312(lst1, lst2);
+	tmp = lst;
+	if (!tmp)
+		return (0);
+	while (tmp->next)
+		tmp = tmp->next;
+	return (tmp);
 }

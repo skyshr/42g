@@ -1,21 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksuh <ksuh@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/27 16:05:41 by ksuh              #+#    #+#             */
-/*   Updated: 2024/02/29 20:57:22 by ksuh             ###   ########.fr       */
+/*   Created: 2024/02/26 13:51:38 by ksuh              #+#    #+#             */
+/*   Updated: 2024/02/28 09:18:15 by ksuh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
-void	ft_lstadd_front(t_list **lst, t_list *new)
+void	ft_bzero(void *s, size_t n)
 {
-	new->next = *lst;
-	if (*lst)
-		(*lst)->prev = new;
-	*lst = new;
+	while (n--)
+		*(char *)s++ = 0;
 }

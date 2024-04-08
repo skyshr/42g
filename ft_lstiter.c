@@ -1,28 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstsize.c                                       :+:      :+:    :+:   */
+/*   ft_lstiter.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksuh <ksuh@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/27 16:16:17 by ksuh              #+#    #+#             */
-/*   Updated: 2024/02/27 16:18:02 by ksuh             ###   ########.fr       */
+/*   Created: 2024/02/27 17:51:28 by ksuh              #+#    #+#             */
+/*   Updated: 2024/02/27 17:52:55 by ksuh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
-int	ft_lstsize(t_list *lst)
+int	ft_lstiter(t_list *lst, int n, int (*f)(int, int))
 {
 	t_list	*tmp;
-	int		m;
+	int		res;
 
-	m = 0;
 	tmp = lst;
+	res = 0;
+	if (!f || !tmp)
+		return (res);
 	while (tmp)
 	{
+		res += f(tmp->n, n);
 		tmp = tmp->next;
-		m++;
 	}
-	return (m);
+	return (res);
 }

@@ -71,7 +71,7 @@ void	b_to_a(t_list **lst1, t_list **lst2, int left, int right)
 	a_to_b(lst2, lst1, spivot, right);
 	size = pivot - left;
 	while (size--)
-		reverse_rotate_both(lst1, lst2);
+		reverse_rotate_both(lst1, lst2, 2);
 	a_to_b(lst2, lst1, pivot, spivot);
 	b_to_a(lst1, lst2, left, pivot);
 }

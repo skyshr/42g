@@ -42,7 +42,7 @@ void	a_divide_top_mid_bot(t_list **lst1, t_list **lst2, int left, int right)
 	}
 	size = right - spivot;
 	while (size--)
-		reverse_rotate_both(lst1, lst2);
+		reverse_rotate_both(lst1, lst2, 2);
 }
 
 void	a_to_b(t_list **lst1, t_list **lst2, int left, int right)

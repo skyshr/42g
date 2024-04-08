@@ -14,22 +14,41 @@
 # define PUSH_SWAP_H
 # include <unistd.h>
 # include <stdlib.h>
-# include "libft/libft.h"
+# include "get_next_line_bonus.h"
 
+typedef struct s_list
+{
+	struct s_list	*prev;
+	struct s_list	*next;
+	int				n;
+	int				order;
+}	t_list;
+
+int		ft_isalpha(int c);
+void	ft_bzero(void *s, size_t n);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
+t_list	*ft_lstnew(int n);
+void	ft_lstadd_front(t_list **lst, t_list *new);
+int		ft_lstsize(t_list *lst);
+t_list	*ft_lstlast(t_list *lst);
+int		ft_lstadd_back(t_list **lst, t_list *new);
+void	ft_lstclear(t_list **lst);
+int		ft_lstiter(t_list *lst, int n, int (*f)(int, int));
+int		ft_isdigit(int c);
 int		is_ordered(t_list *lst,	int	flag, size_t size);
 int		get_num(char **argv, int *num);
 int		is_duplicate(int n, int m);
 void	print_list(t_list *lst);
-int		parse_singlearg(t_list **lst, char *argv);
+void	parse_singlearg(t_list **lst, char *argv);
 void	parse_multiarg(t_list **lst, int argc, char **argv);
 void	parse_data(t_list **lst, int argc, char **argv);
 void	push(t_list **lst1, t_list **lst2, int sign);
 void	swap(t_list **lst, int sign);
 void	rotate(t_list **lst, int sign);
 void	reverse_rotate(t_list **lst, int sign);
-void	swap_both(t_list **lst1, t_list **lst2);
-void	rotate_both(t_list **lst1, t_list **lst2);
-void	reverse_rotate_both(t_list **lst1, t_list **lst2);
+void	swap_both(t_list **lst1, t_list **lst2, int sign);
+void	rotate_both(t_list **lst1, t_list **lst2, int sign);
+void	reverse_rotate_both(t_list **lst1, t_list **lst2, int sign);
 void	push_rotate(t_list **lst1, t_list **lst2, int sign);
 void    a_four(t_list **lst1, t_list **lst2);
 void	a_four_first(t_list **lst1, t_list **lst2);
@@ -43,7 +62,7 @@ void	a_four_1324(t_list **lst1, t_list **lst2);
 void	a_four_1342(t_list **lst1, t_list **lst2);
 void	a_four_1423(t_list **lst1, t_list **lst2);
 void	a_four_1432(t_list **lst1, t_list **lst2);
-void	a_four_2134(t_list **lst1, t_list **lst2);
+void	a_four_2134(t_list **lst1);
 void	a_four_2143(t_list **lst1, t_list **lst2);
 void	a_four_2314(t_list **lst1, t_list **lst2);
 void	a_four_2341(t_list **lst1, t_list **lst2);

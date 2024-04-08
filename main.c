@@ -17,15 +17,17 @@ void	push_swap(t_list **lst1, int size)
 	t_list	*lst2;
 
 	lst2 = NULL;
-	if (!(*lst1))
+	if (!(*lst1) || is_ordered(lst1, 0, size))
 		return ;
+	if (size <= 5)
+	{
+		bfs(lst1, size);
+		return ;
+	}
     a_to_b(lst1, &lst2, 0, size);
     if (!is_ordered(*lst1, 0, size))
 		write(1, "Error\n", 6);
-	ft_lstclear(lst1);
 	ft_lstclear(&lst2);
-	lst1 = NULL;
-	lst2 = NULL;
 }
 
 int	get_target(t_list **lst)
@@ -104,33 +106,31 @@ void	print_answer(t_list **lst1, int dist, unsigned long long n)
 		else if (m == 3)
 			swap(&lst2, 1);
 		else if (m == 4)
-			swap_both(lst1, &lst2);
+			swap_both(lst1, &lst2, 2);
 		else if (m == 5)
 			reverse_rotate(lst1, 0);
 		else if (m == 6)
 			reverse_rotate(&lst2, 1);
 		else if (m == 7)
-			reverse_rotate_both(lst1, &lst2);
+			reverse_rotate_both(lst1, &lst2, 2);
 		else if (m == 8)
 			rotate(lst1, 0);
 		else if (m == 9)
 			rotate(&lst2, 1);
 		else
-			rotate_both(lst1, &lst2);
+			rotate_both(lst1, &lst2, 2);
 		n /= 11;
 	}
 	ft_lstclear(lst1);
-	*lst1 = NULL;
-	lst2 = NULL;
+    ft_lstclear(&lst2);
 }
 
 void	bfs(t_list	**lst, int size)
 {
 	unsigned long long	memo[10][480][3];
-	char				res[10][4];
 	int					idx[10];
 	int					visited[1800][2];
-	int					target;
+	unsigned long long	target;
 	int					find;
 	int					dist;
 
@@ -396,7 +396,7 @@ int	main(int argc, char **argv)
 	parse_data(&lst, argc, argv);
 	size = ft_lstsize(lst);
 	order_data(&lst, size);
-	bfs(&lst, size);
 	push_swap(&lst, size);
+	ft_lstclear(&lst);
 	return (0);
 }

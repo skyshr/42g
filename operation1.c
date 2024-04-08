@@ -84,9 +84,10 @@ void	reverse_rotate(t_list **lst, int sign)
 		write(1, "rrb\n", 4);
 }
 
-void	swap_both(t_list **lst1, t_list **lst2)
+void	swap_both(t_list **lst1, t_list **lst2, int sign)
 {
-	swap(lst1, 2);
-	swap(lst2, 2);
-	write(1, "ss\n", 3);
+	swap(lst1, sign);
+	swap(lst2, sign);
+    if (sign == 2)
+	    write(1, "ss\n", 3);
 }

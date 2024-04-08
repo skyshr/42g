@@ -13,18 +13,37 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-SRCS = ft_bzero.c ft_isdigit.c ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c
-OBJS = $(SRCS:.c=.o)
+SRCS_BASIC = ft_bzero.c ft_isdigit.c ft_lstnew.c ft_lstadd_front.c ft_lstsize.c \
+		ft_lstlast.c ft_lstadd_back.c ft_lstclear.c ft_lstiter.c a_four1.c \
+		a_four2.c a_four3.c a_four4.c a_four5.c a_four6.c a_handle_data.c \
+		a_order_four1.c a_order_four2.c a_order_three.c a_three.c b_four1.c \
+		b_four2.c b_four3.c b_four4.c b_four5.c b_four6.c b_handle_data.c \
+		b_order_four1.c b_order_four2.c b_order_three.c b_three.c \
+		check_validation.c operation1.c operation2.c parse_data.c main.c
 
-NAME = libft.a
+SRCS_BONUS = ft_isdigit.c ft_isalpha.c ft_lstnew.c ft_lstadd_front.c ft_lstsize.c \
+		ft_lstlast.c ft_lstadd_back.c ft_lstclear.c ft_lstiter.c \
+		check_validation.c operation1.c operation2.c parse_data.c \
+		get_next_line_bonus.c get_next_line_utils_bonus.c main_bonus.c
+
+OBJS_BASIC = $(SRCS_BASIC:.c=.o)
+OBJS_BONUS = $(SRCS_BONUS:.c=.o)
+
+ifndef bonus
+OBJS = $(OBJS_BASIC)
+NAME = push_swap
+else
+OBJS = $(OBJS_BONUS)
+NAME = checker
+endif
 
 all : $(NAME) 
 
 $(NAME) : $(OBJS)
-	ar rcs $@ $^
+	$(CC) $(CFLAGS) $^ -o $@
 
 %.o : %.c 
-	$(CC) $(CFLAGS) -c $^ -o $@
+	$(CC) $(CFLAGS) -c $^
 
 clean :	
 	rm -rf $(OBJS) 
@@ -34,4 +53,7 @@ fclean : clean
 
 re : fclean all
 
-.PHONY : all clean fclean re
+bonus :
+	make bonus=1 all
+
+.PHONY : all clean fclean re bonus

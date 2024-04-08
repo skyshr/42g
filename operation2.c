@@ -12,18 +12,20 @@
 
 #include "push_swap.h"
 
-void	rotate_both(t_list **lst1, t_list **lst2)
+void	rotate_both(t_list **lst1, t_list **lst2, int sign)
 {
 	rotate(lst1, 2);
 	rotate(lst2, 2);
-	write(1, "rr\n", 3);
+    if (sign == 2)
+	    write(1, "rr\n", 3);
 }
 
-void	reverse_rotate_both(t_list **lst1, t_list **lst2)
+void	reverse_rotate_both(t_list **lst1, t_list **lst2, int sign)
 {
 	reverse_rotate(lst1, 2);
 	reverse_rotate(lst2, 2);
-	write(1, "rrr\n", 4);
+    if (sign == 2)
+	    write(1, "rrr\n", 4);
 }
 
 void	push_rotate(t_list **lst1, t_list **lst2, int sign)

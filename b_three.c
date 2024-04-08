@@ -31,3 +31,11 @@ void	b_three_132(t_list **lst1, t_list **lst2)
 	swap(lst1, 1);
 	b_three_312(lst1, lst2);
 }
+
+void	b_three_312(t_list **lst1, t_list **lst2)
+{
+	push(lst1, lst2, 1);
+	swap(lst1, 1);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
+}

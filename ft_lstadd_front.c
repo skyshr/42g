@@ -1,30 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstiter.c                                       :+:      :+:    :+:   */
+/*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksuh <ksuh@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/27 17:51:28 by ksuh              #+#    #+#             */
-/*   Updated: 2024/02/27 17:52:55 by ksuh             ###   ########.fr       */
+/*   Created: 2024/02/27 16:05:41 by ksuh              #+#    #+#             */
+/*   Updated: 2024/02/29 20:57:22 by ksuh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
-int	ft_lstiter(t_list *lst, int n, int (*f)(int, int))
+void	ft_lstadd_front(t_list **lst, t_list *new)
 {
-	t_list	*tmp;
-	int		res;
-
-	tmp = lst;
-	res = 0;
-	if (!f || !tmp)
-		return (res);
-	while (tmp)
-	{
-		res += f(tmp->n, n);
-		tmp = tmp->next;
-	}
-	return (res);
+	new->next = *lst;
+	if (*lst)
+		(*lst)->prev = new;
+	*lst = new;
 }

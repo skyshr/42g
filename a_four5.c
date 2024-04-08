@@ -12,7 +12,7 @@
 
 #include "push_swap.h"
 
-void	a_four_2134(t_list **lst1, t_list **lst2)
+void	a_four_2134(t_list **lst1)
 {
 	swap(lst1, 0);
 }

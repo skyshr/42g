@@ -27,7 +27,7 @@ void	a_four_fourth(t_list **lst1, t_list **lst2)
 void	a_four_fifth(t_list **lst1, t_list **lst2)
 {
 	if ((*lst1)->next->next->order < (*lst1)->next->next->next->order)
-		a_four_2134(lst1, lst2);
+		a_four_2134(lst1);
 	else if ((*lst1)->next->next->next->order > (*lst1)->order)
 		a_four_2143(lst1, lst2);
 	else if ((*lst1)->next->next->next->order > (*lst1)->next->order)

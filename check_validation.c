@@ -54,7 +54,7 @@ int	get_num(char **argv, int *num)
 		(*argv)++;
 	}
 	*num = (int)(sign * n);
-	return ((**argv == ' ' && *(*argv + 1)) || !**argv);
+	return (((**argv) == ' ' && (*(*argv + 1))) || !(**argv));
 }
 
 void	order_data(t_list **lst, int size)
@@ -63,12 +63,6 @@ void	order_data(t_list **lst, int size)
 
 	if (!size)
 		return ;
-	if (is_ordered(*lst, 0, size))
-	{
-		ft_lstclear(lst);
-		*lst = NULL;
-		return ;
-	}
 	cur = *lst;
 	while (cur)
 	{

@@ -1,19 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_bzero.c                                         :+:      :+:    :+:   */
+/*   ft_lstsize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksuh <ksuh@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/26 13:51:38 by ksuh              #+#    #+#             */
-/*   Updated: 2024/02/28 09:18:15 by ksuh             ###   ########.fr       */
+/*   Created: 2024/02/27 16:16:17 by ksuh              #+#    #+#             */
+/*   Updated: 2024/02/27 16:18:02 by ksuh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
-void	ft_bzero(void *s, size_t n)
+int	ft_lstsize(t_list *lst)
 {
-	while (n--)
-		*(char *)s++ = 0;
+	t_list	*tmp;
+	int		m;
+
+	m = 0;
+	tmp = lst;
+	while (tmp)
+	{
+		tmp = tmp->next;
+		m++;
+	}
+	return (m);
 }
