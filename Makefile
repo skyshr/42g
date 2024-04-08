@@ -29,13 +29,15 @@ SRCS_BONUS = ft_strncmp.c ft_isdigit.c ft_isalpha.c ft_lstnew.c ft_lstadd_front.
 
 OBJS_BASIC = $(SRCS_BASIC:.c=.o)
 OBJS_BONUS = $(SRCS_BONUS:.c=.o)
+NAME_BASIC = push_swap
+NAME_BONUS = checker
 
 ifndef bonus
 OBJS = $(OBJS_BASIC)
-NAME = push_swap
+NAME = $(NAME_BASIC)
 else
 OBJS = $(OBJS_BONUS)
-NAME = checker
+NAME = $(NAME_BONUS)
 endif
 
 all : $(NAME) 
@@ -47,11 +49,13 @@ $(NAME) : $(OBJS)
 	$(CC) $(CFLAGS) -c $^
 
 clean :	
-	rm -rf $(OBJS) 
+	rm -rf $(OBJS_BASIC) 
+	rm -rf $(OBJS_BONUS)
 
 fclean : clean
-	rm -rf $(NAME)
-
+	rm -rf $(NAME_BASIC)
+	rm -rf $(NAME_BONUS)
+	
 re : fclean all
 
 bonus :

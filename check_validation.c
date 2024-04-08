@@ -33,8 +33,8 @@ int	is_ordered(t_list *lst, int flag, size_t size)
 
 int	get_num(char **argv, int *num)
 {
-	unsigned int	n;
-	int				sign;
+	unsigned long long  n;
+	int				    sign;
 
 	n = 0;
 	sign = 1;
@@ -49,7 +49,7 @@ int	get_num(char **argv, int *num)
 	while (ft_isdigit(**argv))
 	{
 		n = n * 10 + **argv - '0';
-		if (n > (unsigned int)(2147483647 + (sign == -1)))
+		if (n > (unsigned long long)2147483647 + (sign == -1))
 			return (0);
 		(*argv)++;
 	}
