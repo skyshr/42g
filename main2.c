@@ -60,7 +60,8 @@ int	get_num(char **argv, int *num)
 	}
 	if (!ft_isdigit(**argv))
 	{
-		printf("Only digits are allowed!, %d\n", **argv);
+		// printf("Only digits are allowed!, %d\n", **argv);
+		printf("Error\n");
 		return (0);
 	}
 	while (ft_isdigit(**argv))
@@ -68,7 +69,8 @@ int	get_num(char **argv, int *num)
 		n = n * 10 + **argv - '0';
 		if (n > (unsigned int)(2147483647 + (sign == -1)))
 		{
-			printf("Overflow detected!\n");
+			printf("Error\n");
+			// printf("Overflow detected!\n");
 			return (0);
 		}
 		(*argv)++;
@@ -114,7 +116,8 @@ int	parse_singlearg(t_list **lst, char *argv)
 		if (!get_num(&argv, &num) || ft_lstiter(*lst, num, is_duplicate) \
 			|| !ft_lstadd_back(lst, ft_lstnew(num)))
 		{
-			printf("Error detected!\n");
+			printf("Error\n");
+			// printf("Error detected!\n");
 			ft_lstclear(lst);
 			return (-1);
 		}
@@ -145,7 +148,7 @@ void	parse_data(t_list **lst, int argc, char **argv)
 		parse_multiarg(lst, argc, argv);
 }
 
-void	push(t_list **lst1, t_list **lst2)
+void	push(t_list **lst1, t_list **lst2, int sign)
 {
 	t_list	*tmp;
 
@@ -157,11 +160,15 @@ void	push(t_list **lst1, t_list **lst2)
 	*lst1 = tmp->next;
 	tmp->next = NULL;
 	ft_lstadd_front(lst2, tmp);
-	printf("p\n");
+	if (!sign)
+		printf("pb\n");
+	else
+		printf("pa\n");
+	// printf("p\n");
 	ps++;
 }
 
-void	swap(t_list **lst)
+void	swap(t_list **lst, int sign)
 {
 	t_list	*tmp;
 
@@ -174,11 +181,15 @@ void	swap(t_list **lst)
 	tmp->prev = NULL;
 	tmp->next = NULL;
 	ft_lstadd_front(lst, tmp);
-	printf("s\n");
+	if (!sign)
+		printf("sa\n");
+	else if (sign == 1)
+		printf("sb\n");
+	// printf("s\n");
 	sp++;
 }
 
-void	rotate(t_list **lst)
+void	rotate(t_list **lst, int sign)
 {
 	t_list	*tmp;
 
@@ -190,11 +201,15 @@ void	rotate(t_list **lst)
 	*lst = tmp->next;
 	tmp->next = NULL;
 	ft_lstadd_back(lst, tmp);
-	printf("rt\n");
+	if (!sign)
+		printf("ra\n");
+	else if (sign == 1)
+		printf("rb\n");
+	// printf("rt\n");
 	rt++;
 }
 
-void	reverse_rotate(t_list **lst)
+void	reverse_rotate(t_list **lst, int sign)
 {
 	t_list	*tmp;
 
@@ -205,35 +220,42 @@ void	reverse_rotate(t_list **lst)
 		tmp->prev->next = NULL;
 	tmp->prev = NULL;
 	ft_lstadd_front(lst, tmp);
-	printf("rrt\n");
+	if (!sign)
+		printf("rra\n");
+	else if (sign == 1)
+		printf("rrb\n");
+	// printf("rrt\n");
 	rrt++;
 }
 
 void	swap_both(t_list **lst1, t_list **lst2)
 {
-	swap(lst1);
-	swap(lst2);
+	swap(lst1, 2);
+	swap(lst2, 2);
+	printf("ss\n");
 	sp--;
 }
 
 void	rotate_both(t_list **lst1, t_list **lst2)
 {
-	rotate(lst1);
-	rotate(lst2);
+	rotate(lst1, 2);
+	rotate(lst2, 2);
+	printf("rr\n");
 	rt--;
 }
 
 void	reverse_rotate_both(t_list **lst1, t_list **lst2)
 {
-	reverse_rotate(lst1);
-	reverse_rotate(lst2);
+	reverse_rotate(lst1, 2);
+	reverse_rotate(lst2, 2);
+	printf("rrr\n");
 	rrt--;
 }
 
-void	push_rotate(t_list **lst1, t_list **lst2)
+void	push_rotate(t_list **lst1, t_list **lst2, int sign)
 {
-	push(lst1, lst2);
-	rotate(lst2);
+	push(lst1, lst2, sign);
+	rotate(lst2, sign);
 }
 
 void	b_four_first(t_list **lst1, t_list **lst2)
@@ -357,210 +379,210 @@ void    b_four(t_list **lst1, t_list **lst2)
 
 void	a_four_2341(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
 	a_three_231(lst1, lst2);
-	push(lst2, lst1);
-	swap(lst1);
+	push(lst2, lst1, 1);
+	swap(lst1, 0);
 }
 
 void	a_four_1243(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
 	a_three_132(lst1, lst2);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_1342(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
 	a_three_231(lst1, lst2);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_1324(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
 	a_three_213(lst1);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_1423(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
 	a_three_312(lst1, lst2);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_1432(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
 	a_three_321(lst1, lst2);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_2431(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
 	a_three_321(lst1, lst2);
-	push(lst2, lst1);
-	swap(lst1);
+	push(lst2, lst1, 1);
+	swap(lst1, 0);
 }
 
 void	a_four_2314(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
 	a_three_213(lst1);
-	push(lst2, lst1);
-	swap(lst1);
+	push(lst2, lst1, 1);
+	swap(lst1, 0);
 }
 
 void	a_four_2413(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
-	swap(lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
 	swap_both(lst1, lst2);
-	push(lst2, lst1);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_3412(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
-	swap(lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
 	swap_both(lst1, lst2);
-	push(lst2, lst1);
-	swap(lst1);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
+	swap(lst1, 0);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_3421(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
-	swap(lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
 	swap_both(lst1, lst2);
-	push(lst2, lst1);
-	swap(lst1);
-	push(lst2, lst1);
-	swap(lst1);
+	push(lst2, lst1, 1);
+	swap(lst1, 0);
+	push(lst2, lst1, 1);
+	swap(lst1, 0);
 }
 
 void	a_four_3214(t_list **lst1, t_list **lst2)
 {
-	swap(lst1);
-	push(lst1, lst2);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
 	a_three_213(lst1);
-	push(lst2, lst1);
-	swap(lst1);
+	push(lst2, lst1, 1);
+	swap(lst1, 0);
 }
 
 void	a_four_4321(t_list **lst1, t_list **lst2)
 {
-	swap(lst1);
-	push(lst1, lst2);
-	swap(lst1);
-	push(lst1, lst2);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
 	swap_both(lst1, lst2);
-	push(lst2, lst1);
-	swap(lst1);
-	push(lst2, lst1);
-	swap(lst1);
+	push(lst2, lst1, 1);
+	swap(lst1, 0);
+	push(lst2, lst1, 1);
+	swap(lst1, 0);
 }
 
 void	a_four_4312(t_list **lst1, t_list **lst2)
 {
-	swap(lst1);
-	push(lst1, lst2);
-	swap(lst1);
-	push(lst1, lst2);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
 	swap_both(lst1, lst2);
-	push(lst2, lst1);
-	swap(lst1);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
+	swap(lst1, 0);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_4213(t_list **lst1, t_list **lst2)
 {
-	swap(lst1);
-	push(lst1, lst2);
-	swap(lst1);
-	push(lst1, lst2);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
 	swap_both(lst1, lst2);
-	push(lst2, lst1);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_2134(t_list **lst1, t_list **lst2)
 {
-	swap(lst1);
+	swap(lst1, 0);
 }
 
 void	a_four_2143(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
+	push(lst1, lst2, 0);
 	swap_both(lst1, lst2);
-	push(lst2, lst1);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_3142(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
+	push(lst1, lst2, 0);
 	swap_both(lst1, lst2);
-	push(lst2, lst1);
-	swap(lst1);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
+	swap(lst1, 0);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_3241(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
+	push(lst1, lst2, 0);
 	swap_both(lst1, lst2);
-	rotate(lst1);
-	push(lst2, lst1);
-	push(lst2, lst1);
-	reverse_rotate(lst1);
+	rotate(lst1, 0);
+	push(lst2, lst1, 1);
+	push(lst2, lst1, 1);
+	reverse_rotate(lst1, 0);
 }
 
 void	a_four_3124(t_list **lst1, t_list **lst2)
 {
-	swap(lst1);
-	push(lst1, lst2);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
 	a_three_213(lst1);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_4123(t_list **lst1, t_list **lst2)
 {
-	swap(lst1);
-	push(lst1, lst2);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
 	a_three_312(lst1, lst2);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_4132(t_list **lst1, t_list **lst2)
 {
-	swap(lst1);
-	push(lst1, lst2);
+	swap(lst1, 0);
+	push(lst1, lst2, 0);
 	a_three_321(lst1, lst2);
-	push(lst2, lst1);
+	push(lst2, lst1, 1);
 }
 
 void	a_four_4231(t_list **lst1, t_list **lst2)
 {
-	push(lst1, lst2);
-	push(lst1, lst2);
+	push(lst1, lst2, 0);
+	push(lst1, lst2, 0);
 	swap_both(lst1, lst2);
-	rotate(lst1);
-	push(lst2, lst1);
-	swap(lst1);
-	push(lst2, lst1);
-	reverse_rotate(lst1);
+	rotate(lst1, 0);
+	push(lst2, lst1, 1);
+	swap(lst1, 0);
+	push(lst2, lst1, 1);
+	reverse_rotate(lst1, 0);
 }
 
 void	a_four_first(t_list **lst1, t_list **lst2)
@@ -684,421 +706,288 @@ void    a_four(t_list **lst1, t_list **lst2)
 
 void	b_four_1234(t_list **lst1, t_list **lst2)
 {
-	//pa pa ss ra ra pa pa rra rra - 8 - o
-	printf("1234");
-	print_list(*lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
 	rotate_both(lst1, lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	swap(lst2);
-	reverse_rotate(lst1);
-	push(lst1, lst2);
-	reverse_rotate(lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
+	swap(lst2, 0);
+	reverse_rotate(lst1, 1);
+	push(lst1, lst2, 1);
+	reverse_rotate(lst2, 0);
 }
 
 void	b_four_1243(t_list **lst1, t_list **lst2)
 {
-	// pa rr pa pa rrb pa rra - 7 - o
-	printf("1243");
-	print_list(*lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
 	rotate_both(lst1, lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	reverse_rotate(lst1);
-	push(lst1, lst2);
-	reverse_rotate(lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
+	reverse_rotate(lst1, 1);
+	push(lst1, lst2, 1);
+	reverse_rotate(lst2, 0);
 }
 
 void	b_four_1324(t_list **lst1, t_list **lst2)
 {
-	// 8 - o
-	printf("1324");
-	print_list(*lst1);
-	push(lst1, lst2);
-	rotate(lst2);
+	push(lst1, lst2, 1);
+	rotate(lst2, 0);
 	b_three_213(lst1, lst2);
-	reverse_rotate(lst2);
-	print_list(*lst2);
+	reverse_rotate(lst2, 0);
 }
 
 void	b_four_1342(t_list **lst1, t_list **lst2)
 {
-	// 7 - o
-	printf("1324");
-	print_list(*lst1);
-	push(lst1, lst2);
-	rotate(lst2);
+	push(lst1, lst2, 1);
+	rotate(lst2, 0);
 	b_three_231(lst1, lst2);
-	reverse_rotate(lst2);
-	print_list(*lst2);
+	reverse_rotate(lst2, 0);
 }
 
 void	b_four_1423(t_list **lst1, t_list **lst2)
 {
-	// 7 - o
-	printf("1423");
-	print_list(*lst1);
-	push(lst1, lst2);
-	rotate(lst2);
+	push(lst1, lst2, 1);
+	rotate(lst2, 0);
 	b_three_312(lst1, lst2);
-	reverse_rotate(lst2);
-	print_list(*lst2);
+	reverse_rotate(lst2, 0);
 }
 
 void	b_four_1432(t_list **lst1, t_list **lst2)
 {
-	// 6 - o
-	printf("1432");
-	print_list(*lst1);
-	push(lst1, lst2);
-	rotate(lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	reverse_rotate(lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
+	rotate(lst2, 0);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
+	reverse_rotate(lst2, 0);
 }
 
 void	b_four_2134(t_list **lst1, t_list **lst2)
 {
-	// pa sb ra pa sb pa sa rra pa
-	// 7 - o
-	printf("2134");
-	print_list(*lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
 	rotate_both(lst1, lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	swap(lst2);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
+	swap(lst2, 0);
 	reverse_rotate_both(lst1, lst2);
-	push(lst1, lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
 }
 
 void	b_four_2143(t_list **lst1, t_list **lst2)
 {
-	// 6 - o
-	printf("2143");
-	print_list(*lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
 	rotate_both(lst1, lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
 	reverse_rotate_both(lst1, lst2);
-	push(lst1, lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
 }
 
 void	b_four_2314(t_list **lst1, t_list **lst2)
 {
-	// pa pa ss ra pa sa rra pa
-	// 8 - o
-	printf("2314");
-	print_list(*lst1);
-	// pa pa sa rr pa sa rrr pa
-	push(lst1, lst2);
-	push(lst1, lst2);
-	swap(lst2);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
+	swap(lst2, 0);
 	rotate_both(lst1, lst2);
-	push(lst1, lst2);
-	swap(lst2);
+	push(lst1, lst2, 1);
+	swap(lst2, 0);
 	reverse_rotate_both(lst1, lst2);
-	push(lst1, lst2);
-	// push(lst1, lst2);
-	// push(lst1, lst2);
-	// swap_both(lst1, lst2);
-	// rotate(lst1);
-	// push(lst1, lst2);
-	// swap(lst2);
-	// reverse_rotate(lst1);
-	// push(lst1, lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
 }
 
 void	b_four_2341(t_list **lst1, t_list **lst2)
 {
-	// sb pa sb pa sa pa pa - 7 - o
-	printf("2341");
-	print_list(*lst1);
-	// pa sb pa sa pa sa pa
-	push(lst1, lst2);
-	swap(lst1);
-	push(lst1, lst2);
-	swap(lst2);
-	push(lst1, lst2);
-	swap(lst2);
-	push(lst1, lst2);
-	// swap(lst1);
-	// push(lst1, lst2);
-	// swap(lst1);
-	// push(lst1, lst2);
-	// swap(lst2);
-	// push(lst1, lst2);
-	// push(lst1, lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
+	swap(lst1, 1);
+	push(lst1, lst2, 1);
+	swap(lst2, 0);
+	push(lst1, lst2, 1);
+	swap(lst2, 0);
+	push(lst1, lst2, 1);
 }
 
 void	b_four_2413(t_list **lst1, t_list **lst2)
 {
-	// pa pa ss pa sa pa - 6 - o
-	printf("2413");
-	print_list(*lst1);
-	push(lst1, lst2);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
 	swap_both(lst1, lst2);
-	push(lst1, lst2);
-	swap(lst2);
-	push(lst1, lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
+	swap(lst2, 0);
+	push(lst1, lst2, 1);
 }
 
 void	b_four_2431(t_list **lst1, t_list **lst2)
 {
-	// 6 - o
-	printf("2431");
-	print_list(*lst1);
-	swap(lst1);
-	push(lst1, lst2);
-	swap(lst1);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	print_list(*lst2);
+	swap(lst1, 1);
+	push(lst1, lst2, 1);
+	swap(lst1, 1);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
 }
 
 void	b_four_3124(t_list **lst1, t_list **lst2)
 {
-	// pa pa sb pa sa ra sa pa rra
-	// pa rb rb pa rrb rrb ss pa pa
-	// pa rb sb pa rrb ss pa pa - 8 - o
-	printf("3124");
-	print_list(*lst1);
-	push(lst1, lst2);
-	rotate(lst1);
-	swap(lst1);
-	push(lst1, lst2);
-	reverse_rotate(lst1);
+	push(lst1, lst2, 1);
+	rotate(lst1, 1);
+	swap(lst1, 1);
+	push(lst1, lst2, 1);
+	reverse_rotate(lst1, 1);
 	swap_both(lst1, lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
 }
 
 void	b_four_3142(t_list **lst1, t_list **lst2)
 {
-	// 6 - o
-	printf("3142");
-	print_list(*lst1);
-	push(lst1, lst2);
-	swap(lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
+	swap(lst1, 1);
+	push(lst1, lst2, 1);
 	swap_both(lst1, lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
 }
 
 void	b_four_3214(t_list **lst1, t_list **lst2)
 {
-	//  - 7 - o
-	printf("3214");
-	print_list(*lst1);
-	push(lst1, lst2);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
 	rotate_both(lst1, lst2);
-	push(lst1, lst2);
-	swap(lst2);
+	push(lst1, lst2, 1);
+	swap(lst2, 0);
 	reverse_rotate_both(lst1, lst2);
-	push(lst1, lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
 }
 
 void	b_four_3241(t_list **lst1, t_list **lst2)
 {
-	// pa sb pa sa pa pa - 6 - o
-	printf("3241");
-	print_list(*lst1);
-	push(lst1, lst2);
-	swap(lst1);
-	push(lst1, lst2);
-	swap(lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
+	swap(lst1, 1);
+	push(lst1, lst2, 1);
+	swap(lst2, 0);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
 }
 
 void	b_four_3412(t_list **lst1, t_list **lst2)
 {
-	// 5 - o
-	printf("3412");
-	print_list(*lst1);
-	push(lst1, lst2);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
 	swap_both(lst1, lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
 }
 
 void	b_four_3421(t_list **lst1, t_list **lst2)
 {
-	// 5 o
-	printf("3421");
-	print_list(*lst1);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	swap(lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	print_list(*lst2);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
+	swap(lst2, 0);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
 }
 
 void	b_four_4123(t_list **lst1, t_list **lst2)
 {
-	// 7 - o
-	printf("4123");
-	print_list(*lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
 	b_three_123(lst1, lst2);
-	print_list(*lst2);
 }
 
 void	b_four_4132(t_list **lst1, t_list **lst2)
 {
-	// 6 - o
-	printf("4132");
-	print_list(*lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
 	b_three_132(lst1, lst2);
-	print_list(*lst2);
 }
 
 void	b_four_4213(t_list **lst1, t_list **lst2)
 {
-	// 6 - o
-	printf("4213");
-	print_list(*lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
 	b_three_213(lst1, lst2);
-	print_list(*lst2);
 }
 
 void	b_four_4231(t_list **lst1, t_list **lst2)
 {
-	// 5 - o
-	printf("4231");
-	print_list(*lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
 	b_three_231(lst1, lst2);
-	print_list(*lst2);
 }
 
 void	b_four_4312(t_list **lst1, t_list **lst2)
 {
-	// 5 - o
-	printf("4312");
-	print_list(*lst1);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
 	b_three_312(lst1, lst2);
-	print_list(*lst2);
 }
 
-// 3
 void    a_three_132(t_list **lst1, t_list **lst2)
 {
-	// 1 3 2
-	push(lst1, lst2);
-	swap(lst1);
-	push(lst2, lst1);
+	push(lst1, lst2, 0);
+	swap(lst1, 0);
+	push(lst2, lst1, 0);
 }
 
-// 1
 void    a_three_213(t_list **lst)
 {
-	// 2 1 3
-	swap(lst);
+	swap(lst, 0);
 }
 
-// 4
 void    a_three_231(t_list **lst1, t_list **lst2)
 {
-	// 2 3 1
 	a_three_132(lst1, lst2);
-	swap(lst1);
+	swap(lst1, 0);
 }
 
-// 4
 void    a_three_312(t_list **lst1, t_list **lst2)
 {
-	// 3 1 2
-	swap(lst1);
+	swap(lst1, 0);
 	a_three_132(lst1, lst2);
 }
 
-// 5
 void    a_three_321(t_list **lst1, t_list **lst2)
 {
-	// 3 2 1
-	swap(lst1);
+	swap(lst1, 0);
 	a_three_231(lst1, lst2);
 }
 
 void    b_two(t_list **lst1, t_list **lst2)
 {
-    swap(lst1);
-    push(lst1, lst2);
-    push(lst1, lst2);
+    swap(lst1, 1);
+    push(lst1, lst2, 1);
+    push(lst1, lst2, 1);
 }
 
-// 6
 void    b_three_123(t_list **lst1, t_list **lst2)
 {
-	// 1 2 3
-	swap(lst1);
+	swap(lst1, 1);
 	b_three_213(lst1, lst2);
 }
 
-// 5
 void    b_three_132(t_list **lst1, t_list **lst2)
 {
-	// 1 3 2
-	swap(lst1);
+	swap(lst1, 1);
 	b_three_312(lst1, lst2);
 }
 
-// 5
 void    b_three_213(t_list **lst1, t_list **lst2)
 {
-    // 2 1 3
-    push(lst1, lst2);
-    swap(lst1);
-    push(lst1, lst2);
-    swap(lst2);
-    push(lst1, lst2);
+    push(lst1, lst2, 1);
+    swap(lst1, 1);
+    push(lst1, lst2, 1);
+    swap(lst2, 0);
+    push(lst1, lst2, 1);
 }
 
-// 4
 void    b_three_231(t_list **lst1, t_list **lst2)
 {
-	// 2 3 1
-	swap(lst1);
-	push(lst1, lst2);
-	push(lst1, lst2);
-	push(lst1, lst2);
+	swap(lst1, 1);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
 }
 
-// 4
 void    b_three_312(t_list **lst1, t_list **lst2)
 {
-	// 3 1 2
-	push(lst1, lst2);
-	swap(lst1);
-	push(lst1, lst2);
-	push(lst1, lst2);
+	push(lst1, lst2, 1);
+	swap(lst1, 1);
+	push(lst1, lst2, 1);
+	push(lst1, lst2, 1);
 }
 
 void	b_three(t_list **lst1, t_list **lst2)
@@ -1130,9 +1019,9 @@ void	b_handle_unsorted_four(t_list **lst1, t_list **lst2, int size)
 {
 	if (size == 2)
 	{
-		swap(lst1);
-		push(lst1, lst2);
-		push(lst1, lst2);
+		swap(lst1, 1);
+		push(lst1, lst2, 1);
+		push(lst1, lst2, 1);
 		return ;
 	}
 	else if (size == 3)
@@ -1150,16 +1039,14 @@ void	b_divide_top_mid_bot(t_list **lst1, t_list **lst2, int left, int right)
 	size = right - left;
 	pivot = left + size / 3 + (size % 3 == 2);
     spivot = pivot + size / 3 + (size % 3 == 2);
-	// printf("a left, right: %d, %d\n", left, right);
-    // printf("pivot, spivot: %d, %d\n", pivot, spivot);
 	while (size--)
     {
 	    if ((*lst1)->order <= pivot)
-	        rotate(lst1);
+	        rotate(lst1, 1);
 	    else if ((*lst1)->order <= spivot)
-	    	push_rotate(lst1, lst2);
+	    	push_rotate(lst1, lst2, 1);
 	    else
-	        push(lst1, lst2);
+	        push(lst1, lst2, 1);
     }
 }
 
@@ -1173,7 +1060,7 @@ void    b_to_a(t_list **lst1, t_list **lst2, int left, int right)
 	if (is_ordered(*lst1, 1, size))
 	{
 		while (size--)
-			push(lst1, lst2);
+			push(lst1, lst2, 1);
 		return ;
 	}
 	if (size <= 4)
@@ -1220,7 +1107,7 @@ void	a_three(t_list **lst1, t_list **lst2)
 void	a_handle_unsorted_four(t_list **lst1, t_list **lst2, int size)
 {
 	if (size == 2)
-		swap(lst1);
+		swap(lst1, 0);
 	else if (size == 3)
 		a_three(lst1, lst2);
 	else
@@ -1236,21 +1123,16 @@ void	a_divide_top_mid_bot(t_list **lst1, t_list **lst2, int left, int right)
 	size = right - left;
 	pivot = left + size / 3 + (size % 3 == 1);
     spivot = pivot + size / 3 + (size % 3 == 2);
-	// printf("a left, right: %d, %d\n", left, right);
-    // printf("pivot, spivot: %d, %d\n", pivot, spivot);
 	while (size--)
     {
         if ((*lst1)->order <= pivot)
-            push(lst1, lst2);
+            push(lst1, lst2, 0);
         else if ((*lst1)->order <= spivot)
-			push_rotate(lst1, lst2);
+			push_rotate(lst1, lst2, 0);
         else
-            rotate(lst1);
+            rotate(lst1, 0);
     }
 	size = right - spivot;
-    // printf("cnt: %d\n", cnt);
-    // print_list(*lst1);
-    // print_list(*lst2);
     while (size--)
 		reverse_rotate_both(lst1, lst2);
 }
@@ -1272,13 +1154,9 @@ void    a_to_b(t_list **lst1, t_list **lst2, int left, int right)
 	    return ;
 	}
 	a_divide_top_mid_bot(lst1, lst2, left, right);
-	print_list(*lst1);
-	print_list(*lst2);
 	a_to_b(lst1, lst2, spivot, right);
-	// printf("pivot, spivot: %d, %d\n", pivot, spivot);
 	b_to_a(lst2, lst1, pivot, spivot);
 	b_to_a(lst2, lst1, left, pivot);
-	// printf("pivot, spivot: %d, %d\n", pivot, spivot);
 }
 
 void    handle_three(t_list **lst)
@@ -1288,26 +1166,26 @@ void    handle_three(t_list **lst)
         // 3 2 1
         if ((*lst)->next->order > (*lst)->next->next->order)
         {
-            swap(lst);
-            reverse_rotate(lst);
+            swap(lst, 0);
+            reverse_rotate(lst, 0);
         }
         // 2 1 3
         else if ((*lst)->next->next->order > (*lst)->order)
-            swap(lst);
+            swap(lst, 0);
         // 3 1 2
         else
-            rotate(lst);
+            rotate(lst, 0);
     }
     else
     {
         // 2 3 1
         if ((*lst)->order > (*lst)->next->next->order)
-            reverse_rotate(lst);
+            reverse_rotate(lst, 0);
         // 1 3 2
         else if ((*lst)->next->order > (*lst)->next->next->order)
         {
-            reverse_rotate(lst);
-            swap(lst);
+            reverse_rotate(lst, 0);
+            swap(lst, 0);
         }
     }
 }
@@ -1325,13 +1203,8 @@ void	push_swap(t_list **lst1, int size)
         return ;
     }
     a_to_b(lst1, &lst2, 0, size);
-    print_operations();
-    // print_list(*lst1);
-    // print_list(lst2);
-	// printf("size: %d\n", size);
     if (!is_ordered(*lst1, 0, size))
 		printf("List is not ordered!!!!\n");
-    printf("total: %d\n", ps + sp + rt + rrt);
 	ft_lstclear(lst1);
 	ft_lstclear(&lst2);
 	lst1 = NULL;
@@ -1377,15 +1250,15 @@ int	get_target(t_list **lst)
 	return (target);
 }
 
-unsigned long long	find_tens(unsigned long long num, int m)
+unsigned long long	find_tens(unsigned long long num)
 {
 	unsigned long long	res;
 
 	res = 1;
-	while (num/m)
+	while (num / 10)
 	{
-		num /= m;
-		res *= m;
+		num /= 10;
+		res *= 10;
 	}
 	return (res);
 }
@@ -1409,11 +1282,8 @@ int	is_visited(int visited[1800][2], int find, int to_find1, int to_find2)
 	i = 0;
 	if (to_find2 >= 100)
 		return (1);
-	// printf("find: %d\n", find);
-	// printf("%d, %d\n", to_find1, to_find2);
 	while (i < find)
 	{
-		// printf("i, visited[%d][0], visited[%d][1]: %d, %d, %d\n", i, i, i, visited[i][0], visited[i][1]);
 		if (visited[i][0] == to_find1 && visited[i][1] == to_find2)
 			return (1);
 		i++;
@@ -1429,61 +1299,39 @@ void	print_answer(t_list **lst1, int dist, unsigned long long n)
 
 	lst2 = NULL;
 	tmp = dist;
-	// 0: pb, 1: pa, 2: sa, 3: sb, 4: ss, 5: rra, 6: rrb, 7: rrr, 8: ra, 9: rb, 10: rr
-	printf("dist: %d\n", dist);
-	printf("\n-------------------before--------------------\n");
-	print_list(*lst1);
-	print_list(lst2);
 	while (dist--)
 	{
 		m = n % 11;
 		if (m == 0)
-			push(lst1, &lst2);
-			// printf("pb\n");
+			push(lst1, &lst2, 0);
 		else if (m == 1)
-			push(&lst2, lst1);
-			// printf("pa\n");
+			push(&lst2, lst1, 1);
 		else if (m == 2)
-			swap(lst1);
-			// printf("sa\n");
+			swap(lst1, 0);
 		else if (m == 3)
-			swap(&lst2);
-			// printf("sb\n");
+			swap(&lst2, 1);
 		else if (m == 4)
 			swap_both(lst1, &lst2);
-			// printf("ss\n");
 		else if (m == 5)
-			reverse_rotate(lst1);
-			// printf("rra\n");
+			reverse_rotate(lst1, 0);
 		else if (m == 6)
-			reverse_rotate(&lst2);
-			// printf("rrb\n");
+			reverse_rotate(&lst2, 1);
 		else if (m == 7)
 			reverse_rotate_both(lst1, &lst2);
-			// printf("rrr\n");
 		else if (m == 8)
-			rotate(lst1);
-			// printf("ra\n");
+			rotate(lst1, 0);
 		else if (m == 9)
-			rotate(&lst2);
-			// printf("rb\n");
+			rotate(&lst2, 1);
 		else
 			rotate_both(lst1, &lst2);
-			// printf("rr\n");
 		n /= 11;
 	}
-	printf("\n-------------------after--------------------\n");
-	print_list(*lst1);
-	print_list(lst2);
-	printf("dist: %d\n", tmp);
 	lst2 = NULL;
 }
 
-// pa : 0, pb : 1, sa : 2, sb : 3, ss : 4, ra : 5, rb : 6, rr : 7, rra : 8, rrb : 9, rrr : a
-
 void	bfs(t_list	**lst, int size)
 {
-	unsigned long long	memo[10][480][4];
+	unsigned long long	memo[10][480][3];
 	char				res[10][4];
 	int					idx[10];
 	int					visited[1800][2];
@@ -1499,199 +1347,113 @@ void	bfs(t_list	**lst, int size)
 	ft_bzero(idx, sizeof(int) * 10);
 	idx[0]++;
 	memo[0][0][0] = get_start(size);
-	memo[0][0][2] = -1;
-	memo[0][0][3] = 0;
+	memo[0][0][2] = 0;
 	visited[find][0] = 12345;
 	visited[find][1] = 0;
-	// if (target)
-	// {
-		printf("target: %d\n", target);
-	// 	print_list(*lst);
-	// }
 	dist = 0;
-	// 4 1 3 2 5
-	// ra sa ra ra sa ra
-	// 1 2 3 4 5
-	// 32451
-	// 54132
-	// 41325
-
-	while (dist < 10)
+	while (1)
 	{
 		int previdx = 0;
-		// printf("%d: 5 90\n", dist);
-		// printf("memo: %lld %lld\n", memo[5][90][0], memo[5][90][1]);
 		while (previdx < idx[dist])
 		{
-			// printf("previdx, dist, idx[dist]: %d, %d, %d\n", previdx, dist, idx[dist]);
-			// stack A, stack B, prev oper, operations
-			// if (dist == 5 && previdx == 90)
-			// {
-			// 	printf("hellowhellshdfasoheoh\n");
-			// 	printf("memo: %lld %lld\n", memo[dist][previdx][0], memo[dist][previdx][1]);
-			// }
 			if (memo[dist][previdx][0] == target)
 			{
-				printf("find answer!!!\n");
-				printf("dist: %d\n", dist);
-				// printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist][previdx][0], \
-					memo[dist][previdx][1], memo[dist][previdx][2], memo[dist][previdx][3]);
-				print_answer(lst, dist, memo[dist][previdx][3]);
+				print_answer(lst, dist, memo[dist][previdx][2]);
 				return ;
 			}
-			// printf("111111111111111111111111111111111\n");
 			if (dist == 0)
 			{
-				// pb
 				long long c = memo[dist][previdx][0];
-				long long d = find_tens(c, 10);
-				long long e = find_tens(memo[dist][previdx][1], 10);
+				long long d = find_tens(c);
+				long long e = find_tens(memo[dist][previdx][1]);
 				long long f = c / d;
 				long long g = c % d;
 				long long h = memo[dist][previdx][1];
 				long long pb = h + f * e;
+				long long sa = (g / (d / 10)) * d + f * (d / 10) + g % (d / 10);
 				long long ra = 10 * g + f;
 				long long rra = (c % 10) * d + (c / 10);
-				// printf("c, d, e, f, g: %lld, %lld, %lld, %lld, %lld\n", c, d, e, f, g);
+				// pb
 				visited[find][0] = g;
 				visited[find++][1] = pb;
 				memo[dist + 1][idx[dist + 1]][0] = g;
 				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1] + f * e;
-				memo[dist + 1][idx[dist + 1]][2] = 1;
-				memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 1;
-				// printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
-				// memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
+				memo[dist + 1][idx[dist + 1]][2] = memo[dist][idx[dist]][2] * 11 + 1;
 				idx[dist + 1]++;
 				// sa
-				long long sa = (g / (d / 10)) * d + f * (d / 10) + g % (d / 10);
-				// 방문 x
-				memo[dist + 1][idx[dist + 1]][0] = sa;
 				visited[find][0] = sa;
 				visited[find++][1] = h;
+				memo[dist + 1][idx[dist + 1]][0] = sa;
 				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1];
-				memo[dist + 1][idx[dist + 1]][2] = 2;
-				memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 2;
-				// printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
-				memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
+				memo[dist + 1][idx[dist + 1]][2] = memo[dist][idx[dist]][2] * 11 + 2;
 				idx[dist + 1]++;
 				// ra
 				visited[find][0] = ra;
 				visited[find++][1] = h;
 				memo[dist + 1][idx[dist + 1]][0] = g * 10 + f;
 				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1];
-				memo[dist + 1][idx[dist + 1]][2] = 5;
-				memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 5;
-				// printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
-				memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
+				memo[dist + 1][idx[dist + 1]][2] = memo[dist][idx[dist]][2] * 11 + 5;
 				idx[dist + 1]++;
 				// rra
 				visited[find][0] = rra;
 				visited[find++][1] = h;
 				memo[dist + 1][idx[dist + 1]][0] = rra;
 				memo[dist + 1][idx[dist + 1]][1] = memo[dist][previdx][1];
-				memo[dist + 1][idx[dist + 1]][2] = 8;
-				memo[dist + 1][idx[dist + 1]][3] = memo[dist][idx[dist]][3] * 11 + 8;
-				// printf("memo[%d][%d]: %lld, %lld, %lld, %lld\n", dist, previdx, memo[dist + 1][idx[dist + 1]][0], \
-				memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
+				memo[dist + 1][idx[dist + 1]][2] = memo[dist][idx[dist]][2] * 11 + 8;
 				idx[dist + 1]++;
 			}
 			else
 			{
 				unsigned long long c = memo[dist][previdx][0];
 				unsigned long long h = memo[dist][previdx][1];
-				// printf("c, h: %lld, %lld\n ", c, h);
-
-				unsigned long long d = find_tens(c, 10);
-				unsigned long long e = find_tens(h, 10);
-				// printf("d, e: %lld, %lld\n", d, e);
+				unsigned long long d = find_tens(c);
+				unsigned long long e = find_tens(h);
 				unsigned long long f = c / d;
 				unsigned long long g = c % d;
 				unsigned long long i = h / e;
 				unsigned long long j = h % e;
-				// printf("f, g, i, j: %lld %lld %lld %lld\n", f, g, i, j);
 				unsigned long long pa; 
+				unsigned long long pb;
+				unsigned long long sa;
+				unsigned long long sb;
+				unsigned long long ra = 10 * g + f;
+				unsigned long long rb = 10 * j + i;
+				unsigned long long rra;
+				unsigned long long rrb;
 				if (h)
-				{
 					pa = 10 * d * i + c;
-					// else
-					// 	pa = i;
-				}
 				else
 					pa = c;
-				unsigned long long pb;
-				// if (c)
-				// {
-					if (h)
-						pb = 10 * e * f + h;
-					else
-						pb = f;
-				// }
-				// else
-				// 	pb = h;
-				// printf("pa, pb: %lld %lld\n", pa, pb);
-				unsigned long long sa;
+				if (h)
+					pb = 10 * e * f + h;
+				else
+					pb = f;
 				if (c > 10)
 					sa = (g / (d / 10)) * d + f * (d / 10) + g % (d / 10);
 				else 
 					sa = c;
-				unsigned long long sb;
 				if (h > 10)
 					sb = (j / (e / 10)) * e + i * (e / 10) + j % (e / 10);
 				else
 					sb = h;
-				// printf("sa, sb: %lld %lld\n", sa, sb);
-				unsigned long long ra = 10 * g + f;
-				unsigned long long rb = 10 * j + i;
-				unsigned long long rra;
 				if (c)
 					rra = (c % 10) * d + (c / 10);
 				else
 					rra = c;
-				unsigned long long rrb;
 				if (h)
 					rrb = (h % 10) * e + (h / 10);
 				else
 					rrb = h;
-				// printf("c, h: %lld, %lld\n ", c, h);
-				// printf("d, e, f: %lld %lld %lld\n", d, e, f);
-				// printf("g, i, j: %lld %lld %lld\n", g, i, j);
-				// printf("pa, pb, sa, sb: %lld %lld %lld %lld\n", pa, pb, sa, sb);
-				// printf("ra, rb, rra, rrb: %lld %lld %lld %lld\n", ra, rb, rra, rrb);
-				// pa pb sa sb ss ra rb rr rra rrb rrr
-				// pa
-				// printf("find: %d\n", find);
-				// if (c == 5143 && h == 2)
-				// {
-				// 	printf("\n\n-------------pa---------------\n\n");
-				// 	printf("before: %lld, %lld\n", c, h);
-				// 	printf("after: %lld %lld\n", pa, j);
-				// }
 				if (!is_visited(visited, find, pa, j))
 				{
 					if (h)
 					{
-						// if (c == 5143 && h == 2)
-						// {
-						// 	printf("\n\n-------------pa1---------------\n\n");
-						// 	printf("before: %lld, %lld\n", c, h);
-						// 	printf("after: %lld %lld\n", pa, j);
-						// 	// printf("idx[dist+1]")
-						// }
 						visited[find][0] = pa;
 						visited[find++][1] = j;
 						memo[dist + 1][idx[dist + 1]][0] = pa;
 						memo[dist + 1][idx[dist + 1]][1] = j;
-						memo[dist + 1][idx[dist + 1]][2] = 0;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 0;
-						// if (c == 5143 && h == 2)
-						// {
-						// 	printf("%lld %lld %lld %lld\n", memo[dist + 1][idx[dist + 1]][0], memo[dist + 1][idx[dist + 1]][1], memo[dist + 1][idx[dist + 1]][2], memo[dist + 1][idx[dist + 1]][3]);
-						// 	printf("%lld %lld %lld %lld\n", memo[5][90][0], memo[5][90][1], memo[5][90][2], memo[5][90][3]);
-						// 	printf("before index: %d, %d \n", idx[dist + 1], dist);
-						// }
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 0;
 						idx[dist + 1]++;
-						// if (c == 5143 && h == 2)
-						// 	printf("after index: %d, %d \n", idx[dist + 1], dist);
 					}
 				}
 				// pb
@@ -1699,15 +1461,11 @@ void	bfs(t_list	**lst, int size)
 				{
 					if (c)
 					{
-						// printf("\n\n-------------pb---------------\n\n");
-						// printf("before: %lld, %lld\n", c, h);
-						// printf("after: %lld %lld\n", g, pb);
 						visited[find][0] = g;
 						visited[find++][1] = pb;
 						memo[dist + 1][idx[dist + 1]][0] = g;
 						memo[dist + 1][idx[dist + 1]][1] = pb;
-						memo[dist + 1][idx[dist + 1]][2] = 1;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 1;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 1;
 						idx[dist + 1]++;
 					}
 				}
@@ -1716,15 +1474,11 @@ void	bfs(t_list	**lst, int size)
 				{
 					if (c > 10)
 					{
-						// printf("\n\n-------------sa---------------\n\n");
-						// printf("before: %lld, %lld\n", c, h);
-						// printf("after: %lld %lld\n", sa, h);
 						visited[find][0] = sa;
 						visited[find++][1] = h;
 						memo[dist + 1][idx[dist + 1]][0] = sa;
 						memo[dist + 1][idx[dist + 1]][1] = h;
-						memo[dist + 1][idx[dist + 1]][2] = 2;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 2;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 2;
 						idx[dist + 1]++;
 					}
 				}
@@ -1733,61 +1487,24 @@ void	bfs(t_list	**lst, int size)
 				{
 					if (h > 10)
 					{
-						// printf("\n\n-------------sb---------------\n\n");
-						// printf("before: %lld, %lld\n", c, h);
-						// printf("after: %lld %lld\n", c, sb);
 						visited[find][0] = c;
 						visited[find++][1] = sb;
 						memo[dist + 1][idx[dist + 1]][0] = c;
 						memo[dist + 1][idx[dist + 1]][1] = sb;
-						memo[dist + 1][idx[dist + 1]][2] = 3;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 3;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 3;
 						idx[dist + 1]++;
 					}
 				}
 				// ss
-				// if (c == 25143)
-				// {
-				// 	printf("asibgalsbgalsjdgblaskdjbflaskdjfalskdjfalksfj\n");
-				// }
-				// if (c == 5143 && h == 2)
-				// {
-				// 	printf("-------------------------------------asadasdafas\n");
-				// 	printf("dist: %d\n", dist);
-				// 	printf("pa: %lld\n", pa);
-				// }
-
-				// 12345
-				// pb pb ss pa rra pa
-				// 435 12
-				// 1435 2
-				// 25143
-
-
-				// pb ra pb
-				// [['ra', 'ra', 'sa', 'ra']]
-				// 12345
-				// 452 31
-				// 542 13
-				// 435 12
-				// 1435
-				// 4351
-				// 24351
-				// [['pb', 'ra', 'pb', 'ss', 'pa', 'pa']]
-				// 25143
 				if (!is_visited(visited, find, sa, sb))
 				{
 					if (c > 10 && h > 10)
 					{
-						// printf("\n\n-------------ss---------------\n\n");
-						// printf("before: %lld, %lld\n", c, h);
-						// printf("after: %lld %lld\n", sa, sb);
 						visited[find][0] = sa;
 						visited[find++][1] = sb;
 						memo[dist + 1][idx[dist + 1]][0] = sa;
 						memo[dist + 1][idx[dist + 1]][1] = sb;
-						memo[dist + 1][idx[dist + 1]][2] = 4;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 4;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 4;
 						idx[dist + 1]++;
 					}
 				}
@@ -1796,15 +1513,11 @@ void	bfs(t_list	**lst, int size)
 				{
 					if (c > 10)
 					{
-						// printf("\n\n-------------ra---------------\n\n");
-						// printf("before: %lld, %lld\n", c, h);
-						// printf("after: %lld %lld\n", ra, h);
 						visited[find][0] = ra;
 						visited[find++][1] = h;
 						memo[dist + 1][idx[dist + 1]][0] = ra;
 						memo[dist + 1][idx[dist + 1]][1] = h;
-						memo[dist + 1][idx[dist + 1]][2] = 5;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 5;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 5;
 						idx[dist + 1]++;
 					}
 				}
@@ -1813,15 +1526,11 @@ void	bfs(t_list	**lst, int size)
 				{
 					if (h > 10)
 					{
-						// printf("\n\n-------------rb---------------\n\n");
-						// printf("before: %lld, %lld\n", c, h);
-						// printf("after: %lld %lld\n", c, rb);
 						visited[find][0] = c;
 						visited[find++][1] = rb;
 						memo[dist + 1][idx[dist + 1]][0] = c;
 						memo[dist + 1][idx[dist + 1]][1] = rb;
-						memo[dist + 1][idx[dist + 1]][2] = 6;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 6;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 6;
 						idx[dist + 1]++;
 					}
 				}
@@ -1830,15 +1539,11 @@ void	bfs(t_list	**lst, int size)
 				{
 					if (c > 10 && h > 10)
 					{
-						// printf("\n\n-------------rr---------------\n\n");
-						// printf("before: %lld, %lld\n", c, h);
-						// printf("after: %lld %lld\n", ra, rb);
 						visited[find][0] = ra;
 						visited[find++][1] = rb;
 						memo[dist + 1][idx[dist + 1]][0] = ra;
 						memo[dist + 1][idx[dist + 1]][1] = rb;
-						memo[dist + 1][idx[dist + 1]][2] = 7;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 7;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 7;
 						idx[dist + 1]++;
 					}
 				}
@@ -1847,15 +1552,11 @@ void	bfs(t_list	**lst, int size)
 				{
 					if (c > 10)
 					{
-						// printf("\n\n-------------rra---------------\n\n");
-						// printf("before: %lld, %lld\n", c, h);
-						// printf("after: %lld %lld\n", rra, h);
 						visited[find][0] = rra;
 						visited[find++][1] = h;
 						memo[dist + 1][idx[dist + 1]][0] = rra;
 						memo[dist + 1][idx[dist + 1]][1] = h;
-						memo[dist + 1][idx[dist + 1]][2] = 8;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 8;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 8;
 						idx[dist + 1]++;
 					}
 				}
@@ -1864,15 +1565,11 @@ void	bfs(t_list	**lst, int size)
 				{
 					if (h > 10)
 					{
-						// printf("\n\n-------------rrb---------------\n\n");
-						// printf("before: %lld, %lld\n", c, h);
-						// printf("after: %lld %lld\n", c, rrb);
 						visited[find][0] = c;
 						visited[find++][1] = rrb;
 						memo[dist + 1][idx[dist + 1]][0] = c;
 						memo[dist + 1][idx[dist + 1]][1] = rrb;
-						memo[dist + 1][idx[dist + 1]][2] = 9;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 9;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 9;
 						idx[dist + 1]++;
 					}
 				}
@@ -1881,33 +1578,19 @@ void	bfs(t_list	**lst, int size)
 				{
 					if (c > 10 && h > 10)
 					{
-						// printf("\n\n-------------rrr---------------\n\n");
-						// printf("before: %lld, %lld\n", c, h);
-						// printf("after: %lld %lld\n", rra, rrb);
 						visited[find][0] = rra;
 						visited[find++][1] = rrb;
 						memo[dist + 1][idx[dist + 1]][0] = rra;
 						memo[dist + 1][idx[dist + 1]][1] = rrb;
-						memo[dist + 1][idx[dist + 1]][2] = 10;
-						memo[dist + 1][idx[dist + 1]][3] = memo[dist][previdx][3] * 11 + 10;
+						memo[dist + 1][idx[dist + 1]][2] = memo[dist][previdx][2] * 11 + 10;
 						idx[dist + 1]++;
 					}
 				}
 			}
-			// printf("\n\nfind: %d\n", find);
-			// printf("")
-			// printf("memo[%d][%d]: %d, %d, %d, %d\n", dist, previdx, memo[dist][previdx][0], \
-			// memo[dist][previdx][1], memo[dist][previdx][2], memo[dist][previdx][3]);
 			previdx++;
 		}
 		dist++;
-		// printf("target: %d\n", target);
-		// printf("dist: %d\n", dist);
 	}
-	// for (int i = 0; i < find; i++)
-	// {
-	// 	printf("find: %d, %d\n", visited[i][0], visited[i][1]);
-	// }
 }
 
 int	main(int argc, char **argv)
@@ -1920,396 +1603,8 @@ int	main(int argc, char **argv)
 	size = ft_lstsize(lst);
 	order_data(&lst, size);
 	bfs(&lst, size);
-	ft_lstclear(&lst);
-	// print_list(lst);
-	// push_swap(&lst);
+	push_swap(&lst, size);
 	return (0);
 }
 
-
-// 123: 2
-// [['sa', 'rra']]
-// 132: 1
-// [['rra']]
-// 213: 1
-// [['ra']]
-// 231: 2
-// [['sa', 'ra']]
-// 312: 1
-// [['sa']]
-// 321: 0
-// [[]]
-
-// 1243: 4 -----예외
-// [['pb', 'sa', 'ra', 'pa']]
-
-// 2143: 5 ----- 예외
-// [['pb', 'pb', 'ss', 'pa', 'pa']]
-
-// 1432: 4 ----- 예외
-// [['pb', 'ra', 'sa', 'pa']]
-
-// ------
-// 4321: 4
-// [['sa', 'ra', 'ra', 'sa']]
-
-// 3214: 5 
-// rra sa ra ra sa
-// [['sa', 'pb', 'sa', 'pa', 'sa']]
-
-// 2143: 5 ----- 예외
-// [['pb', 'pb', 'ss', 'pa', 'pa']]
-//
-
-// 1432: 4 ----- 예외
-// [['pb', 'ra', 'sa', 'pa']]
-// 1
-
-// ------
-// 3421: 3
-// [['ra', 'ra', 'sa']]
-
-// 4213: 2
-// [['ra', 'sa']]
-
-// 2134: 1
-// [['sa']]
-
-// 1342: 2
-// [['rra', 'sa']]
-
-// ------
-
-// 4231: 3
-// [['rra', 'sa', 'ra']]
-
-// 2314: 4
-// ra sa rra sa
-// [['pb', 'sa', 'pa', 'sa']]
-// 2
-
-
-// 3142: 3
-// [['sa', 'rra', 'sa']]
-
-// 1423: 2
-// [['sa', 'ra']]
-
-// ------
-
-// 2431: 4
-// ra sa rra rra
-// [['pb', 'sa', 'pa', 'rra']]
-// 2
-
-// 4312: 3
-// [['sa', 'ra', 'ra']]
-
-// 3124: 4
-// rra sa ra ra
-// [['sa', 'pb', 'sa', 'pa']]
-// 1
-// 1243: 4 -----예외
-// [['pb', 'sa', 'ra', 'pa']]
-// 1
-// ------
-
-// 3241: 2
-// [['sa', 'rra']]
-
-// 2413: 3
-// [['sa', 'ra', 'sa']]
-
-// 4132: 4
-// ra ra sa rra
-// [['ra', 'pb', 'sa', 'pa']]
-// 1
-// 1324: 3
-// ra sa rra
-// [['pb', 'sa', 'pa']]
-// 1
-// ------
-
-// 1234 : 0
-
-// 2341: 1
-// [['rra']]
-
-// 3412: 2
-// [['ra', 'ra']]
-
-// 4123: 1
-// [['ra']]
-
-// ------
-
-
-// 123
-// 213 == 1
-// 321 == 2
-// 132 == 2
-// 312 == 1
-// 231 == 1
-
-//3432
-//3212
-// 1234 1243 1324 1342 1423 1432
-// 0    4    3    2    2    4
-// 2134 2143 2314 2341 2413 2431
-// 1    5    4    1    3    4
-// 3124 3142 3214 3241 3412 3421
-// 4    3    5    2    2    3
-// 4123 4132 4213 4231 4312 4321
-// 1    4    2    3    3    4
-
-
-// 12345
-// 23451 51234 21345 (2345 / 1)
-// (34512 x 32451) (x 45123 51234) (13452 52134 x) (3452 / 1, 5234 / 1, 3245 / 1)
-// (3451 / 2) (1234 / 5) (2134 / 5) (345 / 12)
-
-
-
-
-
-
-// 54321: 7 = dp(4321) + 3
-// [['pb', 'sa', 'ra', 'ra', 'pa', 'ra', 'sa']]
-// 45321: 6 = dp(3421) + 3
-// [['rra', 'pb', 'ra', 'ra', 'sa', 'pa']]
-// 53421: 6 = dp(4231) + 3
-// [['pb', 'ra', 'ra', 'pa', 'ra', 'sa']]
-// 35421: 5 = dp(54213) + 1 = dp(45213) + 2 = dp(52134) + 3 = dp(21345) + 4
-// [['ra', 'sa', 'ra', 'ra', 'sa']]
-// 43521: 4 = dp(34521) + 1 = dp(13452) + 2 = dp(21345) + 3 = dp(12345) + 4
-// [['sa', 'rra', 'rra', 'sa']]
-// 34521: 3 = dp(13452) + 1 = dp(21345) + 2 = dp(12345) + 3
-// [['rra', 'rra', 'sa']]
-// 54231: 6 = dp(4312) + 3 = dp(45231) + 1 = dp(14523) + 2 = dp(3412) + 4
-// [['sa', 'rra', 'pb', 'ra', 'ra', 'pa']]
-// 45231: 5
-// [['rra', 'pb', 'ra', 'ra', 'pa']]
-// 13425: 7
-// [['pb', 'ra', 'sa', 'ra', 'ra', 'pa', 'ra']]
-// 13452: 7
-// [['pb', 'sa', 'ra', 'ra', 'sa', 'pa', 'sa']]
-// 13524: 6
-// [['ra', 'pb', 'ra', 'sa', 'pa', 'sa']]
-// 13542: 6
-// [['pb', 'ra', 'ra', 'sa', 'pa', 'sa']]
-// 14235: 5
-// [['rra', 'pb', 'ra', 'sa', 'pa']]
-// 14253: 6
-// [['sa', 'rra', 'pb', 'ra', 'sa', 'pa']]
-// 14325: 3
-// [['rra', 'sa', 'ra']]
-// 14352: 4
-// [['sa', 'rra', 'sa', 'ra']]
-// 14523: 6
-// [['pb', 'pb', 'ss', 'pa', 'pa', 'rra']]
-// 14532: 5
-// [['ra', 'ra', 'sa', 'ra', 'ra']]
-// 15234: 6
-// [['sa', 'pb', 'sa', 'pa', 'sa', 'rra']]
-// 15243: 5
-// [['pb', 'sa', 'pa', 'sa', 'rra']]
-// 15324: 5
-// [['sa', 'pb', 'sa', 'pa', 'rra']]
-// 15342: 4
-// [['pb', 'sa', 'pa', 'rra']]
-// 15423: 2
-// [['sa', 'rra']]
-// 15432: 1
-// [['rra']]
-// 21345: 6
-// [['pb', 'sa', 'ra', 'ra', 'pa', 'ra']]
-// 21354: 6
-// [['pb', 'sa', 'pa', 'sa', 'rra', 'rra']]
-// 21435: 5
-// [['pb', 'ra', 'ra', 'pa', 'ra']]
-// 21453: 4
-// [['ra', 'sa', 'ra', 'ra']]
-// 21534: 3
-// [['sa', 'rra', 'rra']]
-// 21543: 2
-// [['rra', 'rra']]
-// 23145: 5
-// [['sa', 'rra', 'rra', 'sa', 'rra']]
-// 23154: 4
-// [['rra', 'rra', 'sa', 'rra']]
-// 23415: 7
-// [['pb', 'pb', 'sa', 'rra', 'pa', 'pa', 'ra']]
-// 23451: 6
-// [['pb', 'sa', 'ra', 'ra', 'sa', 'pa']]
-// 23514: 5
-// [['ra', 'pb', 'ra', 'sa', 'pa']]
-// 23541: 5
-// [['pb', 'ra', 'ra', 'sa', 'pa']]
-// 24135: 6
-// [['pb', 'ra', 'sa', 'ra', 'pa', 'ra']]
-// 24153: 6
-// [['ra', 'pb', 'sa', 'ra', 'pa', 'ra']]
-// 24315: 4
-// [['rra', 'sa', 'ra', 'sa']]
-// 24351: 5
-// [['sa', 'rra', 'sa', 'ra', 'sa']]
-// 24513: 6
-// [['ra', 'pb', 'sa', 'ra', 'ra', 'pa']]
-// 24531: 6
-// [['pb', 'ra', 'sa', 'ra', 'ra', 'pa']]
-// 25134: 5
-// [['sa', 'ra', 'ra', 'sa', 'ra']]
-// 25143: 4
-// [['ra', 'ra', 'sa', 'ra']]
-// 25314: 6
-// [['sa', 'pb', 'sa', 'pa', 'rra', 'sa']]
-// 25341: 5
-// [['pb', 'sa', 'pa', 'rra', 'sa']]
-// 25413: 3
-// [['sa', 'rra', 'sa']]
-// 25431: 2
-// [['rra', 'sa']]
-// 31245: 4
-// [['sa', 'ra', 'ra', 'sa']]
-// 31254: 3
-// [['ra', 'ra', 'sa']]
-// 31425: 6
-// [['pb', 'sa', 'ra', 'pa', 'ra', 'sa']]
-// 31452: 6
-// [['pb', 'sa', 'pa', 'rra', 'sa', 'rra']]
-// 31524: 4
-// [['sa', 'rra', 'sa', 'rra']]
-// 31542: 3
-// [['rra', 'sa', 'rra']]
-// 32145: 3
-// [['sa', 'ra', 'ra']]
-// 32154: 2
-// [['ra', 'ra']]
-// 32415: 5
-// [['pb', 'sa', 'ra', 'pa', 'ra']]
-// 32451: 5
-// [['pb', 'sa', 'ra', 'ra', 'pa']]
-// 32514: 3
-// [['ra', 'sa', 'ra']]
-// 32541: 4
-// [['pb', 'ra', 'ra', 'pa']]
-// 34125: 6
-// [['ra', 'pb', 'pb', 'ss', 'pa', 'pa']]
-// 34152: 6
-// [['pb', 'ra', 'pb', 'ss', 'pa', 'pa']]
-// 34215: 5
-// [['rra', 'rra', 'sa', 'rra', 'rra']]
-// 34251: 6
-// [['pb', 'ra', 'pb', 'sa', 'pa', 'pa']]
-// 34512: 6
-// [['pb', 'pb', 'sa', 'rrr', 'pa', 'pa']]
-// 34521: 6
-// [['pb', 'pb', 'sa', 'rra', 'pa', 'pa']]
-// 35124: 6
-// [['ra', 'pb', 'pb', 'rr', 'pa', 'pa']]
-// 35142: 6
-// [['pb', 'sa', 'pb', 'rrr', 'pa', 'pa']]
-// 35214: 5
-// [['ra', 'pb', 'sa', 'ra', 'pa']]
-// 35241: 5
-// [['pb', 'ra', 'sa', 'ra', 'pa']]
-// 35412: 5
-// [['pb', 'pb', 'rrr', 'pa', 'pa']]
-// 35421: 5
-// [['pb', 'pb', 'rra', 'pa', 'pa']]
-// 41235: 6
-// [['sa', 'rra', 'sa', 'rra', 'rra', 'sa']]
-// 41253: 5
-// [['rra', 'sa', 'rra', 'rra', 'sa']]
-// 41325: 5
-// [['ra', 'pb', 'sa', 'pa', 'sa']]
-// 41352: 5
-// [['pb', 'ra', 'sa', 'pa', 'sa']]
-// 41523: 6
-// [['pb', 'pb', 'rrr', 'pa', 'pa', 'rra']]
-// 41532: 6
-// [['pb', 'pb', 'rra', 'pa', 'pa', 'rra']]
-// 42135: 5
-// [['sa', 'rra', 'sa', 'rra', 'rra']]
-// 42153: 4
-// [['rra', 'sa', 'rra', 'rra']]
-// 42315: 4
-// [['ra', 'pb', 'sa', 'pa']]
-// 42351: 4
-// [['pb', 'ra', 'sa', 'pa']]
-// 42513: 6
-// [['pb', 'pb', 'rr', 'pa', 'sa', 'pa']]
-// 42531: 5
-// [['pb', 'sa', 'ra', 'sa', 'pa']]
-// 43125: 2
-// [['ra', 'sa']]
-// 43152: 3
-// [['sa', 'ra', 'sa']]
-// 43215: 1
-// [['ra']]
-// 43251: 2
-// [['sa', 'ra']]
-// 43512: 5
-// [['pb', 'pb', 'rr', 'pa', 'pa']]
-// 43521: 4
-// [['pb', 'sa', 'ra', 'pa']]
-// 45123: 7
-// [['pb', 'pb', 'sa', 'rrr', 'pa', 'pa', 'rra']]
-// 45132: 7
-// [['pb', 'pb', 'pb', 'rr', 'pa', 'pa', 'pa']]
-// 45213: 7
-// [['pb', 'pb', 'pb', 'rrr', 'pa', 'pa', 'pa']]
-// 45231: 7
-// [['pb', 'pb', 'pb', 'ss', 'pa', 'pa', 'pa']]
-// 45312: 6
-// [['pb', 'pb', 'sa', 'rr', 'pa', 'pa']]
-// 45321: 5
-// [['rra', 'rra', 'sa', 'ra', 'ra']]
-// 51234: 8
-// [['pb', 'pb', 'sa', 'rrr', 'pa', 'pa', 'rra', 'rra']]
-// 51243: 7
-// [['ra', 'ra', 'pb', 'pb', 'rr', 'pa', 'pa']]
-// 51324: 7
-// [['pb', 'ra', 'ra', 'pa', 'ra', 'sa', 'ra']]
-// 51342: 6
-// [['ra', 'sa', 'ra', 'ra', 'sa', 'ra']]
-// 51423: 5
-// [['sa', 'rra', 'rra', 'sa', 'ra']]
-// 51432: 4
-// [['rra', 'rra', 'sa', 'ra']]
-// 52134: 7
-// [['pb', 'pb', 'rrr', 'pa', 'pa', 'rra', 'rra']]
-// 52143: 6
-// [['ra', 'ra', 'pb', 'sa', 'ra', 'pa']]
-// 52314: 6
-// [['rra', 'sa', 'rra', 'rra', 'sa', 'rra']]
-// 52341: 7
-// [['pb', 'sa', 'pb', 'sa', 'pa', 'sa', 'pa']]
-// 52413: 6
-// [['pb', 'pb', 'ss', 'pa', 'sa', 'pa']]
-// 52431: 5
-// [['rra', 'rra', 'sa', 'ra', 'sa']]
-// 53124: 5
-// [['rra', 'sa', 'ra', 'ra', 'sa']]
-// 53142: 6
-// [['pb', 'sa', 'pb', 'ss', 'pa', 'pa']]
-// 53214: 4
-// [['rra', 'sa', 'ra', 'ra']]
-// 53241: 5
-// [['sa', 'rra', 'sa', 'ra', 'ra']]
-// 53412: 5
-// [['pb', 'pb', 'ss', 'pa', 'pa']]
-// 53421: 5
-// [['pb', 'pb', 'sa', 'pa', 'pa']]
-// 54123: 5
-// [['sa', 'pb', 'sa', 'pa', 'sa']]
-// 54132: 4
-// [['pb', 'sa', 'pa', 'sa']]
-// 54213: 4
-// [['sa', 'pb', 'sa', 'pa']]
-// 54231: 3
-// [['pb', 'sa', 'pa']]
-// 54312: 1
-// [['sa']]
-// 54321: 0
-// [[]]
+// pa : 0, pb : 1, sa : 2, sb : 3, ss : 4, ra : 5, rb : 6, rr : 7, rra : 8, rrb : 9, rrr : a
