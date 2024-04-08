@@ -25,9 +25,9 @@ void	push(t_list **lst1, t_list **lst2, int sign)
 	tmp->next = NULL;
 	ft_lstadd_front(lst2, tmp);
 	if (!sign)
-		printf("pb\n");
+		write(1, "pb\n", 3);
 	else
-		printf("pa\n");
+		write(1, "pa\n", 3);
 }
 
 void	swap(t_list **lst, int sign)
@@ -44,9 +44,9 @@ void	swap(t_list **lst, int sign)
 	tmp->next = NULL;
 	ft_lstadd_front(lst, tmp);
 	if (!sign)
-		printf("sa\n");
+		write(1, "sa\n", 3);
 	else if (sign == 1)
-		printf("sb\n");
+		write(1, "sb\n", 3);
 }
 
 void	rotate(t_list **lst, int sign)
@@ -62,9 +62,9 @@ void	rotate(t_list **lst, int sign)
 	tmp->next = NULL;
 	ft_lstadd_back(lst, tmp);
 	if (!sign)
-		printf("ra\n");
+		write(1, "ra\n", 3);
 	else if (sign == 1)
-		printf("rb\n");
+		write(1, "rb\n", 3);
 }
 
 void	reverse_rotate(t_list **lst, int sign)
@@ -79,14 +79,14 @@ void	reverse_rotate(t_list **lst, int sign)
 	tmp->prev = NULL;
 	ft_lstadd_front(lst, tmp);
 	if (!sign)
-		printf("rra\n");
+		write(1, "rra\n", 4);
 	else if (sign == 1)
-		printf("rrb\n");
+		write(1, "rrb\n", 4);
 }
 
 void	swap_both(t_list **lst1, t_list **lst2)
 {
 	swap(lst1, 2);
 	swap(lst2, 2);
-	printf("ss\n");
+	write(1, "ss\n", 3);
 }

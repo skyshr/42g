@@ -21,7 +21,7 @@ void	push_swap(t_list **lst1, int size)
 		return ;
     a_to_b(lst1, &lst2, 0, size);
     if (!is_ordered(*lst1, 0, size))
-		printf("List is not ordered!!!!\n");
+		write(1, "Error\n", 6);
 	ft_lstclear(lst1);
 	ft_lstclear(&lst2);
 	lst1 = NULL;

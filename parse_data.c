@@ -21,7 +21,7 @@ int	parse_singlearg(t_list **lst, char *argv)
 		if (!get_num(&argv, &num) || ft_lstiter(*lst, num, is_duplicate) \
 			|| !ft_lstadd_back(lst, ft_lstnew(num)))
 		{
-			printf("Error\n");
+			write(1, "Error\n", 6);
 			ft_lstclear(lst);
 			return (-1);
 		}
