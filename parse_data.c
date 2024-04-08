@@ -16,7 +16,7 @@ void	parse_singlearg(t_list **lst, char *argv)
 {
 	int	num;
 
-    if (!*argv)
+	if (!*argv)
 	{
 		ft_lstclear(lst);
 		write(1, "Error\n", 6);

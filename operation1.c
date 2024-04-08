@@ -35,7 +35,7 @@ void	swap(t_list **lst1, t_list **lst2, int sign)
 	t_list	*tmp;
 
 	if (!(*lst1) || !(*lst1)->next)
-    	lst_error(lst1, lst2);
+		lst_error(lst1, lst2);
 	tmp = (*lst1)->next;
 	(*lst1)->next = tmp->next;
 	if (tmp->next)
@@ -73,7 +73,7 @@ void	reverse_rotate(t_list **lst1, t_list **lst2, int sign)
 
 	tmp = ft_lstlast(*lst1);
 	if (!tmp || !(*lst1)->next)
-    	lst_error(lst1, lst2);
+		lst_error(lst1, lst2);
 	if (tmp->prev)
 		tmp->prev->next = NULL;
 	tmp->prev = NULL;
@@ -88,6 +88,6 @@ void	swap_both(t_list **lst1, t_list **lst2, int sign)
 {
 	swap(lst1, lst2, sign);
 	swap(lst2, lst2, sign);
-    if (sign == 2)
-	    write(1, "ss\n", 3);
+	if (sign == 2)
+		write(1, "ss\n", 3);
 }

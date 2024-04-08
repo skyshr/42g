@@ -33,8 +33,8 @@ int	is_ordered(t_list *lst, int flag, size_t size)
 
 int	get_num(char **argv, int *num)
 {
-	unsigned long long  n;
-	int				    sign;
+	unsigned long long	n;
+	int					sign;
 
 	n = 0;
 	sign = 1;

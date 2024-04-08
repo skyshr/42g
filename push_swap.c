@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main2.c                                            :+:      :+:    :+:   */
+/*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ksuh <ksuh@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/05 18:45:54 by ksuh              #+#    #+#             */
-/*   Updated: 2024/04/05 18:45:58 by ksuh             ###   ########.fr       */
+/*   Created: 2024/04/08 22:38:02 by ksuh              #+#    #+#             */
+/*   Updated: 2024/04/08 22:38:03 by ksuh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-int	main(int argc, char **argv)
+void	push_swap(t_list **lst1, int size)
 {
-	t_list	*lst;
-	int		size;
+	t_list	*lst2;
 
-	lst = NULL;
-	parse_data(&lst, argc, argv);
-	size = ft_lstsize(lst);
-	order_data(&lst, size);
-	push_swap(&lst, size);
-	ft_lstclear(&lst);
-	return (0);
+	lst2 = NULL;
+	if (!(*lst1) || is_ordered(lst1, 0, size))
+		return ;
+	if (size <= 5)
+	{
+		bfs(lst1, lst2, size);
+		return ;
+	}
+	a_to_b(lst1, &lst2, 0, size);
+	ft_lstclear(&lst2);
 }

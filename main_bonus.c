@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "push_swap.h"
+#include <stdio.h>
 
 void	checker(t_list *lst, int size)
 {
@@ -66,8 +67,6 @@ void	is_validstr(t_list **lst1, t_list **lst2, char *s)
 		lst_error(lst1, lst2);
 	handle_operation(lst1, lst2, s, idx);
 }
-
-#include <stdio.h>
 
 int	main(int argc, char **argv)
 {
