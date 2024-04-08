@@ -24,6 +24,31 @@ typedef struct s_list
 	int				order;
 }	t_list;
 
+typedef struct s_lookup
+{
+	int	target;
+	int	find;
+	int	dist;
+	int	first;
+	int	second;
+	int	third;
+	int	pa;
+	int	pb;
+	int	sa;
+	int	sb;
+	int	ra;
+	int	rb;
+	int	rra;
+	int	rrb;
+	int	tenf;
+	int	tens;
+	int	quof;
+	int	quos;
+	int	remf;
+	int	rems;
+	int	cur;
+}	t_lookup;
+
 int		ft_isalpha(int c);
 void	ft_bzero(void *s, size_t n);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
@@ -135,12 +160,26 @@ void	order_data(t_list **lst, int size);
 void	lst_error(t_list **lst1, t_list **lst2);
 void	is_validstr(t_list **lst1, t_list **lst2, char *s);
 void	handle_operation(t_list **lst1, t_list **lst2, char *s, int len);
-unsigned long long	find_tens(unsigned long long num);
 int		get_start(int size);
 void	do_operation(t_list **lst1, t_list **lst2, int n);
 void	print_answer(t_list **l1, t_list **l2, int d, unsigned long long n);
-int		get_target(t_list **lst);
-int		is_visited(int visited[1800][2], int find, int to_find1, int to_find2);
+int		get_target(t_list *lst);
+int		is_visited(int visited[400][2], int find, int to_find1, int to_find2);
 void	bfs(t_list **lst1, t_list **lst2, int size);
+void	setup(t_list *lst, t_lookup *dc, int m[10][400][3], int v[400][2]);
+void	reset(t_lookup *dc, int memo[10][400][3]);
+void	find_path(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10]);
+void	pa(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10]);
+void	pb(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10]);
+void	sa(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10]);
+void	sb(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10]);
+void	ss(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10]);
+void	ra(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10]);
+void	rb(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10]);
+void	rr(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10]);
+void	rra(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10]);
+void	rrb(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10]);
+void	rrr(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10]);
+int		find_tens(int num);
 
 #endif

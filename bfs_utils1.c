@@ -12,12 +12,12 @@
 
 #include "push_swap.h"
 
-int	get_target(t_list **lst)
+int	get_target(t_list *lst)
 {
 	t_list	*cur;
 	int		target;
 
-	cur = *lst;
+	cur = lst;
 	target = 0;
 	while (cur)
 	{
@@ -92,4 +92,5 @@ void	print_answer(t_list **l1, t_list **l2, int d, unsigned long long n)
 	}
 	ft_lstclear(l1);
 	ft_lstclear(&l2);
+	exit(0);
 }
