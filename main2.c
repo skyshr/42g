@@ -164,7 +164,6 @@ void	push(t_list **lst1, t_list **lst2, int sign)
 		printf("pb\n");
 	else
 		printf("pa\n");
-	// printf("p\n");
 	ps++;
 }
 
@@ -185,7 +184,6 @@ void	swap(t_list **lst, int sign)
 		printf("sa\n");
 	else if (sign == 1)
 		printf("sb\n");
-	// printf("s\n");
 	sp++;
 }
 
@@ -205,7 +203,6 @@ void	rotate(t_list **lst, int sign)
 		printf("ra\n");
 	else if (sign == 1)
 		printf("rb\n");
-	// printf("rt\n");
 	rt++;
 }
 
@@ -224,7 +221,6 @@ void	reverse_rotate(t_list **lst, int sign)
 		printf("rra\n");
 	else if (sign == 1)
 		printf("rrb\n");
-	// printf("rrt\n");
 	rrt++;
 }
 
@@ -255,7 +251,7 @@ void	reverse_rotate_both(t_list **lst1, t_list **lst2)
 void	push_rotate(t_list **lst1, t_list **lst2, int sign)
 {
 	push(lst1, lst2, sign);
-	rotate(lst2, sign);
+	rotate(lst2, sign == 0);
 }
 
 void	b_four_first(t_list **lst1, t_list **lst2)
@@ -920,7 +916,7 @@ void    a_three_132(t_list **lst1, t_list **lst2)
 {
 	push(lst1, lst2, 0);
 	swap(lst1, 0);
-	push(lst2, lst1, 0);
+	push(lst2, lst1, 1);
 }
 
 void    a_three_213(t_list **lst)
@@ -1146,6 +1142,7 @@ void    a_to_b(t_list **lst1, t_list **lst2, int left, int right)
 	size = right - left;
 	pivot = left + size / 3 + (size % 3 == 1);
 	spivot = pivot + size / 3 + (size % 3 == 2); 
+	// printf("size, pivot, spivot: %d %d %d\n", size, pivot, spivot);
 	if (is_ordered(*lst1, 0, size))
 	    return ;
 	if (size <= 4)
@@ -1203,6 +1200,7 @@ void	push_swap(t_list **lst1, int size)
         return ;
     }
     a_to_b(lst1, &lst2, 0, size);
+	// print_list(*lst1);
     if (!is_ordered(*lst1, 0, size))
 		printf("List is not ordered!!!!\n");
 	ft_lstclear(lst1);
@@ -1603,8 +1601,33 @@ int	main(int argc, char **argv)
 	size = ft_lstsize(lst);
 	order_data(&lst, size);
 	bfs(&lst, size);
+	// print_list(lst);
 	push_swap(&lst, size);
 	return (0);
 }
 
 // pa : 0, pb : 1, sa : 2, sb : 3, ss : 4, ra : 5, rb : 6, rr : 7, rra : 8, rrb : 9, rrr : a
+
+// 4 2 1 3 6 5 
+
+// ----------------------
+
+// pb
+// pb
+// pb
+// pb
+// ra
+// ra
+// ra  5 6 / 3 1 2 4
+// rrr 
+// rrr 5 6 / 4 2 3 1
+// sa 
+// pa
+// pa
+// sb
+// pa
+// pa
+
+
+// ------------ORDER------------
+// 1 2 3 4 5 6 
