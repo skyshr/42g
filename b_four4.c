@@ -19,10 +19,7 @@ void	b_four_3214(t_list **lst1, t_list **lst2)
 	rotate_both(lst1, lst2, 2);
 	push(lst1, lst2, 1);
 	swap(lst2, lst1, 0);
-	if ((*lst1)->next)
-		reverse_rotate_both(lst1, lst2, 2);
-	else
-		reverse_rotate(lst2, lst1, 0);
+	reverse_rotate_both(lst1, lst2, 2);
 	push(lst1, lst2, 1);
 }
 

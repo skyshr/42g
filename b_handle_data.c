@@ -75,18 +75,7 @@ void	b_to_a(t_list **lst1, t_list **lst2, int left, int right)
 	spivot = pivot + size / 3 + (size % 3 == 2);
 	a_to_b(lst2, lst1, spivot, right);
 	size = pivot - left;
-	b_stack_to_top(lst1, lst2, size);
+	stack_to_top(lst1, lst2, size);
 	a_to_b(lst2, lst1, pivot, spivot);
 	b_to_a(lst1, lst2, left, pivot);
-}
-
-void	b_stack_to_top(t_list **lst1, t_list **lst2, int size)
-{
-	while (size--)
-	{
-		if ((*lst1)->next)
-			reverse_rotate_both(lst1, lst2, 2);
-		else
-			reverse_rotate(lst2, lst1, 0);
-	}
 }

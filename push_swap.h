@@ -166,7 +166,7 @@ void	print_answer(t_list **l1, t_list **l2, int d, unsigned long long n);
 int		get_target(t_list *lst);
 int		is_visited(int memo[400][4], int find, int to_find1, int to_find2);
 void	bfs(t_list **lst1, t_list **lst2);
-void	setup(t_list *lst, t_lookup *dc, int m[400][4]);
+void	setup(t_list *lst, t_lookup *dc, int memo[400][4]);
 void	reset_dc(t_lookup *dc, int memo[400][4]);
 void	find_path(t_lookup *dc, int memo[400][4]);
 void	pa(t_lookup *dc, int memo[400][4]);
@@ -181,8 +181,7 @@ void	rra(t_lookup *dc, int memo[400][4]);
 void	rrb(t_lookup *dc, int memo[400][4]);
 void	rrr(t_lookup *dc, int memo[400][4]);
 int		find_tens(int num);
-void	a_stack_to_top(t_list **lst1, t_list **lst2, int size);
-void	b_stack_to_top(t_list **lst1, t_list **lst2, int size);
+void	stack_to_top(t_list **lst1, t_list **lst2, int size);
 void	update_ps(t_lookup *dc);
 
 #endif

@@ -14,16 +14,16 @@
 
 void	rotate_both(t_list **lst1, t_list **lst2, int sign)
 {
-	rotate(lst1, lst2, 2);
-	rotate(lst2, lst1, 2);
+	rotate(lst1, lst2, sign);
+	rotate(lst2, lst1, sign);
 	if (sign == 2)
 		write(1, "rr\n", 3);
 }
 
 void	reverse_rotate_both(t_list **lst1, t_list **lst2, int sign)
 {
-	reverse_rotate(lst1, lst2, 2);
-	reverse_rotate(lst2, lst1, 2);
+	reverse_rotate(lst1, lst2, sign);
+	reverse_rotate(lst2, lst1, sign);
 	if (sign == 2)
 		write(1, "rrr\n", 4);
 }

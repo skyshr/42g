@@ -54,13 +54,15 @@ void	rotate(t_list **lst1, t_list **lst2, int sign)
 	t_list	*tmp;
 
 	tmp = *lst1;
-	if (!tmp || !(*lst1)->next)
+	if (!tmp)
 		lst_error(lst1, lst2);
 	if (tmp->next)
+	{
 		tmp->next->prev = NULL;
-	*lst1 = tmp->next;
-	tmp->next = NULL;
-	ft_lstadd_back(lst1, tmp);
+		*lst1 = tmp->next;
+		tmp->next = NULL;
+		ft_lstadd_back(lst1, tmp);
+	}
 	if (!sign)
 		write(1, "ra\n", 3);
 	else if (sign == 1)
@@ -72,12 +74,15 @@ void	reverse_rotate(t_list **lst1, t_list **lst2, int sign)
 	t_list	*tmp;
 
 	tmp = ft_lstlast(*lst1);
-	if (!tmp || !(*lst1)->next)
+	if (!tmp)
 		lst_error(lst1, lst2);
-	if (tmp->prev)
-		tmp->prev->next = NULL;
-	tmp->prev = NULL;
-	ft_lstadd_front(lst1, tmp);
+	if ((*lst1)->next)
+	{
+		if (tmp->prev)
+			tmp->prev->next = NULL;
+		tmp->prev = NULL;
+		ft_lstadd_front(lst1, tmp);
+	}
 	if (!sign)
 		write(1, "rra\n", 4);
 	else if (sign == 1)

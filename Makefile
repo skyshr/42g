@@ -27,7 +27,7 @@ SRCS_BONUS = ft_strncmp.c ft_isdigit.c ft_isalpha.c ft_lstnew.c ft_lstadd_front.
 		ft_lstlast.c ft_lstadd_back.c ft_lstclear.c ft_lstiter.c \
 		check_validation.c operation1.c operation2.c parse_data.c \
 		get_next_line_bonus.c get_next_line_utils_bonus.c main_bonus.c \
-		error.c is_validstr.c handle_operation.c
+		error.c
 
 OBJS_BASIC = $(SRCS_BASIC:.c=.o)
 OBJS_BONUS = $(SRCS_BONUS:.c=.o)

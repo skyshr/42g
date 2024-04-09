@@ -46,7 +46,7 @@ void	a_divide_top_mid_bot(t_list **lst1, t_list **lst2, int left, int right)
 			rotate(lst1, lst2, 0);
 	}
 	size = right - spivot;
-	a_stack_to_top(lst1, lst2, size);
+	stack_to_top(lst1, lst2, size);
 }
 
 void	a_to_b(t_list **lst1, t_list **lst2, int left, int right)
@@ -71,13 +71,8 @@ void	a_to_b(t_list **lst1, t_list **lst2, int left, int right)
 	b_to_a(lst2, lst1, left, pivot);
 }
 
-void	a_stack_to_top(t_list **lst1, t_list **lst2, int size)
+void	stack_to_top(t_list **lst1, t_list **lst2, int size)
 {
 	while (size--)
-	{
-		if (*lst2 && (*lst2)->next)
-			reverse_rotate_both(lst1, lst2, 2);
-		else
-			reverse_rotate(lst1, lst2, 0);
-	}
+		reverse_rotate_both(lst1, lst2, 2);
 }
