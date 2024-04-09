@@ -51,7 +51,7 @@ void	parse_multiarg(t_list **lst, int argc, char **argv)
 void	parse_data(t_list **lst, int argc, char **argv)
 {
 	if (argc < 2)
-		exit(1);
+		exit(0);
 	if (argc == 2)
 		parse_singlearg(lst, argv[1]);
 	else
