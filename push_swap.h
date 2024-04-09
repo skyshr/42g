@@ -158,6 +158,7 @@ void	push_swap(t_list **lst1, int size);
 int		is_high(int m, int n);
 void	order_data(t_list **lst, int size);
 void	lst_error(t_list **lst1, t_list **lst2);
+void	lst_error_bonus(t_list **lst1, t_list **lst2, char *s);
 void	is_validstr(t_list **lst1, t_list **lst2, char *s);
 void	handle_operation(t_list **lst1, t_list **lst2, char *s, int len);
 int		get_start(int size);

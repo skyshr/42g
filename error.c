@@ -19,3 +19,10 @@ void	lst_error(t_list **lst1, t_list **lst2)
 	write(1, "Error\n", 6);
 	exit(1);
 }
+
+void	lst_error_bonus(t_list **lst1, t_list **lst2, char *s)
+{
+	free(s);
+	s = NULL;
+	lst_error(lst1, lst2);
+}

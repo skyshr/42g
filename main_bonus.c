@@ -48,7 +48,7 @@ void	handle_operation(t_list **lst1, t_list **lst2, char *s, int len)
 	else if (ft_strncmp(s, "rrr", len) == 0)
 		reverse_rotate_both(lst1, lst2, 3);
 	else
-		lst_error(lst1, lst2);
+		lst_error_bonus(lst1, lst2, s);
 }
 
 void	is_validstr(t_list **lst1, t_list **lst2, char *s)
@@ -59,11 +59,11 @@ void	is_validstr(t_list **lst1, t_list **lst2, char *s)
 	while (s[idx] != '\n')
 	{
 		if (idx > 2 || !ft_isalpha(s[idx]))
-			lst_error(lst1, lst2);
+			lst_error_bonus(lst1, lst2, s);
 		idx++;
 	}
 	if (idx == 1)
-		lst_error(lst1, lst2);
+		lst_error_bonus(lst1, lst2, s);
 	handle_operation(lst1, lst2, s, idx);
 }
 
