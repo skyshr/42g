@@ -12,82 +12,60 @@
 
 #include "push_swap.h"
 
-void	pa(t_lookup *dc, int visited[400][2], int memo[10][400][3], int idx[10])
+void	pa(t_lookup *dc, int memo[400][4])
 {
-	int	next;
-
-	next = dc->dist + 1;
-	if (dc->second && !is_visited(visited, dc->find, dc->pa, dc->rems))
+	if (dc->second && !is_visited(memo, dc->find, dc->pa, dc->rems))
 	{
-		visited[dc->find][0] = dc->pa;
-		visited[dc->find++][1] = dc->rems;
-		memo[next][idx[next]][0] = dc->pa;
-		memo[next][idx[next]][1] = dc->rems;
-		memo[next][idx[next]][2] = memo[dc->dist][dc->cur][2] * 11 + 0;
-		idx[next]++;
+		memo[dc->find][0] = dc->pa;
+		memo[dc->find][1] = dc->rems;
+		memo[dc->find][2] = dc->dist + 1;
+		memo[dc->find++][3] = memo[dc->cur][3] * 11 + 0;
 	}
 }
 
-void	pb(t_lookup *dc, int visited[400][2], int memo[10][400][3], int idx[10])
+void	pb(t_lookup *dc, int memo[400][4])
 {
 	int	next;
 
 	next = dc->dist + 1;
-	if (!is_visited(visited, dc->find, dc->remf, dc->pb))
+	if (!is_visited(memo, dc->find, dc->remf, dc->pb))
 	{
-		visited[dc->find][0] = dc->remf;
-		visited[dc->find++][1] = dc->pb;
-		memo[next][idx[next]][0] = dc->remf;
-		memo[next][idx[next]][1] = dc->pb;
-		memo[next][idx[next]][2] = memo[dc->dist][dc->cur][2] * 11 + 1;
-		idx[next]++;
+		memo[dc->find][0] = dc->remf;
+		memo[dc->find][1] = dc->pb;
+		memo[dc->find][2] = dc->dist + 1;
+		memo[dc->find++][3] = memo[dc->cur][3] * 11 + 1;
 	}
 }
 
-void	sa(t_lookup *dc, int visited[400][2], int memo[10][400][3], int idx[10])
+void	sa(t_lookup *dc, int memo[400][4])
 {
-	int	next;
-
-	next = dc->dist + 1;
-	if (!is_visited(visited, dc->find, dc->sa, dc->second))
+	if (!is_visited(memo, dc->find, dc->sa, dc->second))
 	{
-		visited[dc->find][0] = dc->sa;
-		visited[dc->find++][1] = dc->second;
-		memo[next][idx[next]][0] = dc->sa;
-		memo[next][idx[next]][1] = dc->second;
-		memo[next][idx[next]][2] = memo[dc->dist][dc->cur][2] * 11 + 2;
-		idx[next]++;
+		memo[dc->find][0] = dc->sa;
+		memo[dc->find][1] = dc->second;
+		memo[dc->find][2] = dc->dist + 1;
+		memo[dc->find++][3] = memo[dc->cur][3] * 11 + 2;
 	}
 }
 
-void	sb(t_lookup *dc, int visited[400][2], int memo[10][400][3], int idx[10])
+void	sb(t_lookup *dc, int memo[400][4])
 {
-	int	next;
-
-	next = dc->dist + 1;
-	if (dc->second > 10 && !is_visited(visited, dc->find, dc->first, dc->sb))
+	if (dc->second > 10 && !is_visited(memo, dc->find, dc->first, dc->sb))
 	{
-		visited[dc->find][0] = dc->first;
-		visited[dc->find++][1] = dc->sb;
-		memo[next][idx[next]][0] = dc->first;
-		memo[next][idx[next]][1] = dc->sb;
-		memo[next][idx[next]][2] = memo[dc->dist][dc->cur][2] * 11 + 3;
-		idx[next]++;
+		memo[dc->find][0] = dc->first;
+		memo[dc->find][1] = dc->sb;
+		memo[dc->find][2] = dc->dist + 1;
+		memo[dc->find++][3] = memo[dc->cur][3] * 11 + 3;
 	}
 }
 
-void	ss(t_lookup *dc, int visited[400][2], int memo[10][400][3], int idx[10])
+void	ss(t_lookup *dc, int memo[400][4])
 {
-	int	next;
-
-	next = dc->dist + 1;
-	if (dc->second > 10 && !is_visited(visited, dc->find, dc->sa, dc->sb))
+	if (dc->second > 10 && !is_visited(memo, dc->find, dc->sa, dc->sb))
 	{
-		visited[dc->find][0] = dc->sa;
-		visited[dc->find++][1] = dc->sb;
-		memo[next][idx[next]][0] = dc->sa;
-		memo[next][idx[next]][1] = dc->sb;
-		memo[next][idx[next]][2] = memo[dc->dist][dc->cur][2] * 11 + 4;
-		idx[next]++;
+		memo[dc->find][0] = dc->sa;
+		memo[dc->find][1] = dc->sb;
+		memo[dc->find][2] = dc->dist + 1;
+		memo[dc->find++][3] = memo[dc->cur][3] * 11 + 4;
 	}
 }

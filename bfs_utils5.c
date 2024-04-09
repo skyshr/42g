@@ -12,18 +12,29 @@
 
 #include "push_swap.h"
 
-void	rrr(t_lookup *dc, int v[400][2], int m[10][400][3], int idx[10])
+void	rrr(t_lookup *dc, int memo[400][4])
 {
-	int	next;
-
-	next = dc->dist + 1;
-	if (dc->second > 10 && !is_visited(v, dc->find, dc->rra, dc->rrb))
+	if (dc->second > 10 && !is_visited(memo, dc->find, dc->rra, dc->rrb))
 	{
-		v[dc->find][0] = dc->rra;
-		v[dc->find++][1] = dc->rrb;
-		m[next][idx[next]][0] = dc->rra;
-		m[next][idx[next]][1] = dc->rrb;
-		m[next][idx[next]][2] = m[dc->dist][dc->cur][2] * 11 + 10;
-		idx[next]++;
+		memo[dc->find][0] = dc->rra;
+		memo[dc->find][1] = dc->rrb;
+		memo[dc->find][2] = dc->dist + 1;
+		memo[dc->find++][3] = memo[dc->cur][3] * 11 + 10;
 	}
+}
+
+int	is_visited(int memo[400][4], int find, int to_find1, int to_find2)
+{
+	int	i;
+
+	i = 0;
+	if (to_find2 >= 100)
+		return (1);
+	while (i < find)
+	{
+		if (memo[i][0] == to_find1 && memo[i][1] == to_find2)
+			return (1);
+		i++;
+	}
+	return (0);
 }
