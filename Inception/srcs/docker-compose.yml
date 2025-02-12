@@ -1,0 +1,139 @@
+services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    build:
+      dockerfile: ./requirements/mariadb/Dockerfile
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - inception
+    volumes:
+      - db-volume:/var/lib/mysql
+    restart: always
+
+  wordpress:
+    container_name: wordpress
+    image: wordpress
+    build:
+      dockerfile: ./requirements/wordpress/Dockerfile
+    ports:
+      - "9000:9000"
+    env_file:
+      - .env
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+    volumes:
+      - wp-volume:/var/www/
+    restart: always
+    
+  nginx:
+    container_name: nginx
+    image: nginx
+    build:
+      dockerfile: ./requirements/nginx/Dockerfile
+    depends_on:
+      - wordpress
+    ports:
+      - "443:443"
+    networks:
+      - inception
+    volumes:
+      - wp-volume:/var/www/
+    restart: always
+
+  redis:
+    container_name: redis
+    image: redis
+    build:
+      dockerfile: ./requirements/bonus/redis/Dockerfile
+    depends_on:
+      - wordpress
+    ports:
+      - "6379:6379"
+    networks:
+      - inception
+    volumes:
+      - wp-volume:/var/www/html
+    restart: always
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    build:
+      dockerfile: ./requirements/bonus/adminer/Dockerfile
+    depends_on:
+      - mariadb
+    ports:
+      - "777:80"
+    networks:
+      - inception
+    restart: always
+
+  ftp:
+    container_name: ftp
+    image: ftp
+    build: 
+      dockerfile: ./requirements/bonus/ftp/Dockerfile
+    environment:
+      FTP_USER: ${FTP_USER}
+      FTP_PWD: ${FTP_PWD}
+    ports:
+      - "21:21"
+      - "40000-40005:40000-40005"
+    networks:
+      - inception
+    volumes:
+      - wp-volume:/home/${FTP_USER}/ftp/files
+    restart: always
+  
+  nodejs:
+    container_name: nodejs
+    image: nodejs
+    build:
+      dockerfile: ./requirements/bonus/nodejs/Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - inception
+    restart: always
+
+  cadvisor:
+    container_name: cadvisor
+    image: cadvisor
+    build:
+      dockerfile: ./requirements/bonus/cadvisor/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - inception
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    restart: always
+    
+volumes:
+  wp-volume:
+    driver_opts:
+      o: bind
+      type: bind
+      device: ${DATA}/wordpress
+
+  db-volume:
+    driver_opts:
+      o: bind
+      type: bind
+      device: ${DATA}/mariadb
+
+networks:
+  inception:
+    driver: bridge
